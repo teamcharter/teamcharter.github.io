@@ -51,7 +51,7 @@
 							<a href="./me.html" class="nav-item level">
 								<figure class="media">
 									<p class="image is-32x32">
-										<img class="fill-user-image" src="./public/img/rosa.png">
+										<img class="fill-user-image" src="./public/img/no-user.png">
 									</p>
 								</figure>
 							</a>
@@ -69,9 +69,9 @@
 		<section class="section">
 			<div class="container">
 				<div class="columns charter-body">
-					<div class="column is-5 tile is-parent is-vertical">
-						<div class="tile">
-							<div class="tile is-parent is-vertical">
+					<div class="column is-5">
+
+							<div class="box">
 								<div class="content">
 									<h2 class="title">Focusing Question</h2>
 									<div id="focusing-question" class="tile is-child content tile-editable">
@@ -87,9 +87,8 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="tile">
-							<div class="tile is-parent is-vertical">
+
+							<div class="box">
 								<div class="content">
 									<h2 class="title">Expectations</h2>
 									<div class="tile is-child content tile-editable">
@@ -108,35 +107,31 @@
 									</div>
 								</div>
 							</div>
-						</div>	
+
 					</div>
 					<div class="column is-7">
-						<div class="tile is-vertical">
-							<div class="tile">
-								<div class="tile is-parent is-vertical">
-									<div class="tile is-child">
-										<div class="content tile-editable">
-										<h2 class="title">Your Latest Update</h2>
-											<textarea id="my-update" class="textarea" rows="3" placeholder="Update your team on your progress!"></textarea>
-										</div>
-										<div class="level">
-										<button id="save-update" class="button is-primary">
-											<span class="icon">
-												<i class="fa fa-edit"></i>
-											</span>
-											<span>Submit Update</span>
-										</button>
-										<p>Submitting as <span class="fill-user-name">Anonymous</span></p>
-										</div>
-									</div>
+
+						<div class="box">
+							<div class="tile is-child">
+								<div class="content tile-editable">
+								<h2 class="title">Your Latest Update</h2>
+									<textarea id="my-update" class="textarea" rows="3" placeholder="Update your team on your progress!"></textarea>
+								</div>
+								<div class="level">
+								<button id="save-update" class="button is-primary">
+									<span class="icon">
+										<i class="fa fa-edit"></i>
+									</span>
+									<span>Submit Update</span>
+								</button>
+								<p>Submitting as <span class="fill-user-name">Anonymous</span></p>
 								</div>
 							</div>
-							<div class="tile">
-								<div class="tile is-parent is-vertical">
-									<div class="content">
-										<h2 class="title">Roles and Updates</h2>
-									</div>
-								</div>
+						</div>
+
+						<div class="box">
+							<div class="content">
+								<h2 class="title">Roles and Updates</h2>
 							</div>
 							<div id="team-updates">
 								<div class="tile">
@@ -144,7 +139,7 @@
 										<div class="tile is-child">
 											<div class="media">
 												<figure class="media-left">
-													<p class="image is-64x64">
+													<p class="image is-48x48">
 														<img src="./public/img/rosa.png">
 													</p>
 												</figure>
@@ -164,20 +159,17 @@
 									</div>
 								</div>
 							</div>
-							<div class="columns">
-								<div class="column is-4"></div>
-								<div class="column is-4">
-									<br>
-									<button id="invite" class="button is-primary is-outlined">
-										<span class="icon">
-											<i class="fa fa-envelope"></i>
-										</span>
-										<span>Invite Teammates</span>
-									</button>
-								</div>
-								<div class="column is-4"></div>
-							</div>
 						</div>
+
+							<div class="box">
+								<button id="invite" class="button is-primary is-outlined">
+									<span class="icon">
+										<i class="fa fa-envelope"></i>
+									</span>
+									<span>Invite Teammates</span>
+								</button>
+							</div>
+
 					</div>
 				</div>
 			</div>

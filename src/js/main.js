@@ -26,23 +26,20 @@ loginBtn.addEventListener('click', (e) => {
 });
 
 database.init(main, () => {
-	// No current user
+	// No user signed in
+	window.location = window.location.origin + '/login.html';
 });
 
 function main(user) {
 
 	initWithTeamCode((tid) => {
 	
-		console.log('Charter by Omnipointment.');
-
-		console.log(user);
+		console.log('What makes working at Omnipointment better than, say, Google?');
 
 		fillText('fill-user-name', user.displayName);
 		fillSrc('fill-user-image', user.photoURL);
 
 		let prometheus = database.getPrometheus();
-
-		console.log(tid);
 
 		feedbackBtn.addEventListener('click', (e) => {
 			vex.dialog.prompt({
@@ -62,9 +59,9 @@ function main(user) {
 			database.getTeam(tid).then((team) => {
 				let origin = window.location.origin;
 				let pathname = window.location.pathname;
-				let link = `${origin}${pathname}?team=${tid}`;
 				let code = team.joinCode || false;
 				let linkEnd = code ? `&code=${code}` : '';
+				let link = `${origin}${pathname}?team=${tid}${linkEnd}`;
 				vex.dialog.prompt({
 					message: 'Send this link to your teammates:',
 					value: link,
@@ -129,9 +126,26 @@ function main(user) {
 		});
 
 		database.onTeamChange(tid, (team, members) => {
-			console.log(team)
-			if (Object.keys(team).length > 0) {
-				renderTeam(team, members);
+			let uid = database.getCurrentUser().uid;
+			if (uid in members) {
+				if (Object.keys(team).length > 0) {
+					renderTeam(team, members);
+				}
+			} else if (params.code) {
+				database.joinTeam(tid, uid, params.code).then((res) => {
+					if (res.success) {
+						vex.dialog.alert({
+							message: `Congratulations, you just joined ${team.name || 'your new team'}!`
+						});
+						if (Object.keys(team).length > 0) {
+							renderTeam(team, members);
+						}
+					} else {
+						window.location = window.location.origin + '/me.html';
+					}
+				});
+			} else {
+				window.location = window.location.origin + '/me.html';
 			}
 		}, reportErrorToUser);
 
@@ -140,23 +154,33 @@ function main(user) {
 }
 
 function renderTeam(team, members) {
-	fillText('fill-team-name', team.name);
-	cursorManager.setEndOfContenteditable(teamName);
-	fillText('fill-team-question', team.question);
+
+	let teamMembers = team.members || {};
+
+	if (team.name) {
+		fillText('fill-team-name', team.name);
+		cursorManager.setEndOfContenteditable(teamName);
+	}
+	if (team.question) {
+		fillText('fill-team-question', team.question);
+	}
 	let expectations = team.expectations || [];
-	teamExpect.innerHTML = expectations.reduce((total, val) => {
-		return total + `<li>${val}</li>`;
-	}, '');
+	if (expectations.length > 0) {
+		teamExpect.innerHTML = expectations.reduce((total, val) => {
+			return total + `<li>${val}</li>`;
+		}, '');
+	}
+	let allUpdates = team.updates || {};
 	teamUpdates.innerHTML = '';
-	for (let uid in team.members) {
+	for (let uid in teamMembers) {
 		let user = members[uid];
-		let updateMap = team.updates[uid] || {};
+		let updateMap = allUpdates[uid] || {};
 		let updateList = Object.keys(updateMap).map(upid => updateMap[upid]).sort((a, b) => {
 			return b.timestamp - a.timestamp;
 		});
 		let update = updateList[0];
 		let message = 'No updates yet.';
-		let ts = user.joined;
+		let ts = teamMembers[uid].joined;
 		if (update) {
 			message = update.update;
 			ts = update.timestamp;
@@ -173,7 +197,7 @@ function renderTeam(team, members) {
 }
 
 function reportErrorToUser(err) {
-	vex.dialog.alert(err);
+	vex.dialog.alert(err + '');
 }
 
 function getQueryParams(qs) {
@@ -195,10 +219,8 @@ function fillText(className, text) {
 }
 
 function fillSrc(className, text) {
-	console.log(text)
 	let spans = document.getElementsByClassName(className);
 	for (let s = 0; s < spans.length; s++) {
-		console.log(text)
 		spans[s].src = text;
 	}
 }

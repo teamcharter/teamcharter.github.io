@@ -32,8 +32,8 @@
 			<div class="hero-head">
 				<header class="nav">
 					<div class="container">
-						<div href="./" class="nav-left">
-							<a class="nav-item">
+						<div class="nav-left">
+							<a href="./" class="nav-item">
 								<img src="./public/img/logo-white.png" alt="Charter">
 							</a>
 						</div>
@@ -43,27 +43,22 @@
 							<span></span>
 						</span>
 						<div class="nav-right nav-menu">
-							<a href="mailto:team@omnipointment.com" class="nav-item">Contact</a>
-							<a href="./me.html" class="nav-item">Sign In</a>
+							<a href="./" class="nav-item">Home</a>
+							<a id="feedback" class="nav-item">Give Feedback</a>
 						</div>
 					</div>
 				</header>
 			</div>
 			<div class="hero-body">
 				<div class="container">
-					<div class="content has-text-centered">
-						<h1 class="title is-1">Say Goodbye to Solo Group Projects</h1>
-						<h2 class="subtitle is-3">Get every member of your team to contribute,<wbr> even teammates you thought were dead weight.</h2>
-						<a href="./me.html" class="button is-primary is-inverted is-large">Start Using Charter</a>
-					</div>
-				</div>
-			</div>
-			<div class="hero-foot">
-				<div class="tabs is-centered">
-					<div class="container">
-						<ul>
-							<li>Omnipointment | 2017</li>
-						</ul>
+					<div class="columns">
+						<div class="column is-3"></div>
+						<div class="column is-6 box contrast-color">
+							<h1 id="team-name" class="title fill-user-name" contenteditable="true">Welcome to Charter</h1>
+							<p class="subtitle">Charter helps teams set clear expectations, <wbr>so no one gets stuck doing all the work.</p>
+							<button id="login" class="button is-primary">Login with Google</button>
+						</div>
+						<div class="column is-3"></div>
 					</div>
 				</div>
 			</div>
@@ -71,5 +66,6 @@
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
 		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
 		<script type="text/javascript" src="./src/js/moment.min.js"></script>
+		<script type="text/javascript" src="./public/js/login.js"></script>
 	</body>
 </html>

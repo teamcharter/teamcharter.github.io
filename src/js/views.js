@@ -19,7 +19,7 @@ let Views = () => {
 					<div class="tile is-child">
 						<div class="media">
 							<figure class="media-left">
-								<p class="image is-64x64">
+								<p class="image is-48x48">
 									<img src="${model.image}">
 								</p>
 							</figure>
@@ -47,13 +47,16 @@ let Views = () => {
 			let origin = window.location.origin;
 			let link = `${origin}/charter.html?team=${model.tid}`;
 			let html = `
-				<div class="content">
-					<h1 class="title">${model.name}</h1>
-				</div>
-				<a href="${link}" class="button is-primary is-outlined">View Team Charter</a>`;
+				<div class="tile is-parent">
+					<div class="tile box is-child">
+						<div class="content">
+							<h3 class="title">${model.name}</h3>
+						</div>
+						<a href="${link}" class="button is-primary is-outlined">View Team Charter</a>
+					</div>
+				</div>`;
 			let div = document.createElement('div');
 				div.classList.add('column');
-				div.classList.add('box');
 				div.classList.add('is-4');
 				div.innerHTML = html;
 			return div;

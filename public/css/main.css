@@ -57,3 +57,7 @@ body {
 header figure img {
 	border-radius: 50%;
 }
+
+.contrast-color .title, .contrast-color .subtitle{
+	color: #30AACB !important;
+}

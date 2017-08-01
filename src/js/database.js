@@ -162,7 +162,15 @@ let Database = (firebase, config) => {
 			return new Promise((resolve, reject) => {
 				database.getTeam(tid).then((team) => {
 					if (joinCode === team.joinCode || !team.joinCode) {
-						database.addMember(tid, uid).then(resolve).catch(reject);
+						database.addMember(tid, uid).then((done) => {
+							resolve({
+								success: true
+							});
+						}).catch(reject);
+					} else {
+						resolve({
+							success: false
+						});
 					}
 				}).catch(reject);
 			});
@@ -184,6 +192,23 @@ let Database = (firebase, config) => {
 				query.once('value', (snap) => {
 					let nodes = snap.val() || {};
 					resolve(nodes);
+				}).catch(reject);
+			});
+		},
+
+		createNewTeam: (uid, joinCode, teamName) => {
+			return new Promise((resolve, reject) => {
+				db.ref('teams').push({
+					name: teamName || 'New Team Charter',
+					joinCode: joinCode
+				}).then((res) => {
+					let pathList = res.path.ct;
+					let tid = pathList[pathList.length - 1];
+					database.addMember(tid, uid).then((done) => {
+						resolve({
+							tid: tid
+						});
+					}).catch(reject);
 				}).catch(reject);
 			});
 		}
