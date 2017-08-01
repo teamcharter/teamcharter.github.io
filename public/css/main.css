@@ -1,0 +1,59 @@
+/*html {
+	background: rgba(245, 245, 245, 1.0);
+}
+
+.title {
+	font-family: 'Lato', sans-serif !important;
+}
+
+.panel-dark {
+	background: rgba(219, 65, 86, 1.0);
+}
+
+.panel-light {
+	background: rgba(255, 255, 255, 1.0);
+}
+
+.panel-dark .title, .panel-dark .subtitle, .panel-dark .content {
+	color: white !important;
+}
+
+.vex.vex-theme-plain .vex-dialog-button.vex-dialog-button-primary {
+	background: rgba(219, 65, 86, 1.0);
+}
+
+input:focus {
+	border-color: rgba(200, 200, 200, 1.0) !important;
+}*/
+
+body {
+	font-family: 'Lato', sans-serif !important;
+}
+
+.title {
+	font-weight: bold !important;
+}
+
+.cell {
+	padding: 0.75rem 0;
+}
+
+.charter-head {
+	padding: 0 0.75rem !important;
+}
+
+.charter-body .tile.is-child {
+	/*background: rgba(0, 0, 0, 0.1);*/
+}
+
+.charter-body figure img {
+	border-radius: 50%;
+}
+
+.charter-body .tile-editable + .control {
+	margin-top: 1.5em;
+}
+
+header figure img {
+	border-radius: 50%;
+}

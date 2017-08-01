@@ -1,0 +1,22 @@
+{
+  "name": "Charter",
+  "description": "Get every member of your team to contribute with Charter.",
+  "icons": [{
+    "src": "/public/img/icon-black.png",
+    "sizes": "128x128",
+    "type": "image/png"
+  }],
+  "developer": {
+    "name": "Charter",
+    "url": "team@omnipointment.com"
+  },
+  "default_locale": "en",
+  "lang": "en-US",
+  "chrome": { "navigation": true },
+  "start_url": "/home",
+  "launch_path": "/home",
+  "theme_color": "#2D0A58",
+  "display": "standalone",
+  "fullscreen": "true",
+  "orientation": "portrait"
+}

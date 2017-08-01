@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Charter</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="omnipointment, charter, collaboration, teams">
+		<meta name="description" content="Get every member of your team to contribute with Charter.">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+
+		<meta property="og:title" content="Charter">
+		<meta property="og:description" content="Get every member of your team to contribute with Charter.">
+		<meta property="og:image" content="./public/img/icon-black.png">
+        <meta property="fb:app_id" content="1538554079792604">
+
+		<link rel="icon" sizes="192x192" href="./public/img/icon-black.png">
+		<link rel="image_src" href="./public/img/icon-white.png">
+        <link rel="manifest" href="/manifest.webapp">
+
+		<script type="text/javascript" src="./public/vex/vex.combined.min.js"></script>
+		<script type="text/javascript">vex.defaultOptions.className = 'vex-theme-plain';</script>
+		<link rel="stylesheet" type="text/css" href="./public/vex/vex.css">
+		<link rel="stylesheet" type="text/css" href="./public/vex/vex-theme-plain.css">
+		<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="./public/css/styles.css">
+		<link rel="stylesheet" href="./public/css/main.css">
+	</head>
+	<body>
+		<section class="hero is-small is-primary is-bold">
+			<div class="hero-head">
+				<header class="nav">
+					<div class="container">
+						<div class="nav-left">
+							<a href="./" class="nav-item">
+								<img src="./public/img/logo-white.png" alt="Charter">
+							</a>
+						</div>
+						<span id="mobile-nav-button" class="nav-toggle">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+						<div class="nav-right nav-menu">
+							<a href="./" class="nav-item">Home</a>
+							<a id="feedback" class="nav-item">Give Feedback</a>
+							<a id="login" class="nav-item">
+								Switch Accounts
+							</a>
+							<a class="nav-item level">
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/rosa.png">
+									</p>
+								</figure>
+							</a>
+						</div>
+					</div>
+				</header>
+			</div>
+			<div class="hero-body">
+				<div class="container charter-head">
+					<h2 class="subtitle">Your Teams</h2>
+					<h1 id="team-name" class="title fill-user-name" contenteditable="true">Your Team Name</h1>
+				</div>
+			</div>
+		</section>
+		<section class="section">
+			<div class="container">
+				<div id="team-tiles" class="columns"></div>
+			</div>
+		</section>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
+		<script type="text/javascript" src="./src/js/moment.min.js"></script>
+		<script type="text/javascript" src="./public/js/me.js"></script>
+	</body>
+</html>
