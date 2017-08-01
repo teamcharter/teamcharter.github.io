@@ -122,6 +122,7 @@ function main(user) {
 			let update = myUpdate.value;
 			database.submitUpdate(tid, uid, update).then((done) => {
 				saveUpdate.classList.remove('is-loading');
+				myUpdate.value = '';
 			}).catch(reportErrorToUser);
 		});
 

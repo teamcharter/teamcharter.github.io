@@ -33,24 +33,28 @@ let Database = (firebase, config) => {
 		},
 
 		login: (callback) => {
-			let provider = new firebase.auth.GoogleAuthProvider();
-			auth.signInWithPopup(provider).then((result) => {
-				let token = result.credential.accessToken;
-				let user = result.user;
-				prometheus.logon(user.uid, {
-					name: user.displayName,
-					email: user.email,
-					image: user.photoURL,
-					uid: user.uid
+			//auth.signOut().then((done) => {
+				let provider = new firebase.auth.GoogleAuthProvider();
+				auth.signInWithPopup(provider).then((result) => {
+					let token = result.credential.accessToken;
+					let user = result.user;
+					prometheus.logon(user.uid, {
+						name: user.displayName,
+						email: user.email,
+						image: user.photoURL,
+						uid: user.uid
+					});
+					callback(user);
+				}).catch(function(error) {
+					/*let errorCode = error.code;
+					let errorMessage = error.message;
+					let email = error.email;
+					let credential = error.credential;*/
+					console.error(error);
 				});
-				callback(user);
-			}).catch(function(error) {
-				/*let errorCode = error.code;
-				let errorMessage = error.message;
-				let email = error.email;
-				let credential = error.credential;*/
-				console.error(error);
-			});
+			/*}).catch((err) => {
+				console.error(err);
+			});*/
 		},
 
 		getPrometheus: () => {
