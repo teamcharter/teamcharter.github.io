@@ -13,12 +13,14 @@ let Database = (firebase, config) => {
 			let called = false;
 			auth.onAuthStateChanged((user) => {
 				if (user) {
+					//
 					prometheus.logon(user.uid, {
 						name: user.displayName,
 						email: user.email,
 						image: user.photoURL,
 						uid: user.uid
 					});
+					//
 					if (!called) {
 						called = true;
 						callback(user);
@@ -38,12 +40,14 @@ let Database = (firebase, config) => {
 				auth.signInWithPopup(provider).then((result) => {
 					let token = result.credential.accessToken;
 					let user = result.user;
+					//
 					prometheus.logon(user.uid, {
 						name: user.displayName,
 						email: user.email,
 						image: user.photoURL,
 						uid: user.uid
 					});
+					//
 					callback(user);
 				}).catch(function(error) {
 					/*let errorCode = error.code;
@@ -126,6 +130,12 @@ let Database = (firebase, config) => {
 			if (!tid) {
 				throw Error('No team id given.');
 			}
+			db.ref(`edits/${tid}`).push({
+				field: 'name',
+				uid: uid,
+				value: name,
+				timestamp: Date.now()
+			});
 			return db.ref(`teams/${tid}/name`).set(name);
 		},
 
@@ -133,6 +143,12 @@ let Database = (firebase, config) => {
 			if (!tid) {
 				throw Error('No team id given.');
 			}
+			db.ref(`edits/${tid}`).push({
+				field: 'question',
+				uid: uid,
+				value: question,
+				timestamp: Date.now()
+			});
 			return db.ref(`teams/${tid}/question`).set(question);
 		},
 
@@ -140,6 +156,12 @@ let Database = (firebase, config) => {
 			if (!tid) {
 				throw Error('No team id given.');
 			}
+			db.ref(`edits/${tid}`).push({
+				field: 'expectations',
+				uid: uid,
+				value: list,
+				timestamp: Date.now()
+			});
 			return db.ref(`teams/${tid}/expectations`).set(list);
 		},
 
@@ -150,6 +172,13 @@ let Database = (firebase, config) => {
 			if (!uid) {
 				throw Error('No user id given.');
 			}
+			//
+			prometheus.save({
+				type: 'SUBMIT_UPDATE',
+				tid: tid,
+				update: update
+			});
+			//
 			return db.ref(`teams/${tid}/updates/${uid}`).push({
 				update: update,
 				timestamp: Date.now()
@@ -181,6 +210,13 @@ let Database = (firebase, config) => {
 		},
 
 		addMember: (tid, uid) => {
+			//
+			prometheus.save({
+				type: 'ADD_MEMBER',
+				tid: tid,
+				uid: uid
+			});
+			//
 			return db.ref(`teams/${tid}/members/${uid}`).set({
 				status: 'member',
 				role: 'Team Member',
@@ -208,6 +244,13 @@ let Database = (firebase, config) => {
 				}).then((res) => {
 					let pathList = res.path.ct;
 					let tid = pathList[pathList.length - 1];
+					//
+					prometheus.save({
+						type: 'CREATE_TEAM',
+						tid: tid,
+						name: teamName
+					});
+					//
 					database.addMember(tid, uid).then((done) => {
 						resolve({
 							tid: tid

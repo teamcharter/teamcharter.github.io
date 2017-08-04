@@ -133,19 +133,32 @@ function main(user) {
 					renderTeam(team, members);
 				}
 			} else if (params.code) {
-				database.joinTeam(tid, uid, params.code).then((res) => {
-					if (res.success) {
-						vex.dialog.alert({
-							message: `Congratulations, you just joined ${team.name || 'your new team'}!`
-						});
-						if (Object.keys(team).length > 0) {
-							renderTeam(team, members);
+				vex.dialog.confirm({
+					message: `Do you want to join ${team.name || 'this team'}?`,
+					buttons: [
+						$.extend({}, vex.dialog.buttons.YES, {text: 'Yes'}),
+						$.extend({}, vex.dialog.buttons.NO, {text: 'No'})
+					],
+					callback: (yes) => {
+						if (yes) {
+							database.joinTeam(tid, uid, params.code).then((res) => {
+								if (res.success) {
+									vex.dialog.alert({
+										message: `Congratulations, you just joined ${team.name || 'your new team'}!`
+									});
+									if (Object.keys(team).length > 0) {
+										renderTeam(team, members);
+									}
+								} else {
+									window.location = window.location.origin + '/me.html';
+								}
+							});
+						} else {
+							window.location = window.location.origin + '/me.html';
 						}
-					} else {
-						window.location = window.location.origin + '/me.html';
 					}
 				});
-			} else {
+			} else if (!params.rdr) {
 				window.location = window.location.origin + '/me.html';
 			}
 		}, reportErrorToUser);
