@@ -158,7 +158,11 @@ function main(user) {
 						}
 					}
 				});
-			} else if (!params.rdr) {
+			} else if (params.rdr) {
+				if (Object.keys(team).length > 0) {
+					renderTeam(team, members);
+				}
+			} else {
 				window.location = window.location.origin + '/me.html';
 			}
 		}, reportErrorToUser);
