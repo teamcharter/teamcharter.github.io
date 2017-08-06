@@ -63,27 +63,38 @@
 			<div class="hero-body">
 				<div class="container charter-head">
 					<h2 class="subtitle">Team Charter</h2>
-					<h1 id="team-name" class="title fill-team-name" contenteditable="true">Your Team Name</h1>
+					<h1 id="team-name" class="title fill-team-name" contenteditable="false">Your Team Name</h1>
+				</div>
+			</div>
+			<div class="hero-foot">
+				<div class="tabs is-centered is-boxed">
+					<ul>
+						<li data-tab="container-charter" class="charter-tab is-active"><a>Charter</a></li>
+						<li data-tab="container-progress" class="charter-tab"><a>Progress</a></li>
+					</ul>
 				</div>
 			</div>
 		</section>
 		<section class="section">
-			<div class="container">
+			<div class="container tabbed-container content has-text-centered loading" style="display: block;">
+				<h3>Loading...</h3>
+			</div>
+			<div class="container tabbed-container" id="container-charter">
 				<div class="columns charter-body">
 					<div class="column is-5">
 
 							<div class="box">
 								<div class="content">
-									<h2 class="title">Focusing Question</h2>
+									<h2 class="title">Objective</h2>
 									<div id="focusing-question" class="tile is-child content tile-editable">
 										<p id="team-question" class="fill-team-question" contenteditable="true">What does your team aim to solve or accomplish?</p>
 									</div>
-									<div class="control">
+									<div class="control is-hidden-to-mentor">
 										<button id="save-question" class="button is-primary is-outlined">
 											<span class="icon">
 												<i class="fa fa-edit"></i>
 											</span>
-											<span>Save Focusing Question</span>
+											<span>Save Objective</span>
 										</button>
 									</div>
 								</div>
@@ -98,7 +109,7 @@
 											<li>Include behaviors members should avoid.</li>
 										</ul>
 									</div>
-									<div class="control">
+									<div class="control is-hidden-to-mentor">
 										<button id="save-expectations" class="button is-primary is-outlined">
 											<span class="icon">
 												<i class="fa fa-edit"></i>
@@ -109,76 +120,96 @@
 								</div>
 							</div>
 
+							<div class="box">
+								<div class="content">
+									<h2 class="title">Links</h2>
+									<div class="tile is-child content tile-editable">
+										<div id="team-links"></div>
+									</div>
+									<div class="control is-hidden-to-mentor">
+										<button id="add-link" class="button is-primary is-outlined">
+											<span class="icon">
+												<i class="fa fa-link"></i>
+											</span>
+											<span>Add Link</span>
+										</button>
+										<a target="_blank" href="https://www.omnipointment.com/meeting/create">
+											<button id="add-meeting" class="button is-primary is-outlined">
+												<span class="icon">
+													<i class="fa fa-calendar"></i>
+												</span>
+												<span>Schedule Team Meeting</span>
+											</button>
+										</a>
+									</div>
+								</div>
+							</div>
+
 					</div>
 					<div class="column is-7">
 
 						<div class="box">
-							<div class="tile is-child">
-								<div class="content tile-editable">
-								<h2 class="title">Your Latest Update</h2>
-									<textarea id="my-update" class="textarea" rows="3" placeholder="Update your team on your progress!"></textarea>
-								</div>
-								<div class="level">
-								<button id="save-update" class="button is-primary">
-									<span class="icon">
-										<i class="fa fa-edit"></i>
-									</span>
-									<span>Submit Update</span>
-								</button>
-								<p>Submitting as <span class="fill-user-name">Anonymous</span></p>
-								</div>
-							</div>
-						</div>
-
-						<div class="box">
 							<div class="content">
-								<h2 class="title">Roles and Updates</h2>
+								<h2 class="title">Roles</h2>
 							</div>
-							<div id="team-updates">
-								<div class="tile">
-									<div class="tile is-parent is-vertical is-5">
-										<div class="tile is-child">
-											<div class="media">
-												<figure class="media-left">
-													<p class="image is-48x48">
-														<img src="./public/img/rosa.png">
-													</p>
-												</figure>
-												<div class="media-content content">
-													<h3 class="title">Rosa Feliz</h3>
-													<p class="subtitle">Developer</p>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="tile is-parent is-vertical is-7">
-										<div class="tile is-child">
-											<div class="content">
-												<span class="tag is-success">8/1 5:00 PM</span> Updates from your teammates will be here.
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+							<div id="team-updates"></div>
 						</div>
 
-							<div class="box">
-								<button id="invite" class="button is-primary is-outlined">
-									<span class="icon">
-										<i class="fa fa-envelope"></i>
-									</span>
-									<span>Invite Teammates</span>
-								</button>
-							</div>
+						<div class="box is-hidden-to-mentor">
+							<button id="invite" class="button is-primary is-outlined">
+								<span class="icon">
+									<i class="fa fa-envelope"></i>
+								</span>
+								<span>Invite Teammates</span>
+							</button>
+							<button id="class-code" class="button is-primary is-outlined">
+								<span class="icon">
+									<i class="fa fa-graduation-cap"></i>
+								</span>
+								<span>Join Class</span>
+							</button>
+						</div>
 
 					</div>
 				</div>
+			</div>
+			<div class="container tabbed-container" id="container-progress">
+
+				<div class="box is-hidden-to-mentor">
+					<div class="tile is-child">
+						<div class="content tile-editable">
+						<h2 class="title">Your Latest Update</h2>
+							<textarea id="my-update" class="textarea" rows="3" placeholder="Update your team on your progress!"></textarea>
+						</div>
+						<div class="level">
+						<button id="save-update" class="button is-primary">
+							<span class="icon">
+								<i class="fa fa-edit"></i>
+							</span>
+							<span>Submit Update</span>
+						</button>
+						<p>Submitting as <span class="fill-user-name">Anonymous</span></p>
+						</div>
+					</div>
+				</div>
+
+				<div class="box">
+					<div class="content">
+						<h2 class="title">Progress Updates</h2>
+					</div>
+					<div id="progress-updates"></div>
+				</div>
+				<!--<div class="box">
+					<div class="content">
+						<h2 class="title">Charter Edits</h2>
+					</div>
+					<div id="charter-updates"></div>
+				</div>-->
 			</div>
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
 		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
 		<script type="text/javascript" src="./src/js/moment.min.js"></script>
-		<script type="text/javascript" src="./src/js/stackoverflow.js"></script>
 		<script type="text/javascript" src="./public/js/main.js"></script>
 	</body>
 </html>

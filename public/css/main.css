@@ -30,12 +30,26 @@ body {
 	font-family: 'Lato', sans-serif !important;
 }
 
+::moz-selection {
+	color: white !important;
+	background: #30AACB !important;
+}
+
+::selection {
+	color: white !important;
+	background: #30AACB !important;
+}
+
 .title {
 	font-weight: bold !important;
 }
 
 .cell {
 	padding: 0.75rem 0;
+}
+
+.hidden {
+	display: none;
 }
 
 .charter-head {
@@ -58,10 +72,37 @@ header figure img {
 	border-radius: 50%;
 }
 
+.image-tag-rounded {
+	margin-right: 0.125em;
+}
+
+.image-tag-rounded img {
+	width: 75% !important;
+	height: 75% !important;
+	margin-top: 12.5% !important;
+	border-radius: 50%;
+}
+
 .contrast-color .title, .contrast-color .subtitle{
 	color: #30AACB !important;
 }
 
 .vex.vex-theme-plain .vex-dialog-button.vex-dialog-button-primary {
 	background: #30AACB;
+}
+
+.tabbed-container {
+	display: none;
+}
+
+.loading h3 {
+	color: #30AACB !important;
+}
+
+.team-link: {
+	margin: 0.5em 0 !important;
+}
+
+.mentoring .is-hidden-to-mentor {
+	display: none !important;
 }
