@@ -108,8 +108,8 @@ function initInstructorSection(uid) {
 				let classData = classMap[cid];
 				let tile = views.getClassTile({
 					cid: cid,
-					name: classData.name,
-					teams: classData.teams
+					name: classData.name || 'Untitled Class',
+					teams: classData.teams || {}
 				});
 				classTiles.appendChild(tile);
 			}

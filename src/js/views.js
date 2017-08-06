@@ -197,7 +197,7 @@ let Views = () => {
 					<div class="tile box is-child">
 						<div class="content">
 							<h3 class="title">${model.name}</h3>
-							<p class="subtitle">${n} team${n === 1 ? '' : 's'}</p>
+							<p class="subtitle">${n} team${n === 1 ? '' : 's'} | Code: ${model.cid}</p>
 							<div>
 								${items.join()}
 							</ul>
