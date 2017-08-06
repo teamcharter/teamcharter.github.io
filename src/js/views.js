@@ -43,6 +43,49 @@ let Views = () => {
 			return div;
 		},
 
+		getRoleTile: (model) => {
+			let editSection = `<div class="content">
+				<h3 class="title is-5">${model.role}</h3>
+				<p class="subtitle is-6">${model.responsibility}</p>
+			</div>`;
+			if (model.editable) {
+				editSection = `<div class="content">
+					<h3 id="my-title" class="title is-5" contenteditable="true">${model.role}</h3>
+					<p id="my-responsibility" class="subtitle is-6" contenteditable="true">${model.responsibility}</p>
+					<button id="my-role-save" class="button is-primary is-outlined">
+						<span class="icon">
+							<i class="fa fa-edit"></i>
+						</span>
+						<span>Save Role</span>
+					</button>
+				</div>`;
+			}
+			let html = `
+				<div class="tile is-parent is-vertical is-5">
+					<div class="tile is-child">
+						<div class="media">
+							<figure class="media-left">
+								<p class="image is-48x48">
+									<img src="${model.image}">
+								</p>
+							</figure>
+							<div class="content">
+								<h3 class="title is-5">${model.name}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tile is-parent is-vertical is-7">
+					<div class="tile is-child">
+						${editSection}
+					</div>
+				</div>`;
+			let div = document.createElement('div');
+				div.classList.add('tile');
+				div.innerHTML = html;
+			return div;
+		},
+
 		getProgressUpdate: (model) => {
 			let posted = new Date(model.timestamp);
 			let dateFormat = moment(posted).format('M/D h:mm A');

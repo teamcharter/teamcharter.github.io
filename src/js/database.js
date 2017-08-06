@@ -252,6 +252,26 @@ let Database = (firebase, config) => {
 			return db.ref(`teams/${tid}/links/${key}`).remove();
 		},
 
+		updateRole: (tid, uid, data) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			if (!uid) {
+				throw Error('No user id given.');
+			}
+			//
+			prometheus.save({
+				type: 'UPDATE_ROLE',
+				tid: tid,
+				role: data.role,
+				responsibility: data.responsibility
+			});
+			//
+			let p1 = db.ref(`teams/${tid}/members/${uid}/role`).set(data.role);
+			let p2 = db.ref(`teams/${tid}/members/${uid}/responsibility`).set(data.responsibility);
+			return Promise.all([p1, p2]);
+		},
+
 		joinTeam: (tid, uid, joinCode) => {
 			if (!tid) {
 				throw Error('No team id given.');

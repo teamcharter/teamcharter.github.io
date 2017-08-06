@@ -285,7 +285,7 @@ function renderTeamCharter(tid, team, members) {
 		}, '');
 	}
 
-	let allUpdates = team.updates || {};
+	/*let allUpdates = team.updates || {};
 	teamUpdates.innerHTML = '';
 	for (let uid in teamMembers) {
 		let user = members[uid];
@@ -308,7 +308,37 @@ function renderTeamCharter(tid, team, members) {
 			timestamp: ts
 		});
 		teamUpdates.appendChild(tile);
+	}*/
+
+	teamUpdates.innerHTML = '';
+	for (let uid in teamMembers) {
+		let user = members[uid];
+		let member = teamMembers[uid];
+		let tile = views.getRoleTile({
+			name: user.name,
+			role: member.role,
+			image: user.image,
+			responsibility: member.responsibility || 'What are you responsible for?',
+			editable: uid === database.getCurrentUser().uid
+		});
+		teamUpdates.appendChild(tile);
 	}
+
+	let roleSave = document.getElementById('my-role-save');
+	let roleInput = document.getElementById('my-title');
+	let respInput = document.getElementById('my-responsibility');
+	roleSave.addEventListener('click', (e) => {
+		roleSave.classList.add('is-loading');
+		let role = roleInput.innerText;
+		let resp = respInput.innerText;
+		let uid = database.getCurrentUser().uid;
+		database.updateRole(tid, uid, {
+			role: role,
+			responsibility: resp
+		}).then((done) => {
+			roleSave.classList.remove('is-loading');
+		}).catch(reportErrorToUser);
+	});
 
 	teamLinks.innerHTML = '';
 	let linkMap = team.links || {};
