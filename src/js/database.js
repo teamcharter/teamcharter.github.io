@@ -205,6 +205,12 @@ let Database = (firebase, config) => {
 				url: data.url
 			});
 			//
+			db.ref(`edits/${tid}`).push({
+				field: 'link',
+				uid: uid,
+				value: data,
+				timestamp: Date.now()
+			});
 			return db.ref(`teams/${tid}/links`).push({
 				name: data.name,
 				url: data.url,
@@ -232,6 +238,13 @@ let Database = (firebase, config) => {
 				key: key
 			});
 			//
+			data.key = key;
+			db.ref(`edits/${tid}`).push({
+				field: 'link',
+				uid: uid,
+				value: data,
+				timestamp: Date.now()
+			});
 			let p1 = db.ref(`teams/${tid}/links/${key}/name`).set(data.name);
 			let p2 = db.ref(`teams/${tid}/links/${key}/url`).set(data.url);
 			return Promise.all([p1, p2]);
@@ -254,6 +267,15 @@ let Database = (firebase, config) => {
 				key: key
 			});
 			//
+			db.ref(`edits/${tid}`).push({
+				field: 'link',
+				uid: uid,
+				value: {
+					removed: true,
+					key: key
+				},
+				timestamp: Date.now()
+			});
 			return db.ref(`teams/${tid}/links/${key}`).remove();
 		},
 
@@ -272,6 +294,13 @@ let Database = (firebase, config) => {
 				responsibility: data.responsibility
 			});
 			//
+			data.uid = uid; // If someone is editing their own role
+			db.ref(`edits/${tid}`).push({
+				field: 'role',
+				uid: uid,
+				value: data,
+				timestamp: Date.now()
+			});
 			let p1 = db.ref(`teams/${tid}/members/${uid}/role`).set(data.role);
 			let p2 = db.ref(`teams/${tid}/members/${uid}/responsibility`).set(data.responsibility);
 			return Promise.all([p1, p2]);

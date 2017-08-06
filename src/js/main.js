@@ -8,8 +8,6 @@ let params = getQueryParams(document.location.search);
 let TEAM_ID = params.team;
 let MENTOR_MODE = params.mentor ? true : false;
 
-console.log(params, MENTOR_MODE)
-
 let views = Views();
 
 let loginBtn = document.getElementById('login');
