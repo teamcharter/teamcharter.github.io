@@ -131,26 +131,19 @@ function mainCharterTab(user, tid) {
 		})
 	});
 
-	teamName.addEventListener('input', (e) => {
-		let name = e.target.innerText;
-		let cleaned = name.split('\n').reduce((agg, val) => {
-			if (val) {
-				return agg + val;
-			} else {
-				return agg;
-			}
-		}, '');
-		//console.log(name, name.split('\n'), cleaned);
-		e.target.innerText = cleaned;
-		cursorManager.setEndOfContenteditable(e.target);
-	});
-
-	teamName.addEventListener('keypress', (e) => {
-		let keyCode = e.keyCode || e.which;
-		if (keyCode == 13) {
+	teamName.addEventListener('click', (e) => {
+		if (!isMentor()) {
 			let name = e.target.innerText;
-			let uid = database.getCurrentUser().uid;
-			database.updateTeamName(tid, uid, name);
+			vex.dialog.prompt({
+				message: 'Edit your team name:',
+				value: name,
+				callback: (newName) => {
+					if (newName) {
+						let uid = database.getCurrentUser().uid;
+						database.updateTeamName(tid, uid, newName);
+					}
+				}
+			});
 		}
 	});
 
@@ -300,7 +293,6 @@ function renderTeamCharter(tid, team, members) {
 
 	if (team.name) {
 		fillText('fill-team-name', team.name);
-		cursorManager.setEndOfContenteditable(teamName);
 	}
 	if (team.question) {
 		fillText('fill-team-question', team.question);
