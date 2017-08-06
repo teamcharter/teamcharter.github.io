@@ -89,7 +89,7 @@
 									<div id="focusing-question" class="tile is-child content tile-editable">
 										<p id="team-question" class="fill-team-question" contenteditable="true">What does your team aim to solve or accomplish?</p>
 									</div>
-									<div class="control">
+									<div class="control is-hidden-to-mentor">
 										<button id="save-question" class="button is-primary is-outlined">
 											<span class="icon">
 												<i class="fa fa-edit"></i>
@@ -109,7 +109,7 @@
 											<li>Include behaviors members should avoid.</li>
 										</ul>
 									</div>
-									<div class="control">
+									<div class="control is-hidden-to-mentor">
 										<button id="save-expectations" class="button is-primary is-outlined">
 											<span class="icon">
 												<i class="fa fa-edit"></i>
@@ -126,7 +126,7 @@
 									<div class="tile is-child content tile-editable">
 										<div id="team-links"></div>
 									</div>
-									<div class="control">
+									<div class="control is-hidden-to-mentor">
 										<button id="add-link" class="button is-primary is-outlined">
 											<span class="icon">
 												<i class="fa fa-link"></i>
@@ -155,12 +155,18 @@
 							<div id="team-updates"></div>
 						</div>
 
-						<div class="box">
+						<div class="box is-hidden-to-mentor">
 							<button id="invite" class="button is-primary is-outlined">
 								<span class="icon">
 									<i class="fa fa-envelope"></i>
 								</span>
 								<span>Invite Teammates</span>
+							</button>
+							<button id="class-code" class="button is-primary is-outlined">
+								<span class="icon">
+									<i class="fa fa-graduation-cap"></i>
+								</span>
+								<span>Join Class</span>
 							</button>
 						</div>
 
@@ -169,7 +175,7 @@
 			</div>
 			<div class="container tabbed-container" id="container-progress">
 
-				<div class="box">
+				<div class="box is-hidden-to-mentor">
 					<div class="tile is-child">
 						<div class="content tile-editable">
 						<h2 class="title">Your Latest Update</h2>

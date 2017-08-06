@@ -6,6 +6,9 @@ let database = Database(firebase, config);
 
 let params = getQueryParams(document.location.search);
 let TEAM_ID = params.team;
+let MENTOR_MODE = params.mentor ? true : false;
+
+console.log(params, MENTOR_MODE)
 
 let views = Views();
 
@@ -13,6 +16,7 @@ let loginBtn = document.getElementById('login');
 let feedbackBtn = document.getElementById('feedback');
 
 let inviteBtn = document.getElementById('invite');
+let classCodeBtn = document.getElementById('class-code');
 let tabList = document.getElementsByClassName('charter-tab');
 
 let teamName = document.getElementById('team-name');
@@ -81,6 +85,12 @@ function main(user) {
 			}
 		}, reportErrorToUser);
 
+		database.getPrometheus().save({
+			type: 'CHARTER_PAGE',
+			tid: tid,
+			mentor: isMentor()
+		});
+
 		mainCharterTab(user, tid);
 		mainProgressTab(user, tid);
 
@@ -103,6 +113,22 @@ function mainCharterTab(user, tid) {
 				callback: () => {}
 			});
 		});
+	});
+
+	classCodeBtn.addEventListener('click', (e) => {
+		vex.dialog.prompt({
+			message: 'Enter the code from your instructor (case sensitive):',
+			callback: (code) => {
+				if (code) {
+					let uid = database.getCurrentUser().uid;
+					database.addTeamToClass(tid, uid, code).then((classData) => {
+						vex.dialog.alert({
+							message: `Successfully added your team to ${classData.name}!`
+						});
+					}).catch(reportErrorToUser);
+				}
+			}
+		})
 	});
 
 	teamName.addEventListener('input', (e) => {
@@ -248,14 +274,16 @@ function renderProgressUpdates(tid, team, members) {
 	if (updateList.length > 0) {
 		updateList.forEach((update) => {
 			let author = members[update.uid];
-			let tile = views.getProgressUpdate({
-				name: author.name,
-				role: team.members[update.uid].role,
-				image: author.image,
-				update: update.update,
-				timestamp: update.timestamp
-			});
-			progressUpdates.appendChild(tile);
+			if (update.update.length > 0) {
+				let tile = views.getProgressUpdate({
+					name: author.name,
+					role: team.members[update.uid].role,
+					image: author.image,
+					update: update.update,
+					timestamp: update.timestamp
+				});
+				progressUpdates.appendChild(tile);
+			}
 		});
 	} else {
 		let noUpdatesWarning = document.createElement('div');
@@ -320,7 +348,7 @@ function renderTeamCharter(tid, team, members) {
 				role: member.role,
 				image: user.image,
 				responsibility: member.responsibility || 'What are you responsible for?',
-				editable: uid === database.getCurrentUser().uid
+				editable: uid === database.getCurrentUser().uid && !isMentor()
 			});
 			teamUpdates.appendChild(tile);
 		}
@@ -329,18 +357,20 @@ function renderTeamCharter(tid, team, members) {
 	let roleSave = document.getElementById('my-role-save');
 	let roleInput = document.getElementById('my-title');
 	let respInput = document.getElementById('my-responsibility');
-	roleSave.addEventListener('click', (e) => {
-		roleSave.classList.add('is-loading');
-		let role = roleInput.innerText;
-		let resp = respInput.innerText;
-		let uid = database.getCurrentUser().uid;
-		database.updateRole(tid, uid, {
-			role: role,
-			responsibility: resp
-		}).then((done) => {
-			roleSave.classList.remove('is-loading');
-		}).catch(reportErrorToUser);
-	});
+	if (roleSave && roleInput && respInput) {
+		roleSave.addEventListener('click', (e) => {
+			roleSave.classList.add('is-loading');
+			let role = roleInput.innerText;
+			let resp = respInput.innerText;
+			let uid = database.getCurrentUser().uid;
+			database.updateRole(tid, uid, {
+				role: role,
+				responsibility: resp
+			}).then((done) => {
+				roleSave.classList.remove('is-loading');
+			}).catch(reportErrorToUser);
+		});
+	}
 
 	teamLinks.innerHTML = '';
 	let linkMap = team.links || {};
@@ -426,8 +456,18 @@ function checkUserPermission(tid, team, members) {
 	/*return new Promise((resolve, reject) => {
 
 	});*/
+
+	if (isMentor()) {
+		console.log('in mentor mode')
+		document.body.classList.add('mentoring');
+		let editableNodes = document.querySelectorAll('[contenteditable=true]')
+		for (let n = 0; n < editableNodes.length; n++) {
+			editableNodes[n].setAttribute('contenteditable', false);
+		}
+	} 
+
 	let uid = database.getCurrentUser().uid;
-	if (uid in members) {
+	if (uid in members || isMentor()) {
 		if (Object.keys(team).length > 0) {
 			renderTeamCharter(tid, team, members);
 		}
@@ -457,13 +497,13 @@ function checkUserPermission(tid, team, members) {
 				}
 			}
 		});
-	} else if (params.rdr) {
-		if (Object.keys(team).length > 0) {
-			renderTeamCharter(tid, team, members);
-		}
 	} else {
 		window.location = window.location.origin + '/me.html';
 	}
+}
+
+function isMentor() {
+	return MENTOR_MODE;
 }
 
 function reportErrorToUser(err) {
@@ -499,6 +539,11 @@ function onTabClick(tabGroup, tab) {
 	let tabid = tab.dataset.tab;
 	let showTab = document.getElementById(tabid);
 	if (showTab) {
+		database.getPrometheus().save({
+			type: 'CHANGE_TAB',
+			tid: TEAM_ID,
+			tab: tabid
+		});
 		for (let j = 0; j < tabGroup.length; j++) {
 			tabGroup[j].classList.remove('is-active');
 		}

@@ -52,7 +52,7 @@ let Views = () => {
 				editSection = `<div class="content">
 					<h3 id="my-title" class="title is-5" contenteditable="true">${model.role}</h3>
 					<p id="my-responsibility" class="subtitle is-6" contenteditable="true">${model.responsibility}</p>
-					<button id="my-role-save" class="button is-primary is-outlined">
+					<button id="my-role-save" class="button is-primary is-outlined is-hidden-to-mentor">
 						<span class="icon">
 							<i class="fa fa-edit"></i>
 						</span>
@@ -141,7 +141,7 @@ let Views = () => {
 					</span>
 					<span>${model.name}</span>
 				</a>
-				<a class="is-danger">
+				<a class="is-danger is-hidden-to-mentor">
 					<span class="icon edit-link" data-for="${model.key}">
 						<i class="fa fa-edit"></i>
 					</span>
@@ -175,20 +175,39 @@ let Views = () => {
 		getClassTile: (model) => {
 			let origin = window.location.origin;
 			let link = `${origin}/class.html?team=${model.cid}`;
-			let n = Object.keys(model.teams).length;
+			let list = Object.keys(model.teams).filter((tid) => {
+				return Object.keys(model.teams[tid]).length > 0;
+			}).map((tid) => {
+				let team = model.teams[tid];
+				team.tid = tid;
+				return team;
+			});
+			let n = list.length;
+			let items = list.map((team) => {
+				let teamLink = `${origin}/charter.html?team=${team.tid}&mentor=true`;
+				let itemHTML = `
+					<div class="tile is-4">
+						<a href=${teamLink} class="button is-primary is-outlined">${team.name}</a>
+					</div>
+				`;
+				return itemHTML;
+			});
 			let html = `
 				<div class="tile is-parent">
 					<div class="tile box is-child">
 						<div class="content">
 							<h3 class="title">${model.name}</h3>
 							<p class="subtitle">${n} team${n === 1 ? '' : 's'}</p>
+							<div>
+								${items.join()}
+							</ul>
 						</div>
-						<a href="${link}" class="button is-primary is-outlined">View Class Progress</a>
 					</div>
 				</div>`;
+				//<a href="${link}" class="button is-primary is-outlined">View Class Progress</a>
 			let div = document.createElement('div');
 				div.classList.add('column');
-				div.classList.add('is-4');
+				div.classList.add('is-12');
 				div.innerHTML = html;
 			return div;
 		}

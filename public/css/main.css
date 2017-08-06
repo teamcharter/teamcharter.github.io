@@ -102,3 +102,7 @@ header figure img {
 .team-link: {
 	margin: 0.5em 0 !important;
 }
+
+.mentoring .is-hidden-to-mentor {
+	display: none !important;
+}

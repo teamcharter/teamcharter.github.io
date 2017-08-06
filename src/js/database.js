@@ -90,8 +90,13 @@ let Database = (firebase, config) => {
 		getTeam: (tid) => {
 			return new Promise((resolve, reject) => {
 				db.ref(`teams/${tid}`).once('value', (snap) => {
-					let team = snap.val();
-					resolve(team);
+					let team = snap.val() || {};
+					if (Object.keys(team).length > 0) {
+						team.tid = tid;
+						resolve(team);
+					} else {
+						resolve({});
+					}
 				}).catch(reject);
 			});
 		},
@@ -353,8 +358,99 @@ let Database = (firebase, config) => {
 				let query = ref.orderByChild(`members/${uid}/access`).startAt(true).endAt(true);
 				query.once('value', (snap) => {
 					let nodes = snap.val() || {};
-					resolve(nodes);
+					let list = Object.keys(nodes).map((cid) => {
+						let classData = nodes[cid];
+						classData.cid = cid;
+						return classData;
+					});
+					if (list.length > 0) {
+						let promises = [];
+						list.forEach((classData) => {
+							let cid = classData.cid;
+							for (let tid in classData.teams) {
+								let p = new Promise((resolveTeam, rejectTeam) => {
+									database.getTeam(tid).then(resolveTeam).catch(rejectTeam);
+								});
+								p.cid = cid;
+								promises.push(p);
+							}
+						});
+						Promise.all(promises).then((teamList) => {
+							teamList.forEach((team, tidx) => {
+								let meta = promises[tidx];
+								if (nodes[meta.cid]){
+									if (nodes[meta.cid].teams[team.tid]) {
+										nodes[meta.cid].teams[team.tid] = team;
+									}
+								}
+							});
+							resolve(nodes)
+						}).catch(reject);
+					} else {
+						resolve({});
+					}
 				}).catch(reject);
+			});
+		},
+
+		addTeamToClass: (tid, uid, code) => {
+			return new Promise((resolve, reject) => {
+				db.ref(`classes/${code}`).once('value', (snap) => {
+					let classData = snap.val();
+					if (classData) {
+						//
+						prometheus.save({
+							type: 'ADD_TEAM_TO_CLASS',
+							tid: tid,
+							classCode: code
+						});
+						//
+						db.ref(`classes/${code}/teams/${tid}`).set({
+							access: true,
+							joined: Date.now()
+						}).then((done) => {
+							resolve(classData);
+						}).catch(reject);
+					} else {
+						reject(`Could not find a class with code: ${code}.`);
+					}
+				});
+			});
+		},
+
+		addInstructorToClass: (uid, code) => {
+			return new Promise((resolve, reject) => {
+				db.ref(`classes/${code}`).once('value', (snap) => {
+					let classData = snap.val();
+					if (classData) {
+						let memberMap = classData.members || {};
+						if (uid in memberMap) {
+							resolve({
+								isAlreadyInstructor: true,
+								classData: classData
+							});
+						} else {
+							//
+							prometheus.save({
+								type: 'ADD_INSTRUCTOR_TO_CLASS',
+								classCode: code
+							});
+							//
+							db.ref(`classes/${code}/members/${uid}`).set({
+								access: true,
+								type: 'instructor',
+								joined: Date.now()
+							}).then((done) => {
+								resolve({
+									isAlreadyInstructor: false,
+									classData: classData
+								});
+							}).catch(reject);
+						}
+					} else {
+						reject(`Could not find a class with code: ${code}.`);
+					}
+				});
 			});
 		}
 

@@ -43,7 +43,6 @@ function main(user) {
 
 	let uid = database.getCurrentUser().uid;
 
-
 	database.getAllTeams(uid).then((teams) => {
 		teamTiles.innerHTML = '';
 		for (let tid in teams) {
@@ -75,9 +74,30 @@ function main(user) {
 		});
 	});
 
+	let classCode = params.instructor;
+	if (classCode) {
+		database.addInstructorToClass(uid, classCode).then((res) => {
+			initInstructorSection(uid);
+			if (!res.isAlreadyInstructor) {
+				vex.dialog.alert({
+					message: `You have been added as an instructor to ${res.classData.name}!`
+				});
+			} else {
+				console.log(`You are already an instructor in ${res.classData.name}!`);
+			}
+		}).catch(reportErrorToUser);
+	} else{
+		initInstructorSection(uid);
+	}
+
+	database.getPrometheus().save({
+		type: 'ACCOUNT_PAGE'
+	});
+
+}
+
+function initInstructorSection(uid) {
 	database.getInstructorClasses(uid).then((classMap) => {
-
-
 		if (Object.keys(classMap).length > 0){
 
 			let classTiles = document.getElementById('class-tiles');
@@ -94,9 +114,7 @@ function main(user) {
 				classTiles.appendChild(tile);
 			}
 		}
-
 	}).catch(console.error);
-
 }
 
 function convertTidToJoinCode(tid) {
