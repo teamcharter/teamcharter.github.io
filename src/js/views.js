@@ -157,12 +157,16 @@ let Views = () => {
 			let origin = window.location.origin;
 			let link = `${origin}/charter.html?team=${model.tid}`;
 			let html = `
-				<div class="tile is-parent">
-					<div class="tile box is-child">
-						<div class="content">
-							<h3 class="title">${model.name}</h3>
+				<div class="tile is-vertical">
+					<div class="box">
+						<div class="tile">
+							<div class="content">
+								<h3 class="title">${model.name}</h3>
+							</div>
 						</div>
-						<a href="${link}" class="button is-primary is-outlined">View Team Charter</a>
+						<div class="tile">
+							<a href="${link}" class="button is-primary is-outlined">View Team Charter</a>
+						</div>
 					</div>
 				</div>`;
 			let div = document.createElement('div');
@@ -186,20 +190,20 @@ let Views = () => {
 			let items = list.map((team) => {
 				let teamLink = `${origin}/charter.html?team=${team.tid}&mentor=true`;
 				let itemHTML = `
-					<div class="tile is-4">
-						<a href=${teamLink} class="button is-primary is-outlined">${team.name}</a>
+					<div class="column is-4">
+						<a href=${teamLink} class="button is-primary is-outlined is-fullwidth">${team.name}</a>
 					</div>
 				`;
 				return itemHTML;
 			});
 			let html = `
-				<div class="tile is-parent">
+				<div class="tile is-vertical">
 					<div class="tile box is-child">
 						<div class="content">
 							<h3 class="title">${model.name}</h3>
 							<p class="subtitle">${n} team${n === 1 ? '' : 's'} | Code: ${model.cid}</p>
-							<div>
-								${items.join()}
+							<div class="columns is-multiline">
+								${items.join('')}
 							</ul>
 						</div>
 					</div>
