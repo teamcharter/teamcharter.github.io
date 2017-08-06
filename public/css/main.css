@@ -106,3 +106,7 @@ header figure img {
 .mentoring .is-hidden-to-mentor {
 	display: none !important;
 }
+
+.nav-toggle .image {
+	margin: 10px auto;
+}

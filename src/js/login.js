@@ -24,7 +24,11 @@ function main(user) {
 	console.log(user);
 
 	// Redirect
-	window.location = window.origin + '/me.html';
+	if (params.team) {
+		window.location = `${window.location.origin}/charter.html${document.location.search}`;	
+	} else {
+		window.location = `${window.location.origin}/me.html${document.location.search}`;
+	}
 
 }
 

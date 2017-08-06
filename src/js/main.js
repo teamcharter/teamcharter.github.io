@@ -40,7 +40,7 @@ loginBtn.addEventListener('click', (e) => {
 
 database.init(main, () => {
 	// No user signed in
-	window.location = window.location.origin + '/login.html';
+	window.location = `${window.location.origin}/login.html${document.location.search}`;
 });
 
 function main(user) {
