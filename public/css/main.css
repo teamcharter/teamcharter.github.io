@@ -84,3 +84,7 @@ header figure img {
 .loading h3 {
 	color: #30AACB !important;
 }
+
+.team-link: {
+	margin: 0.5em 0 !important;
+}

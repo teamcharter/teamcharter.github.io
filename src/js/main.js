@@ -25,6 +25,7 @@ let saveUpdate = document.getElementById('save-update');
 let teamUpdates = document.getElementById('team-updates');
 let addLink = document.getElementById('add-link');
 let teamLinks = document.getElementById('team-links');
+let addMeeting = document.getElementById('add-meeting');
 
 let progressUpdates = document.getElementById('progress-updates');
 //let charterUpdates = document.getElementById('charter-updates');
@@ -161,28 +162,12 @@ function mainCharterTab(user, tid) {
 	});
 
 	addLink.addEventListener('click', (e) => {
-		let uid = database.getCurrentUser().uid;
-		vex.dialog.prompt({
-			message: 'Paste the URL:',
-			callback: (url) => {
-				if (url) {
-					vex.dialog.prompt({
-						message: 'What is the name of this link?',
-						callback: (name) => {
-							if (url && name) {
-								addLink.classList.add('is-loading');
-								database.addLink(tid, uid, {
-									name: name,
-									url: url
-								}).then((done) => {
-									addLink.classList.remove('is-loading');
-								}).catch(reportErrorToUser);
-							}
-						}
-					});
-				}
-			}
-		});
+		promptLinkData(e, tid, 'Paste the URL:');
+	});
+
+	addMeeting.addEventListener('click', (e) => {
+		let omniWin = window.open('https://www.omnipointment.com/meeting/create');
+		promptLinkData(e, tid, 'Paste the link to your Omnipointment:');
 	});
 
 	database.onTeamChange(tid, (team, members) => {
@@ -191,6 +176,31 @@ function mainCharterTab(user, tid) {
 			}
 	}, reportErrorToUser);
 
+}
+
+function promptLinkData(e, tid, message) {
+	let uid = database.getCurrentUser().uid;
+	vex.dialog.prompt({
+		message: message,
+		callback: (url) => {
+			if (url) {
+				vex.dialog.prompt({
+					message: 'What is the name of this link?',
+					callback: (name) => {
+						if (url && name) {
+							addLink.classList.add('is-loading');
+							database.addLink(tid, uid, {
+								name: name,
+								url: url
+							}).then((done) => {
+								addLink.classList.remove('is-loading');
+							}).catch(reportErrorToUser);
+						}
+					}
+				});
+			}
+		}
+	});
 }
 
 function mainProgressTab(user, tid) {

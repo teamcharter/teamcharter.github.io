@@ -88,6 +88,8 @@ let Views = () => {
 			let icon = 'file';
 			if (model.url.indexOf('docs.google') > -1) {
 				icon = 'google';
+			} else if (model.url.indexOf('omnipointment.com/meeting') > -1) {
+				icon = 'calendar';
 			}
 			let html = `
 				<a target="_blank" href="${model.url}">
@@ -103,6 +105,7 @@ let Views = () => {
 				</a>
 			`;
 			let div = document.createElement('div');
+				div.classList.add('team-link');
 				div.innerHTML = html;
 			return div;
 		},
