@@ -56,7 +56,7 @@ let Views = () => {
 				tagClass = 'is-warning';
 			}
 			let html = `
-				<div class="tile is-parent is-vertical is-4">
+				<div class="tile is-parent is-vertical is-5">
 					<div class="tile is-child">
 						<span class="tags has-addons">
 							<span class="tag ${tagClass} is-medium">${dateFormat}</span>
@@ -71,7 +71,7 @@ let Views = () => {
 						</span>
 					</div>
 				</div>
-				<div class="tile is-parent is-vertical is-8">
+				<div class="tile is-parent is-vertical is-7">
 					<div class="tile is-child">
 						<div class="content">
 							${model.update}
@@ -80,6 +80,29 @@ let Views = () => {
 				</div>`;
 			let div = document.createElement('div');
 				div.classList.add('tile');
+				div.innerHTML = html;
+			return div;
+		},
+
+		getLinkItem: (model) => {
+			let icon = 'file';
+			if (model.url.indexOf('docs.google') > -1) {
+				icon = 'google';
+			}
+			let html = `
+				<a target="_blank" href="${model.url}">
+					<span class="icon">
+						<i class="fa fa-${icon}"></i>
+					</span>
+					<span>${model.name}</span>
+				</a>
+				<a class="is-danger">
+					<span class="icon edit-link" data-for="${model.key}">
+						<i class="fa fa-edit"></i>
+					</span>
+				</a>
+			`;
+			let div = document.createElement('div');
 				div.innerHTML = html;
 			return div;
 		},

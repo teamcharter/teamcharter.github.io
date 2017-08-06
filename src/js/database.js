@@ -185,6 +185,73 @@ let Database = (firebase, config) => {
 			});
 		},
 
+		addLink: (tid, uid, data) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			if (!uid) {
+				throw Error('No user id given.');
+			}
+			//
+			prometheus.save({
+				type: 'ADD_LINK',
+				tid: tid,
+				name: data.name,
+				url: data.url
+			});
+			//
+			return db.ref(`teams/${tid}/links`).push({
+				name: data.name,
+				url: data.url,
+				uid: uid,
+				added: Date.now()
+			});
+		},
+
+		updateLink: (tid, uid, key, data) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			if (!uid) {
+				throw Error('No user id given.');
+			}
+			if (!key) {
+				throw Error('No link id given.');
+			}
+			//
+			prometheus.save({
+				type: 'UPDATE_LINK',
+				tid: tid,
+				name: data.name,
+				url: data.url,
+				key: key
+			});
+			//
+			let p1 = db.ref(`teams/${tid}/links/${key}/name`).set(data.name);
+			let p2 = db.ref(`teams/${tid}/links/${key}/url`).set(data.url);
+			return Promise.all([p1, p2]);
+		},
+
+		removeLink: (tid, uid, key) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			if (!uid) {
+				throw Error('No user id given.');
+			}
+			if (!key) {
+				throw Error('No link id given.');
+			}
+			//
+			prometheus.save({
+				type: 'REMOVE_LINK',
+				tid: tid,
+				key: key
+			});
+			//
+			return db.ref(`teams/${tid}/links/${key}`).remove();
+		},
+
 		joinTeam: (tid, uid, joinCode) => {
 			if (!tid) {
 				throw Error('No team id given.');

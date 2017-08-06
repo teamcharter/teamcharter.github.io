@@ -23,6 +23,8 @@ let saveExpect = document.getElementById('save-expectations');
 let myUpdate = document.getElementById('my-update');
 let saveUpdate = document.getElementById('save-update');
 let teamUpdates = document.getElementById('team-updates');
+let addLink = document.getElementById('add-link');
+let teamLinks = document.getElementById('team-links');
 
 let progressUpdates = document.getElementById('progress-updates');
 //let charterUpdates = document.getElementById('charter-updates');
@@ -73,7 +75,7 @@ function main(user) {
 		let checkedPermissions = false;
 		database.onTeamChange(tid, (team, members) => {
 			if (!checkedPermissions) {
-				checkUserPermission(database, team, members);
+				checkUserPermission(tid, team, members);
 				checkedPermissions = true;
 			}
 		}, reportErrorToUser);
@@ -158,9 +160,34 @@ function mainCharterTab(user, tid) {
 		}).catch(reportErrorToUser);
 	});
 
+	addLink.addEventListener('click', (e) => {
+		let uid = database.getCurrentUser().uid;
+		vex.dialog.prompt({
+			message: 'Paste the URL:',
+			callback: (url) => {
+				if (url) {
+					vex.dialog.prompt({
+						message: 'What is the name of this link?',
+						callback: (name) => {
+							if (url && name) {
+								addLink.classList.add('is-loading');
+								database.addLink(tid, uid, {
+									name: name,
+									url: url
+								}).then((done) => {
+									addLink.classList.remove('is-loading');
+								}).catch(reportErrorToUser);
+							}
+						}
+					});
+				}
+			}
+		});
+	});
+
 	database.onTeamChange(tid, (team, members) => {
 		if (Object.keys(team).length > 0) {
-				renderTeamCharter(team, members);
+				renderTeamCharter(tid, team, members);
 			}
 	}, reportErrorToUser);
 
@@ -229,7 +256,7 @@ function renderProgressUpdates(tid, team, members) {
 	}
 }
 
-function renderTeamCharter(team, members) {
+function renderTeamCharter(tid, team, members) {
 
 	let teamMembers = team.members || {};
 
@@ -240,12 +267,14 @@ function renderTeamCharter(team, members) {
 	if (team.question) {
 		fillText('fill-team-question', team.question);
 	}
+
 	let expectations = team.expectations || [];
 	if (expectations.length > 0) {
 		teamExpect.innerHTML = expectations.reduce((total, val) => {
 			return total + `<li>${val}</li>`;
 		}, '');
 	}
+
 	let allUpdates = team.updates || {};
 	teamUpdates.innerHTML = '';
 	for (let uid in teamMembers) {
@@ -270,16 +299,77 @@ function renderTeamCharter(team, members) {
 		});
 		teamUpdates.appendChild(tile);
 	}
+
+	teamLinks.innerHTML = '';
+	let linkMap = team.links || {};
+	for (let lid in linkMap) {
+		let data = linkMap[lid];
+		let link = views.getLinkItem({
+			name: data.name,
+			url: data.url,
+			key: lid
+		});
+		teamLinks.appendChild(link);
+	}
+
+	let editLinkBtns = teamLinks.getElementsByClassName('edit-link');
+	for (let b = 0; b < editLinkBtns.length; b++) {
+		editLinkBtns[b].addEventListener('click', (e) => {
+			let key = editLinkBtns[b].dataset.for;
+			let uid = database.getCurrentUser().uid;
+			if (key) {
+				let data = linkMap[key];
+				let vexWin = vex.dialog.alert({
+					unsafeMessage: `
+						<div class="field">
+							<label class="label">Name</label>
+							<div class="control">
+								<input id="edit-link-name" type="text" class="input is-primary" value="${data.name}">
+							</div>
+						</div>
+						<div class="field">
+							<label class="label">URL</label>
+							<div class="control">
+								<input id="edit-link-url" type="text" class="input is-primary" value="${data.url}">
+							</div>
+						</div>
+					`,
+					buttons: [
+						$.extend({}, vex.dialog.buttons.YES, {text: 'Save'}),
+						$.extend({}, vex.dialog.buttons.NO, {text: 'Delete', click: (e) => {
+							database.removeLink(tid, uid, key).catch(reportErrorToUser);
+							vexWin.close();
+						}}),
+						$.extend({}, vex.dialog.buttons.NO, {text: 'Cancel'})
+					],
+					callback: (save) => {
+						if (save) {
+							let nameInput = document.getElementById('edit-link-name');
+							let urlInput = document.getElementById('edit-link-url');
+							//console.log(nameInput.value, urlInput.value);
+							if (nameInput.value && urlInput.value) {
+								database.updateLink(tid, uid, key, {
+									name: nameInput.value,
+									url: urlInput.value
+								}).catch(reportErrorToUser);
+							}
+						}
+					}
+				});
+			}
+		})
+	}
+
 }
 
-function checkUserPermission(database, team, members) {
+function checkUserPermission(tid, team, members) {
 	/*return new Promise((resolve, reject) => {
 
 	});*/
 	let uid = database.getCurrentUser().uid;
 	if (uid in members) {
 		if (Object.keys(team).length > 0) {
-			renderTeamCharter(team, members);
+			renderTeamCharter(tid, team, members);
 		}
 	} else if (params.code) {
 		vex.dialog.confirm({
@@ -296,7 +386,7 @@ function checkUserPermission(database, team, members) {
 								message: `Congratulations, you just joined ${team.name || 'your new team'}!`
 							});
 							if (Object.keys(team).length > 0) {
-								renderTeamCharter(team, members);
+								renderTeamCharter(tid, team, members);
 							}
 						} else {
 							window.location = window.location.origin + '/me.html';
@@ -309,7 +399,7 @@ function checkUserPermission(database, team, members) {
 		});
 	} else if (params.rdr) {
 		if (Object.keys(team).length > 0) {
-			renderTeamCharter(team, members);
+			renderTeamCharter(tid, team, members);
 		}
 	} else {
 		window.location = window.location.origin + '/me.html';
