@@ -166,7 +166,7 @@ function mainCharterTab(user, tid) {
 	});
 
 	addMeeting.addEventListener('click', (e) => {
-		let omniWin = window.open('https://www.omnipointment.com/meeting/create');
+		//let omniWin = window.open('https://www.omnipointment.com/meeting/create');
 		promptLinkData(e, tid, 'Paste the link to your Omnipointment:');
 	});
 
@@ -314,14 +314,16 @@ function renderTeamCharter(tid, team, members) {
 	for (let uid in teamMembers) {
 		let user = members[uid];
 		let member = teamMembers[uid];
-		let tile = views.getRoleTile({
-			name: user.name,
-			role: member.role,
-			image: user.image,
-			responsibility: member.responsibility || 'What are you responsible for?',
-			editable: uid === database.getCurrentUser().uid
-		});
-		teamUpdates.appendChild(tile);
+		if (member.status === 'member') {
+			let tile = views.getRoleTile({
+				name: user.name,
+				role: member.role,
+				image: user.image,
+				responsibility: member.responsibility || 'What are you responsible for?',
+				editable: uid === database.getCurrentUser().uid
+			});
+			teamUpdates.appendChild(tile);
+		}
 	}
 
 	let roleSave = document.getElementById('my-role-save');
@@ -342,14 +344,32 @@ function renderTeamCharter(tid, team, members) {
 
 	teamLinks.innerHTML = '';
 	let linkMap = team.links || {};
-	for (let lid in linkMap) {
-		let data = linkMap[lid];
-		let link = views.getLinkItem({
-			name: data.name,
-			url: data.url,
-			key: lid
-		});
-		teamLinks.appendChild(link);
+	if (Object.keys(linkMap).length > 0) {
+		for (let lid in linkMap) {
+			let data = linkMap[lid];
+			let link = views.getLinkItem({
+				name: data.name,
+				url: data.url,
+				key: lid
+			});
+			link.dataset.key = lid;
+			link.addEventListener('click', (e) => {
+				database.getPrometheus().save({
+				//console.log({
+					type: 'CLICK_TEAM_LINK',
+					key: lid,
+					name: data.name,
+					url: data.url
+				});
+			});
+			teamLinks.appendChild(link);
+		}
+	} else {
+		let noLinks = document.createElement('div');
+		noLinks.innerHTML = `<div class="content">
+				<p class="is-6">No links yet.</p>
+			</div>`;
+		teamLinks.appendChild(noLinks);
 	}
 
 	let editLinkBtns = teamLinks.getElementsByClassName('edit-link');

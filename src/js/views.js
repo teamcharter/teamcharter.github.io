@@ -170,6 +170,27 @@ let Views = () => {
 				div.classList.add('is-4');
 				div.innerHTML = html;
 			return div;
+		},
+
+		getClassTile: (model) => {
+			let origin = window.location.origin;
+			let link = `${origin}/class.html?team=${model.cid}`;
+			let n = Object.keys(model.teams).length;
+			let html = `
+				<div class="tile is-parent">
+					<div class="tile box is-child">
+						<div class="content">
+							<h3 class="title">${model.name}</h3>
+							<p class="subtitle">${n} team${n === 1 ? '' : 's'}</p>
+						</div>
+						<a href="${link}" class="button is-primary is-outlined">View Class Progress</a>
+					</div>
+				</div>`;
+			let div = document.createElement('div');
+				div.classList.add('column');
+				div.classList.add('is-4');
+				div.innerHTML = html;
+			return div;
 		}
 
 	}

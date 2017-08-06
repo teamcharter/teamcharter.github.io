@@ -48,6 +48,10 @@ body {
 	padding: 0.75rem 0;
 }
 
+.hidden {
+	display: none;
+}
+
 .charter-head {
 	padding: 0 0.75rem !important;
 }

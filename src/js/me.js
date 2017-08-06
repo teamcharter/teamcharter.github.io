@@ -43,6 +43,7 @@ function main(user) {
 
 	let uid = database.getCurrentUser().uid;
 
+
 	database.getAllTeams(uid).then((teams) => {
 		teamTiles.innerHTML = '';
 		for (let tid in teams) {
@@ -73,6 +74,28 @@ function main(user) {
 			}
 		});
 	});
+
+	database.getInstructorClasses(uid).then((classMap) => {
+
+
+		if (Object.keys(classMap).length > 0){
+
+			let classTiles = document.getElementById('class-tiles');
+			document.getElementById('section-instructor').style.display = 'block';
+			classTiles.innerHTML = '';
+
+			for (let cid in classMap) {
+				let classData = classMap[cid];
+				let tile = views.getClassTile({
+					cid: cid,
+					name: classData.name,
+					teams: classData.teams
+				});
+				classTiles.appendChild(tile);
+			}
+		}
+
+	}).catch(console.error);
 
 }
 

@@ -345,6 +345,17 @@ let Database = (firebase, config) => {
 					}).catch(reject);
 				}).catch(reject);
 			});
+		},
+
+		getInstructorClasses: (uid) => {
+			return new Promise((resolve, reject) => {
+				let ref = db.ref(`classes`);
+				let query = ref.orderByChild(`members/${uid}/access`).startAt(true).endAt(true);
+				query.once('value', (snap) => {
+					let nodes = snap.val() || {};
+					resolve(nodes);
+				}).catch(reject);
+			});
 		}
 
 	}
