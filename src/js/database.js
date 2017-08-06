@@ -34,18 +34,29 @@ let Database = (firebase, config) => {
 			});
 		},
 
-		login: (callback) => {
+		login: (callback, method) => {
 			//auth.signOut().then((done) => {
 				let provider = new firebase.auth.GoogleAuthProvider();
+				if (method === 'facebook') {
+					provider = new firebase.auth.FacebookAuthProvider();
+				}
 				auth.signInWithPopup(provider).then((result) => {
+					//console.log(result);
 					let token = result.credential.accessToken;
 					let user = result.user;
+					let providerId = 'Unknown Provider';
+					try {
+						providerId = user.providerData[0].providerId;
+					} catch (e) {
+						console.error(e);
+					}
 					//
 					prometheus.logon(user.uid, {
 						name: user.displayName,
 						email: user.email,
 						image: user.photoURL,
-						uid: user.uid
+						uid: user.uid,
+						provider: providerId
 					});
 					//
 					callback(user);

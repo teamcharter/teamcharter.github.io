@@ -9,15 +9,22 @@ let params = getQueryParams(document.location.search);
 let views = Views();
 
 let loginBtn = document.getElementById('login');
+let loginFacebookBtn = document.getElementById('login-facebook');
 let feedbackBtn = document.getElementById('feedback');
 
 loginBtn.addEventListener('click', (e) => {
-	database.login(main);
+	database.login(main, 'google');
 });
 
-database.init(main, () => {
-	// No user signed in
+loginFacebookBtn.addEventListener('click', (e) => {
+	database.login(main, 'facebook');
 });
+
+if (!params.nologin) {
+	database.init(main, () => {
+		// No user signed in
+	});
+}
 
 function main(user) {
 

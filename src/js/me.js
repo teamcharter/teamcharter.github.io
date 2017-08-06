@@ -13,9 +13,9 @@ let feedbackBtn = document.getElementById('feedback');
 let createBtn = document.getElementById('create');
 let teamTiles = document.getElementById('team-tiles');
 
-loginBtn.addEventListener('click', (e) => {
+/*loginBtn.addEventListener('click', (e) => {
 	database.login(main);
-});
+});*/
 
 database.init(main, () => {
 	// No user signed in

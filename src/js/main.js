@@ -32,9 +32,9 @@ let addMeeting = document.getElementById('add-meeting');
 let progressUpdates = document.getElementById('progress-updates');
 //let charterUpdates = document.getElementById('charter-updates');
 
-loginBtn.addEventListener('click', (e) => {
+/*loginBtn.addEventListener('click', (e) => {
 	database.login(main);
-});
+});*/
 
 database.init(main, () => {
 	// No user signed in
