@@ -178,7 +178,7 @@ let Views = () => {
 
 		getClassTile: (model) => {
 			let origin = window.location.origin;
-			let link = `${origin}/class.html?team=${model.cid}`;
+			let classLink = `${origin}/class.html?class=${model.cid}`;
 			let list = Object.keys(model.teams).filter((tid) => {
 				return Object.keys(model.teams[tid]).length > 0;
 			}).map((tid) => {
@@ -202,16 +202,19 @@ let Views = () => {
 						<div class="content">
 							<h3 class="title">${model.name}</h3>
 							<p class="subtitle">${n} team${n === 1 ? '' : 's'} | Code: ${model.cid}</p>
-							<div class="columns is-multiline">
+							<a href="${classLink}" class="button is-primary is-outlined">View Class Dashboard</a>
+			`;
+							/*<div class="columns is-multiline">
 								${items.join('')}
-							</ul>
+							</div>*/
+			html += `
 						</div>
 					</div>
 				</div>`;
 				//<a href="${link}" class="button is-primary is-outlined">View Class Progress</a>
 			let div = document.createElement('div');
 				div.classList.add('column');
-				div.classList.add('is-12');
+				div.classList.add('is-4');
 				div.innerHTML = html;
 			return div;
 		},
