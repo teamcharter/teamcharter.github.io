@@ -90,6 +90,9 @@ let Database = (firebase, config) => {
 		},
 
 		getUser: (uid) => {
+			if (!uid) {
+				throw Error('No user id given.');
+			}
 			return new Promise((resolve, reject) => {
 				db.ref(`prometheus/users/${uid}/profile`).once('value', (snap) => {
 					let user = snap.val();
@@ -99,6 +102,9 @@ let Database = (firebase, config) => {
 		},
 
 		getTeam: (tid) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
 			return new Promise((resolve, reject) => {
 				db.ref(`teams/${tid}`).once('value', (snap) => {
 					let team = snap.val() || {};
@@ -108,6 +114,18 @@ let Database = (firebase, config) => {
 					} else {
 						resolve({});
 					}
+				}).catch(reject);
+			});
+		},
+
+		getTeamEdits: (tid) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			return new Promise((resolve, reject) => {
+				db.ref(`edits/${tid}`).once('value', (snap) => {
+					let edits = snap.val() || {};
+					resolve(edits);
 				}).catch(reject);
 			});
 		},
@@ -492,6 +510,10 @@ let Database = (firebase, config) => {
 					}
 				});
 			});
+		},
+
+		getInstructorsByClass: (classCode) => {
+
 		}
 
 	}

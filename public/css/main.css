@@ -110,3 +110,7 @@ header figure img {
 .nav-toggle .image {
 	margin: 10px auto;
 }
+
+.table-holder {
+	overflow-x: scroll !important;
+}

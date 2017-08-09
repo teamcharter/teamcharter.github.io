@@ -178,7 +178,7 @@ let Views = () => {
 
 		getClassTile: (model) => {
 			let origin = window.location.origin;
-			let link = `${origin}/class.html?team=${model.cid}`;
+			let classLink = `${origin}/class.html?class=${model.cid}`;
 			let list = Object.keys(model.teams).filter((tid) => {
 				return Object.keys(model.teams[tid]).length > 0;
 			}).map((tid) => {
@@ -202,18 +202,90 @@ let Views = () => {
 						<div class="content">
 							<h3 class="title">${model.name}</h3>
 							<p class="subtitle">${n} team${n === 1 ? '' : 's'} | Code: ${model.cid}</p>
-							<div class="columns is-multiline">
+							<a href="${classLink}" class="button is-primary is-outlined">View Class Dashboard</a>
+			`;
+							/*<div class="columns is-multiline">
 								${items.join('')}
-							</ul>
+							</div>*/
+			html += `
 						</div>
 					</div>
 				</div>`;
 				//<a href="${link}" class="button is-primary is-outlined">View Class Progress</a>
 			let div = document.createElement('div');
 				div.classList.add('column');
-				div.classList.add('is-12');
+				div.classList.add('is-4');
 				div.innerHTML = html;
 			return div;
+		},
+
+		getUserTile: (model) => {
+			let html = `
+				<div class="tile is-child">
+					<div class="media">
+						<figure class="media-left">
+							<p class="image is-48x48 image-tag-rounded">
+								<img src="${model.image}">
+							</p>
+						</figure>
+						<div class="content">
+							<h3 class="title is-5">${model.name}</h3>
+							<p class="subtitle is-6">${model.subtitle}</p>
+						</div>
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.classList.add('column');
+				div.classList.add('is-4');
+				div.innerHTML = html;
+			return div;
+		},
+
+		getClassTeamTable: (model) => {
+			let html = `
+				<thead>
+					<tr>
+						<th>Team Name</th>
+						<th>Members</th>
+						<th>Charter Edits</th>
+						<th>Progress Updates</th>
+						<th>Last Active</th>
+						<th>View Team</th>
+					</tr>
+				</thead>
+				<tbody>
+			`;
+			model.teams.forEach((team) => {
+				let updates = 0;
+				for (let uid in team.updates) {
+					for (let upid in team.updates[uid]) {
+						updates++;
+					}
+				}
+				let link = `${origin}/charter.html?team=${team.tid}&mentor=true`;
+				html += `
+					<tr>
+						<td>${team.name}</td>
+						<td>${Object.keys(team.members).length}</td>
+						<td>${Object.keys(team.edits).length}</td>
+						<td>${updates}</td>
+						<td>${moment(team.lastAccess).fromNow()}</td>
+						<td>
+							<a href="${link}" class="button is-primary is-outlined">View Charter</a>
+						</td>
+					</tr>
+				`;
+			});
+			html += `
+				</tbody>
+			`;
+			let table = document.createElement('table');
+				table.classList.add('table');
+				table.classList.add('is-narrow');
+				table.classList.add('is-fullwidth');
+				table.innerHTML = html;
+			return table;
 		}
 
 	}
