@@ -216,6 +216,29 @@ let Views = () => {
 			return div;
 		},
 
+		getUserTile: (model) => {
+			let html = `
+				<div class="tile is-child">
+					<div class="media">
+						<figure class="media-left">
+							<p class="image is-48x48 image-tag-rounded">
+								<img src="${model.image}">
+							</p>
+						</figure>
+						<div class="content">
+							<h3 class="title is-5">${model.name}</h3>
+							<p class="subtitle is-6">${model.subtitle}</p>
+						</div>
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.classList.add('column');
+				div.classList.add('is-4');
+				div.innerHTML = html;
+			return div;
+		},
+
 		getClassTeamTable: (model) => {
 			let html = `
 				<thead>

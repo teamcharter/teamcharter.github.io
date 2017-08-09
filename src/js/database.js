@@ -510,6 +510,10 @@ let Database = (firebase, config) => {
 					}
 				});
 			});
+		},
+
+		getInstructorsByClass: (classCode) => {
+
 		}
 
 	}

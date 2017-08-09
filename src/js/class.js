@@ -8,8 +8,14 @@ let params = getQueryParams(document.location.search);
 
 let views = Views();
 
+let CLASS_CODE = params.class || false;
+
 let feedbackBtn = document.getElementById('feedback');
 let teamSpace = document.getElementById('team-space');
+let instructorSpace = document.getElementById('instructor-space');
+let studentSpace = document.getElementById('student-space');
+let tabList = document.getElementsByClassName('charter-tab');
+let inviteInstructorBtn = document.getElementById('invite-instructor');
 
 database.init(main, () => {
 	// No user signed in
@@ -18,9 +24,9 @@ database.init(main, () => {
 
 function main(user) {
 
-	let classCode = params.class;
+	let classCode = CLASS_CODE;
 
-	if (!params.class) {
+	if (!classCode) {
 		window.location = `${window.location.origin}/me.html${document.location.search}`;
 	}
 
@@ -38,6 +44,14 @@ function main(user) {
 		});
 	});
 
+	inviteInstructorBtn.addEventListener('click', (e) => {
+		vex.dialog.prompt({
+			message: 'Send them this link:',
+			value: `${window.location.origin}/me.html?instructor=${classCode}`,
+			callback: (done) => {}
+		});
+	});
+
 	fillText('fill-user-name', user.displayName);
 	fillSrc('fill-user-image', user.photoURL);
 
@@ -49,6 +63,64 @@ function main(user) {
 
 			fillText('fill-class-name', classData.name);
 			let teams = classData.teams;
+
+			let instructorMap = classData.members || {};
+			let userPromises = [];
+			for (let uid in instructorMap) {
+				let p = database.getUser(uid);
+				p.uid = uid;
+				userPromises.push(p);
+			}
+
+			let studentMap = {};
+			for (let tid in classData.teams) {
+				let team = classData.teams[tid];
+				for (let uid in team.members) {
+					let p = database.getUser(uid);
+					p.uid = uid;
+					userPromises.push(p);
+					studentMap[uid] = team.name;
+				}
+			}
+
+			let profileMap = {};
+
+			Promise.all(userPromises).then((userList) => {
+				userList.forEach((user, idx) => {
+					let uid = userPromises[idx].uid;
+					user.uid = uid;
+					profileMap[uid] = user;
+				});
+				instructorSpace.innerHTML = '';
+				let iCount = 0;
+				for (let uid in instructorMap) {
+					let ins = instructorMap[uid];
+					if (!ins.hidden) {
+						let profile = profileMap[uid];
+						let tile = views.getUserTile({
+							name: profile.name,
+							image: profile.image,
+							subtitle: 'Instructor'
+						});
+						instructorSpace.appendChild(tile);
+						iCount++;
+					}
+				}
+				fillText('fill-number-instructors', `(${iCount})`);
+				let sCount = 0;
+				for (let uid in studentMap) {
+					let profile = profileMap[uid];
+					let teamName = studentMap[uid];
+					let tile = views.getUserTile({
+						name: profile.name,
+						image: profile.image,
+						subtitle: teamName
+					});
+					studentSpace.appendChild(tile);
+					sCount++;
+				}
+				fillText('fill-number-students', `(${sCount})`);
+			});
 
 			let promises = [];
 			for (let tid in teams) {
@@ -76,6 +148,14 @@ function main(user) {
 				});
 				teamSpace.innerHTML = '';
 				teamSpace.appendChild(table);
+
+				for (let k = 0; k < tabList.length; k++) {
+					tabList[k].addEventListener('click', (e) => {
+						onTabClick(tabList, tabList[k]);
+					});
+				}
+
+				onTabClick(tabList, document.querySelectorAll('.charter-tab[data-tab="container-teams"]')[0]);
 
 			}).catch(console.error);
 
@@ -112,6 +192,28 @@ function getLastAccess(team) {
 		}
 	}
 	return lastAccess;
+}
+
+function onTabClick(tabGroup, tab) {
+	let tabid = tab.dataset.tab;
+	let showTab = document.getElementById(tabid);
+	if (showTab) {
+		database.getPrometheus().save({
+			type: 'CHANGE_CLASS_TAB',
+			classCode: CLASS_CODE,
+			tab: tabid
+		});
+		for (let j = 0; j < tabGroup.length; j++) {
+			tabGroup[j].classList.remove('is-active');
+		}
+		let otherTabs = document.getElementsByClassName('tabbed-container');
+		for (let i = 0; i < otherTabs.length; i++) {
+			otherTabs[i].style.display = 'none';
+		}
+		showTab.style.display = 'block';
+		tab.classList.add('is-active');
+	}
+
 }
 
 function reportErrorToUser(err) {

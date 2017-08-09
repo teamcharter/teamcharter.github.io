@@ -54,7 +54,8 @@
 							<a href="./login.html?nologin=true" class="nav-item">
 								Switch Accounts
 							</a>
-							<a class="nav-item level">
+							<a href="./me.html" class="nav-item fill-user-name">Me</a>
+							<a href="./me.html" class="nav-item level">
 								<figure class="media">
 									<p class="image is-32x32">
 										<img class="fill-user-image" src="./public/img/no-user.png">
@@ -71,13 +72,38 @@
 					<h1 class="title fill-class-name">Your Class</h1>
 				</div>
 			</div>
+			<div class="hero-foot">
+				<div class="tabs is-centered is-boxed">
+					<ul>
+						<li data-tab="container-teams" class="charter-tab is-active"><a>Teams</a></li>
+						<li data-tab="container-instructors" class="charter-tab"><a>Instructors</a></li>
+						<li data-tab="container-students" class="charter-tab"><a>Students</a></li>
+					</ul>
+				</div>
+			</div>
 		</section>
 		<section class="section">
-			<div class="container">
+			<div class="container tabbed-container content has-text-centered loading" style="display: block;">
+				<h3>Loading...</h3>
+			</div>
+			<div class="container tabbed-container" id="container-teams">
 				<div class="content">
-					<h1 class="title">Student Teams</h1>
+					<h1 class="title">Teams</h1>
 				</div>
-				<div id="team-space"></div>
+				<div id="team-space" class="table-holder"></div>
+			</div>
+			<div class="container tabbed-container" id="container-instructors">
+				<div class="content">
+					<h1 class="title">Instructors <span class="fill-number-instructors"></span></h1>
+				</div>
+				<div id="instructor-space" class="columns is-multiline"></div>
+				<button id="invite-instructor" class="button is-primary is-outlined">Invite Instructor</button>
+			</div>
+			<div class="container tabbed-container" id="container-students">
+				<div class="content">
+					<h1 class="title">Students <span class="fill-number-students"></span></h1>
+				</div>
+				<div id="student-space" class="columns is-multiline"></div>
 			</div>
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
