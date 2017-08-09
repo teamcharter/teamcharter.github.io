@@ -214,6 +214,52 @@ let Views = () => {
 				div.classList.add('is-12');
 				div.innerHTML = html;
 			return div;
+		},
+
+		getClassTeamTable: (model) => {
+			let html = `
+				<thead>
+					<tr>
+						<th>Team Name</th>
+						<th>Members</th>
+						<th>Charter Edits</th>
+						<th>Progress Updates</th>
+						<th>Last Active</th>
+						<th>View Team</th>
+					</tr>
+				</thead>
+				<tbody>
+			`;
+			model.teams.forEach((team) => {
+				let updates = 0;
+				for (let uid in team.updates) {
+					for (let upid in team.updates[uid]) {
+						updates++;
+					}
+				}
+				let link = `${origin}/charter.html?team=${team.tid}&mentor=true`;
+				html += `
+					<tr>
+						<td>${team.name}</td>
+						<td>${Object.keys(team.members).length}</td>
+						<td>${Object.keys(team.edits).length}</td>
+						<td>${updates}</td>
+						<td>${moment(team.lastAccess).fromNow()}</td>
+						<td>
+							<a href="${link}" class="button is-primary is-outlined">View Charter</a>
+						</td>
+					</tr>
+				`;
+			});
+			html += `
+				</tbody>
+			`;
+			let table = document.createElement('table');
+				table.classList.add('table');
+				table.classList.add('is-narrow');
+				table.classList.add('is-fullwidth');
+				table.innerHTML = html;
+			return table;
 		}
 
 	}
