@@ -7,6 +7,9 @@ let Database = (firebase, config) => {
 		config.noScreenshots = true;
 	let prometheus = Prometheus(config, CharterFirebase);
 
+// Super Dirty: Update Prometheus Promos and Features Here
+// db.ref('prometheus/features/contributor').set({info: {name: 'Charter Contributor'}, validate: 'return {allowed: userData.contributor,data: userData}'})
+
 	let database = {
 		
 		init: (callback, fallback) => {
@@ -141,9 +144,18 @@ let Database = (firebase, config) => {
 				let memberMap = team.members || {};
 				for (let uid in memberMap) {
 					if (!(uid in members)) {
-						let p = database.getUser(uid);
-						p.uid = uid;
-						promises.push(p);
+						if (memberMap[uid].status === 'template') {
+							members[uid] = {
+								name: 'Unknown',
+								image: './public/img/no-user.png',
+								uid: uid,
+								email: 'team@omnipointment.com'
+							}
+						} else {
+							let p = database.getUser(uid);
+							p.uid = uid;
+							promises.push(p);
+						}
 					}
 				}
 				if (promises.length > 0) {
@@ -308,31 +320,77 @@ let Database = (firebase, config) => {
 			return db.ref(`teams/${tid}/links/${key}`).remove();
 		},
 
-		updateRole: (tid, uid, data) => {
+		updateRole: (tid, author, data) => {
 			if (!tid) {
 				throw Error('No team id given.');
 			}
-			if (!uid) {
-				throw Error('No user id given.');
+			if (!author) {
+				throw Error('No authoring user id given.');
+			}
+			if (!data.uid) {
+				data.uid = author; // If someone is editing their own role
 			}
 			//
 			prometheus.save({
 				type: 'UPDATE_ROLE',
 				tid: tid,
+				uid: data.uid,
 				role: data.role,
 				responsibility: data.responsibility
 			});
 			//
-			data.uid = uid; // If someone is editing their own role
 			db.ref(`edits/${tid}`).push({
 				field: 'role',
-				uid: uid,
+				uid: author,
 				value: data,
 				timestamp: Date.now()
 			});
-			let p1 = db.ref(`teams/${tid}/members/${uid}/role`).set(data.role);
-			let p2 = db.ref(`teams/${tid}/members/${uid}/responsibility`).set(data.responsibility);
+			let p1 = db.ref(`teams/${tid}/members/${data.uid}/role`).set(data.role);
+			let p2 = db.ref(`teams/${tid}/members/${data.uid}/responsibility`).set(data.responsibility);
 			return Promise.all([p1, p2]);
+		},
+
+		addTemplateRole: (tid, author) => {
+			//
+			prometheus.save({
+				type: 'ADD_TEMPLATE_ROLE',
+				tid: tid
+			});
+			//
+			return db.ref(`teams/${tid}/members`).push({
+				status: 'template',
+				role: 'Team Member',
+				joined: Date.now(),
+				member: true,
+				icon: 'user'
+			});
+		},
+
+		updateRoleIcon: (tid, author, data) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			if (!author) {
+				throw Error('No authoring user id given.');
+			}
+			//
+			prometheus.save({
+				type: 'UPDATE_ROLE_ICON',
+				tid: tid,
+				uid: data.uid,
+				icon: data.icon
+			});
+			//
+			if (!data.uid) {
+				data.uid = author; // If someone is editing their own role
+			}
+			db.ref(`edits/${tid}`).push({
+				field: 'role',
+				uid: author,
+				value: data,
+				timestamp: Date.now()
+			});
+			return db.ref(`teams/${tid}/members/${data.uid}/icon`).set(data.icon);
 		},
 
 		joinTeam: (tid, uid, joinCode) => {
@@ -375,6 +433,17 @@ let Database = (firebase, config) => {
 			});
 		},
 
+		removeMember: (tid, author, uid) => {
+			//
+			prometheus.save({
+				type: 'REMOVE_MEMBER',
+				tid: tid,
+				uid: uid
+			});
+			//
+			return db.ref(`teams/${tid}/members/${uid}`).remove();
+		},
+
 		getAllTeams: (uid) => {
 			return new Promise((resolve, reject) => {
 				let ref = db.ref(`teams`);
@@ -386,11 +455,13 @@ let Database = (firebase, config) => {
 			});
 		},
 
-		createNewTeam: (uid, joinCode, teamName) => {
+		createNewTeam: (uid, joinCode, data) => {
 			return new Promise((resolve, reject) => {
+				let teamName = data.name;
 				db.ref('teams').push({
 					name: teamName || 'New Team Charter',
-					joinCode: joinCode
+					joinCode: joinCode,
+					status: data.status || 'regular'
 				}).then((res) => {
 					let pathList = res.path.ct;
 					let tid = pathList[pathList.length - 1];
@@ -398,7 +469,8 @@ let Database = (firebase, config) => {
 					prometheus.save({
 						type: 'CREATE_TEAM',
 						tid: tid,
-						name: teamName
+						name: teamName,
+						data: data
 					});
 					//
 					database.addMember(tid, uid).then((done) => {

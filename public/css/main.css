@@ -83,6 +83,21 @@ header figure img {
 	border-radius: 50%;
 }
 
+.icon-image {
+	text-align: center;
+	background: #30AACB;
+	border-radius: 50%;
+}
+
+.icon-image i {
+	color: white;
+	vertical-align: middle !important;
+}
+
+.icon-image.is-48x48 {
+	line-height: 48px;
+}
+
 .contrast-color .title, .contrast-color .subtitle{
 	color: #30AACB !important;
 }

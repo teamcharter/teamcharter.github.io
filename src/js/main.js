@@ -15,6 +15,7 @@ let feedbackBtn = document.getElementById('feedback');
 
 let inviteBtn = document.getElementById('invite');
 let classCodeBtn = document.getElementById('class-code');
+let mentorLinkBtn = document.getElementById('mentor-link');
 let tabList = document.getElementsByClassName('charter-tab');
 
 let teamName = document.getElementById('team-name');
@@ -129,6 +130,17 @@ function mainCharterTab(user, tid) {
 		})
 	});
 
+	mentorLinkBtn.addEventListener('click', (e) => {
+		let origin = window.location.origin;
+		let pathname = window.location.pathname;
+		let link = `${origin}${pathname}?team=${tid}&mentor=true`;
+		vex.dialog.prompt({
+			message: 'Send this link to a mentor:',
+			value: link,
+			callback: () => {}
+		});
+	});
+
 	teamName.addEventListener('click', (e) => {
 		if (!isMentor()) {
 			let name = e.target.innerText;
@@ -224,7 +236,10 @@ function mainProgressTab(user, tid) {
 
 	database.onTeamChange(tid, (team, members) => {
 
-		renderProgressUpdates(tid, team, members);
+		let isTeamTemplate = team.status === 'template';
+		if (!isTeamTemplate) {
+			renderProgressUpdates(tid, team, members);
+		}
 
 	}, reportErrorToUser);
 
@@ -303,6 +318,12 @@ function renderTeamCharter(tid, team, members) {
 		}, '');
 	}
 
+	if (team.status === 'template') {
+		let hSpan = document.getElementById('header-subtitle');
+		hSpan.innerHTML = `Team Charter <span class="tag is-warning">Template</span>`;
+		document.querySelectorAll('[data-tab=container-progress]')[0].style.display = 'none';
+	}
+
 	/*let allUpdates = team.updates || {};
 	teamUpdates.innerHTML = '';
 	for (let uid in teamMembers) {
@@ -328,11 +349,13 @@ function renderTeamCharter(tid, team, members) {
 		teamUpdates.appendChild(tile);
 	}*/
 
+	let isTeamTemplate = team.status === 'template';
+
 	teamUpdates.innerHTML = '';
 	for (let uid in teamMembers) {
 		let user = members[uid];
 		let member = teamMembers[uid];
-		if (member.status === 'member') {
+		if (member.status === 'member' && !isTeamTemplate) {
 			let tile = views.getRoleTile({
 				name: user.name,
 				role: member.role,
@@ -341,7 +364,109 @@ function renderTeamCharter(tid, team, members) {
 				editable: uid === database.getCurrentUser().uid && !isMentor()
 			});
 			teamUpdates.appendChild(tile);
+		} else if (member.status === 'template') {
+			let tile = views.getRoleTemplateTile({
+				name: user.name,
+				role: member.role,
+				image: user.image,
+				icon: member.icon,
+				responsibility: member.responsibility || 'What are you responsible for?',
+				editable: !isMentor(),
+				uid: uid,
+				onSave: (data) => {
+					//console.log(data);
+					let uidAuthor = database.getCurrentUser().uid;
+					let uidEdit = data.model.uid;
+					database.updateRole(tid, uidAuthor, {
+						role: data.role,
+						responsibility: data.responsibility,
+						uid: uidEdit
+					});
+				},
+				onIconEdit: (data) => {
+					let uidAuthor = database.getCurrentUser().uid;
+					let uidEdit = data.model.uid;
+					vex.dialog.prompt({
+						message: `Change icon for ${data.model.role}?`,
+						value: data.model.icon,
+						callback: (iconValue) => {
+							if (iconValue) {
+								database.updateRoleIcon(tid, uidAuthor, {
+									uid: uidEdit,
+									icon: iconValue
+								});
+							}
+						}
+					});
+				}
+			});
+			teamUpdates.appendChild(tile);
 		}
+	}
+
+	if (isTeamTemplate) {
+		let div = document.createElement('div');
+			div.classList.add('field');
+			div.classList.add('is-grouped');
+			div.classList.add('is-grouped-centered');
+			div.classList.add('is-hidden-to-mentor');
+		div.innerHTML = `
+			<div class="control">
+				<button data-bind="button-add-role" class="button is-primary is-outlined">
+					<span class="icon">
+						<i class="fa fa-user"></i>
+					</span>
+					<span>Add Role</span>
+				</button>
+				<button data-bind="button-remove-role" class="button is-danger is-outlined">
+					<span class="icon">
+						<i class="fa fa-remove"></i>
+					</span>
+					<span>Remove Role</span>
+				</button>
+			</div>
+		`;
+		let btnAdd = div.querySelectorAll('[data-bind=button-add-role]')[0];
+		btnAdd.addEventListener('click', (e) => {
+			let uidAuthor = database.getCurrentUser().uid;
+			database.addTemplateRole(tid, uidAuthor);
+		});
+		let btnRemove = div.querySelectorAll('[data-bind=button-remove-role]')[0];
+		btnRemove.addEventListener('click', (e) => {
+			let vexText = `
+				<div class="content">
+					<h5 class="title">Enter the Number of the Role to Remove</h5>
+					<ul>`;
+			let counter = 1;
+			let map = {};
+			for (let uid in teamMembers) {
+				let user = members[uid];
+				let member = teamMembers[uid];
+				if (member.status === 'template') {
+					vexText += `<li>${counter}: ${member.role}</li>`;
+					map[counter] = uid;
+					counter++;
+				}
+			}
+			vexText += `
+					</ul>
+					<br>
+				</div>`;
+			vex.dialog.prompt({
+				unsafeMessage: vexText,
+				callback: (removeIdx) => {
+					if (removeIdx) {
+						let author = database.getCurrentUser().uid;
+						let ridx = parseInt(removeIdx, 10);
+						let uidRemove = map[ridx];
+						if (uidRemove) {
+							database.removeMember(tid, author, uidRemove);
+						}
+					}
+				}
+			});
+		});
+		teamUpdates.appendChild(div);
 	}
 
 	let roleSave = document.getElementById('my-role-save');
