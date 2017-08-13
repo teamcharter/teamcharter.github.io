@@ -11,6 +11,7 @@ let views = Views();
 let loginBtn = document.getElementById('login');
 let feedbackBtn = document.getElementById('feedback');
 let createBtn = document.getElementById('create');
+let promoBtn = document.getElementById('enter-promo');
 let teamTiles = document.getElementById('team-tiles');
 
 /*loginBtn.addEventListener('click', (e) => {
@@ -38,6 +39,33 @@ function main(user) {
 		});
 	});
 
+	promoBtn.addEventListener('click', (e) => {
+		vex.dialog.prompt({
+			message: 'Enter your promo code:',
+			callback: (promoCode) => {
+				if (promoCode) {
+					database.getPrometheus().redeem(promoCode, (redeemed) => {
+						let title = redeemed.title || `Promo Code: ${promoCode}`;
+						let desc = redeemed.description || 'Succesfully redeemed the promo code.';
+						vex.dialog.alert({
+							unsafeMessage: `
+								<div class="content">
+									<h3 class="title">${title}</h3>
+									<p class="subtitle">${desc}</p>
+								</div>
+							`,
+							callback: (over) => {
+								window.location.reload();
+							}
+						});
+					}, (failed) => {
+						vex.dialog.alert(failed.message);
+					});
+				}
+			}
+		});
+	});
+
 	fillText('fill-user-name', user.displayName);
 	fillSrc('fill-user-image', user.photoURL);
 
@@ -56,6 +84,43 @@ function main(user) {
 		}
 	}).catch(reportErrorToUser);
 
+	database.getPrometheus().can('contributor', (data) => {
+		let extraBtnControl = document.getElementById('extra-buttons');
+		extraBtnControl.innerHTML = `
+			<button data-bind="button-create-template" class="button is-primary is-outlined">
+				<span class="icon">
+					<i class="fa fa-address-card"></i>
+				</span>
+				<span>Create Team Template</span>
+			</button>
+		`;
+		let templateBtn = extraBtnControl.querySelectorAll('[data-bind=button-create-template]')[0];
+		templateBtn.addEventListener('click', (e) => {
+			let uid = database.getCurrentUser().uid;
+			let jc = convertTidToJoinCode(uid);
+			vex.dialog.prompt({
+				message: `What is your team template's name?`,
+				value: 'My Team Template',
+				callback: (value) => {
+					if (value) {
+						database.createNewTeam(uid, jc, {
+							name: value,
+							status: 'template'
+						}).then((res) => {
+							let tid = res.tid;
+							let origin = window.location.origin;
+							let link = `${origin}/charter.html?team=${tid}`;
+							window.location = link;
+						}).catch(reportErrorToUser);
+					}
+				}
+			});
+
+		});
+	}, (data) => {
+		console.log('not allowed', data)
+	});
+
 	createBtn.addEventListener('click', (e) => {
 		let uid = database.getCurrentUser().uid;
 		let jc = convertTidToJoinCode(uid);
@@ -64,7 +129,9 @@ function main(user) {
 			value: 'My Team',
 			callback: (value) => {
 				if (value) {
-					database.createNewTeam(uid, jc, value).then((res) => {
+					database.createNewTeam(uid, jc, {
+						name: value
+					}).then((res) => {
 						let tid = res.tid;
 						let origin = window.location.origin;
 						let link = `${origin}/charter.html?team=${tid}`;

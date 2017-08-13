@@ -7,6 +7,9 @@ let Database = (firebase, config) => {
 		config.noScreenshots = true;
 	let prometheus = Prometheus(config, CharterFirebase);
 
+// Super Dirty: Update Prometheus Promos and Features Here
+// db.ref('prometheus/features/contributor').set({info: {name: 'Charter Contributor'}, validate: 'return {allowed: userData.contributor,data: userData}'})
+
 	let database = {
 		
 		init: (callback, fallback) => {
@@ -452,11 +455,13 @@ let Database = (firebase, config) => {
 			});
 		},
 
-		createNewTeam: (uid, joinCode, teamName) => {
+		createNewTeam: (uid, joinCode, data) => {
 			return new Promise((resolve, reject) => {
+				let teamName = data.name;
 				db.ref('teams').push({
 					name: teamName || 'New Team Charter',
-					joinCode: joinCode
+					joinCode: joinCode,
+					status: data.status || 'regular'
 				}).then((res) => {
 					let pathList = res.path.ct;
 					let tid = pathList[pathList.length - 1];
@@ -464,7 +469,8 @@ let Database = (firebase, config) => {
 					prometheus.save({
 						type: 'CREATE_TEAM',
 						tid: tid,
-						name: teamName
+						name: teamName,
+						data: data
 					});
 					//
 					database.addMember(tid, uid).then((done) => {
