@@ -49,7 +49,8 @@ function main(user) {
 			let team = teams[tid];
 			let tile = views.getTeamTile({
 				tid: tid,
-				name: team.name
+				name: team.name,
+				isTemplate: team.status === 'template'
 			});
 			teamTiles.appendChild(tile);
 		}

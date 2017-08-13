@@ -86,6 +86,71 @@ let Views = () => {
 			return div;
 		},
 
+		getRoleTemplateTile: (model) => {
+			let editSection = `<div class="content">
+				<h3 class="title is-5">${model.role}</h3>
+				<p class="subtitle is-6">${model.responsibility}</p>
+			</div>`;
+			let editButton = ``;
+			if (model.editable) {
+				editSection = `<div class="content">
+					<h3 data-bind="field-role" class="title is-5" contenteditable="true">${model.role}</h3>
+					<p data-bind="field-responsibility" class="subtitle is-6" contenteditable="true">${model.responsibility}</p>
+				</div>`;
+				editButton = `
+				<div class="tile is-parent is-vertical is-4">
+					<button data-bind="button-save" class="button is-primary is-outlined is-hidden-to-mentor">
+						<span class="icon">
+							<i class="fa fa-edit"></i>
+						</span>
+						<span>Save Role</span>
+					</button>
+				</div>
+				`;
+			}
+			let html = `
+				<div class="tile is-parent is-vertical {model.editable ? 'is-8' : 'is-12'}">
+					<div class="tile is-child">
+						<div class="media">
+							<figure class="media-left">
+								<div data-bind="field-icon" class="image is-48x48 icon-image">
+									<i class="fa fa-${model.icon || 'user'}"></i>
+								</div>
+							</figure>
+							<div class="tile is-child">
+								${editSection}
+							</div>
+						</div>
+					</div>
+				</div>
+				${editButton}
+			`;
+			let div = document.createElement('div');
+				div.classList.add('tile');
+				div.innerHTML = html;
+			if (model.editable && model.onSave) {
+				let button = div.querySelectorAll('[data-bind=button-save]')[0];
+				let role = div.querySelectorAll('[data-bind=field-role]')[0];
+				let resp = div.querySelectorAll('[data-bind=field-responsibility]')[0];
+				button.addEventListener('click', (e) => {
+					model.onSave({
+						e: e,
+						model: model,
+						role: role.innerText,
+						responsibility: resp.innerText
+					});
+				});
+				let iconEdit = div.querySelectorAll('[data-bind=field-icon]')[0];
+				iconEdit.addEventListener('click', (e) => {
+					model.onIconEdit({
+						e: e,
+						model: model
+					});
+				});
+			}
+			return div;
+		},
+
 		getProgressUpdate: (model) => {
 			let posted = new Date(model.timestamp);
 			let dateFormat = moment(posted).format('M/D h:mm A');
@@ -156,12 +221,13 @@ let Views = () => {
 		getTeamTile: (model) => {
 			let origin = window.location.origin;
 			let link = `${origin}/charter.html?team=${model.tid}`;
+			let tag = `<span class="tag is-warning">Template</span>`;
 			let html = `
 				<div class="tile is-vertical">
 					<div class="box">
 						<div class="tile">
 							<div class="content">
-								<h3 class="title">${model.name}</h3>
+								<h3 class="title">${model.name} ${model.isTemplate ? tag : ''}</h3>
 							</div>
 						</div>
 						<div class="tile">
