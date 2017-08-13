@@ -318,6 +318,12 @@ function renderTeamCharter(tid, team, members) {
 		}, '');
 	}
 
+	if (team.status === 'template') {
+		let hSpan = document.getElementById('header-subtitle');
+		hSpan.innerHTML = `Team Charter <span class="tag is-warning">Template</span>`;
+		document.querySelectorAll('[data-tab=container-progress]')[0].style.display = 'none';
+	}
+
 	/*let allUpdates = team.updates || {};
 	teamUpdates.innerHTML = '';
 	for (let uid in teamMembers) {
