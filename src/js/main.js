@@ -390,10 +390,12 @@ function renderTeamCharter(tid, team, members) {
 						message: `Change icon for ${data.model.role}?`,
 						value: data.model.icon,
 						callback: (iconValue) => {
-							database.updateRoleIcon(tid, uidAuthor, {
-								uid: uidEdit,
-								icon: iconValue
-							});
+							if (iconValue) {
+								database.updateRoleIcon(tid, uidAuthor, {
+									uid: uidEdit,
+									icon: iconValue
+								});
+							}
 						}
 					});
 				}
