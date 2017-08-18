@@ -196,10 +196,23 @@ let Views = () => {
 			let icon = 'file';
 			if (model.url.indexOf('docs.google') > -1) {
 				icon = 'google';
+				if (model.url.indexOf('docs.google.com/document') > -1) {
+					icon = 'file-text';
+				} else if (model.url.indexOf('docs.google.com/spreadsheets') > -1) {
+					icon = 'table';
+				} else if (model.url.indexOf('docs.google.com/presentation') > -1) {
+					icon = 'slideshare';
+				}
 			} else if (model.url.indexOf('omnipointment.com/meeting') > -1) {
 				icon = 'calendar';
 			} else if (model.url.indexOf('github.com') > -1) {
 				icon = 'github';
+			} else if (model.url.indexOf('youtube.com') > -1) {
+				icon = 'youtube-play';
+			} else if (model.url.indexOf('vimeo.com') > -1) {
+				icon = 'vimeo';
+			} else if (model.url.indexOf('codeshare.io') > -1 || model.url.indexOf('codepen.io') > -1) {
+				icon = 'code-fork';
 			}
 			let html = `
 				<a target="_blank" href="${model.url}">
