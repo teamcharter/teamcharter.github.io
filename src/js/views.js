@@ -198,6 +198,8 @@ let Views = () => {
 				icon = 'google';
 			} else if (model.url.indexOf('omnipointment.com/meeting') > -1) {
 				icon = 'calendar';
+			} else if (model.url.indexOf('github.com') > -1) {
+				icon = 'github';
 			}
 			let html = `
 				<a target="_blank" href="${model.url}">
