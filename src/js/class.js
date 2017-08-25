@@ -87,9 +87,11 @@ function main(user) {
 
 			Promise.all(userPromises).then((userList) => {
 				userList.forEach((user, idx) => {
-					let uid = userPromises[idx].uid;
-					user.uid = uid;
-					profileMap[uid] = user;
+					if (user) {
+						let uid = userPromises[idx].uid;
+						user.uid = uid;
+						profileMap[uid] = user;
+					}
 				});
 				instructorSpace.innerHTML = '';
 				let iCount = 0;
@@ -97,27 +99,31 @@ function main(user) {
 					let ins = instructorMap[uid];
 					if (!ins.hidden) {
 						let profile = profileMap[uid];
-						let tile = views.getUserTile({
-							name: profile.name,
-							image: profile.image,
-							subtitle: 'Instructor'
-						});
-						instructorSpace.appendChild(tile);
-						iCount++;
+						if (profile) {
+							let tile = views.getUserTile({
+								name: profile.name,
+								image: profile.image,
+								subtitle: 'Instructor'
+							});
+							instructorSpace.appendChild(tile);
+							iCount++;
+						}
 					}
 				}
 				fillText('fill-number-instructors', `(${iCount})`);
 				let sCount = 0;
 				for (let uid in studentMap) {
 					let profile = profileMap[uid];
-					let teamName = studentMap[uid];
-					let tile = views.getUserTile({
-						name: profile.name,
-						image: profile.image,
-						subtitle: teamName
-					});
-					studentSpace.appendChild(tile);
-					sCount++;
+					if (profile) {
+						let teamName = studentMap[uid];
+						let tile = views.getUserTile({
+							name: profile.name,
+							image: profile.image,
+							subtitle: teamName
+						});
+						studentSpace.appendChild(tile);
+						sCount++;
+					}
 				}
 				fillText('fill-number-students', `(${sCount})`);
 			});

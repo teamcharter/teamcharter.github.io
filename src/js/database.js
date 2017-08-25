@@ -10,6 +10,17 @@ let Database = (firebase, config) => {
 // Super Dirty: Update Prometheus Promos and Features Here
 // db.ref('prometheus/features/contributor').set({info: {name: 'Charter Contributor'}, validate: 'return {allowed: userData.contributor,data: userData}'})
 
+//db.ref('classes/master/teams').remove();
+/*db.ref('teams').once('value', (snap) => {
+	let teamMap = snap.val() || {};
+	for (let tid in teamMap) {
+		db.ref(`classes/master/teams/${tid}`).set({
+			access: true,
+			joined: Date.now()
+		});
+	}
+});*/
+
 	let database = {
 		
 		init: (callback, fallback) => {

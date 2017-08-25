@@ -345,10 +345,11 @@ let Views = () => {
 					}
 				}
 				let link = `${origin}/charter.html?team=${team.tid}&mentor=true`;
+				let members = team.members || {};
 				html += `
 					<tr>
 						<td>${team.name}</td>
-						<td>${Object.keys(team.members).length}</td>
+						<td>${Object.keys(members).length}</td>
 						<td>${Object.keys(team.edits).length}</td>
 						<td>${updates}</td>
 						<td>${moment(team.lastAccess).fromNow()}</td>
