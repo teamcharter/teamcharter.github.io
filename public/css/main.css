@@ -129,3 +129,41 @@ header figure img {
 .table-holder {
 	overflow-x: scroll !important;
 }
+
+.is-dashed {
+	border-style: dashed !important;
+}
+
+.is-neatly-spaced {
+	margin-top: -1.0rem !important;
+}
+
+.is-7 {
+	font-size: 0.85rem !important;
+}
+
+.is-grouped {
+	margin-top: 0.5rem !important;
+}
+
+.is-grouped button {
+	margin: 0.25rem !important;
+}
+
+.is-rounded img {
+	border-radius: 50%;
+}
+
+.is-inline-image {
+    display: inline-block;
+    vertical-align: text-top;
+    margin-top: 0.1rem;
+}
+
+.is-faded {
+	opacity: 0.5;
+}
+
+.comment {
+	margin-bottom: 0.75rem;
+}
