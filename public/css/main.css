@@ -102,6 +102,14 @@ header figure img {
 	color: #30AACB !important;
 }
 
+.title.is-inverted, .subtitle.is-inverted {
+	color: white !important;
+}
+
+.is-inverted p, .is-inverted h1 {
+	color: white !important;	
+}
+
 .vex.vex-theme-plain .vex-dialog-button.vex-dialog-button-primary {
 	background: #30AACB;
 }
@@ -132,6 +140,10 @@ header figure img {
 
 .is-dashed {
 	border-style: dashed !important;
+}
+
+.is-normally-spaced {
+	margin-top: -0.5rem !important;
 }
 
 .is-neatly-spaced {
@@ -165,5 +177,60 @@ header figure img {
 }
 
 .comment {
-	margin-bottom: 0.75rem;
+	margin-bottom: 1rem !important;
+}
+
+.menu ul {
+	list-style: none !important;
+}
+
+/* LANDING PAGES */
+
+html#educators-splash {
+	background: url('../img/educators-splash.jpg');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.section.is-contrast {
+	background: #30AACB !important;
+}
+
+.is-splash {
+	padding: 4rem 1.5rem !important;
+	/*padding: 4rem 1.5rem 0 1.5rem !important;*/
+}
+
+.is-splash-large {
+	padding: 6rem 1.5rem !important;
+}
+
+.is-splash.notification {
+	margin-bottom: 0 !important;
+}
+
+.is-splash-img-bottom {
+	margin-bottom: -4rem;
+}
+
+.icon.is-marker {
+	margin: 0 auto;
+	display: block;
+}
+
+.marker-holder {
+	margin: -0.5rem auto;
+}
+
+.marker-holder :nth-child(2) {
+	padding: 0.5rem 1.5rem;
+}
+
+.is-transparent-background {
+	background: transparent !important;
 }
