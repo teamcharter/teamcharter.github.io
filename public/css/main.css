@@ -187,18 +187,39 @@ header figure img {
 /* LANDING PAGES */
 
 html#educators-splash {
-	background: url('../img/educators-splash.jpg');
+	background: #30AACB;
+	/*background: url('../img/educators-splash.jpg');
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-attachment: fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
-	background-size: cover;
+	background-size: cover;*/
 }
 
-.section.is-contrast {
+.section.is-light {
+	background: #ffffff !important;
+}
+
+.section.is-light.is-gray {
+	background: #f8f8f8 !important;
+}
+
+.section.is-dark {
+	background: #47525d !important;
+}
+
+.section.is-dark.is-contrast {
 	background: #30AACB !important;
+}
+
+.section.is-light .content h1, .section.is-light .content p {
+	color: #47525d !important;
+}
+
+.section.is-dark .content h1, .section.is-dark .content p {
+	color: #ffffff !important;
 }
 
 .is-splash {
@@ -207,7 +228,7 @@ html#educators-splash {
 }
 
 .is-splash-large {
-	padding: 6rem 1.5rem !important;
+	padding: 8rem 1.5rem !important;
 }
 
 .is-splash.notification {
@@ -216,6 +237,11 @@ html#educators-splash {
 
 .is-splash-img-bottom {
 	margin-bottom: -4rem;
+	box-shadow: 0 0 30px rgba(71, 82, 93, 0.15);
+}
+
+.section.is-light .is-splash-img-bottom {
+	box-shadow: 0 0 30px rgba(71, 82, 93, 0.15);
 }
 
 .icon.is-marker {
@@ -233,4 +259,8 @@ html#educators-splash {
 
 .is-transparent-background {
 	background: transparent !important;
+}
+
+a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.is-active {
+	background: #30AACB !important;
 }
