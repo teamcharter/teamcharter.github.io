@@ -23,7 +23,6 @@
 		<link rel="stylesheet" type="text/css" href="./public/vex/vex.css">
 		<link rel="stylesheet" type="text/css" href="./public/vex/vex-theme-plain.css">
 		<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="./public/css/styles.css">
 		<link rel="stylesheet" href="./public/css/main.css">
@@ -57,7 +56,10 @@
 					<div class="content has-text-centered">
 						<h1 class="title is-1">Say Goodbye to Solo Group Projects</h1>
 						<h2 class="subtitle is-3">Get every member of your team to contribute,<wbr> even teammates you thought were dead weight.</h2>
-						<a href="./login.html" class="button is-primary is-inverted is-large">Start Using Charter</a>
+						<div class="is-grouped">
+							<a href="./login.html" class="button is-primary is-inverted is-large">Start Using Charter</a>
+							<a href="./educators.html" class="button is-primary is-inverted is-large is-outlined">Learn More</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -71,8 +73,14 @@
 				</div>
 			</div>
 		</section>
-		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
-		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
-		<script type="text/javascript" src="./src/js/moment.min.js"></script>
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-105380462-1', 'auto');
+			ga('send', 'pageview');
+		</script>
 	</body>
 </html>
