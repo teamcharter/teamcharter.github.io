@@ -504,22 +504,32 @@ function parsePromiseData(data) {
 						// Add Comment
 					}
 					if (node.description) {
-						output[promiseid].description = node.description;
-						// Add Comment
-						output[promiseid].comments[node.key] = {
-							author: node.author,
-							timestamp: node.timestamp,
-							text: `Set description: ${node.description}`,
-							generated: true
-						};
+						if (node.description !== output[promiseid].description) {
+							output[promiseid].description = node.description;
+							// Add Comment
+							output[promiseid].comments[node.key] = {
+								author: node.author,
+								timestamp: node.timestamp,
+								text: `Set description: ${node.description}`,
+								generated: true
+							};
+						}
 					}
 					if (node.level) {
 						output[promiseid].level = node.level;
 						// Add Comment
 					}
 					if (node.due) {
-						output[promiseid].due = node.due;
-						// Add Comment
+						if (node.due !== output[promiseid].due) {
+							output[promiseid].due = node.due;
+							// Add Comment
+							output[promiseid].comments[node.key] = {
+								author: node.author,
+								timestamp: node.timestamp,
+								text: `Set due date to ${moment(node.due).format('M/D/YY')}`,
+								generated: true
+							};
+						}
 					}
 					break;
 				case 'comment':

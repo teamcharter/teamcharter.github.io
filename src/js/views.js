@@ -517,7 +517,7 @@ let Views = () => {
 				case 3: levelText = 'Large'; break;
 			}
 			let sinceStart = moment(promise.started).fromNow();
-			let dueDate = moment(promise.due).format('M/D');
+			let dueDate = moment(promise.due).format('M/D/YY');
 			let authorName = 'Unknown';
 			let authorImage = './public/img/no-user.png';
 			try {
