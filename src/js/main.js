@@ -241,7 +241,8 @@ function renderTeamCharter(tid, team, members) {
 	if (team.status === 'template') {
 		let hSpan = document.getElementById('header-subtitle');
 		hSpan.innerHTML = `Team Charter <span class="tag is-warning">Template</span>`;
-		document.querySelectorAll('[data-tab=container-progress]')[0].style.display = 'none';
+		document.querySelector('#promises-tab').style.display = 'none';
+		document.querySelector('#health-tab').style.display = 'none';
 	}
 
 	/*let allUpdates = team.updates || {};
