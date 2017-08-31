@@ -344,6 +344,7 @@ let Views = () => {
 						updates++;
 					}
 				}
+				let origin = window.location.origin;
 				let link = `${origin}/charter.html?team=${team.tid}&mentor=true`;
 				let members = team.members || {};
 				html += `
@@ -379,6 +380,7 @@ let Views = () => {
 						updates++;
 					}
 				}
+				let origin = window.location.origin;
 				let link = `${origin}/charter.html?team=${team.tid}&code=${team.joinCode}`;
 				let members = team.members || {};
 				html += `
