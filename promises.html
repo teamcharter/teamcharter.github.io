@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Charter</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="omnipointment, charter, collaboration, teams">
+		<meta name="description" content="Get every member of your team to contribute with Charter.">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+
+		<meta property="og:title" content="Charter">
+		<meta property="og:description" content="Get every member of your team to contribute with Charter.">
+		<meta property="og:image" content="./public/img/icon-black.png">
+        <meta property="fb:app_id" content="1538554079792604">
+
+		<link rel="icon" sizes="192x192" href="./public/img/icon-black.png">
+		<link rel="image_src" href="./public/img/icon-white.png">
+        <link rel="manifest" href="/manifest.webapp">
+
+		<script type="text/javascript" src="./public/vex/vex.combined.min.js"></script>
+		<script type="text/javascript">vex.defaultOptions.className = 'vex-theme-plain';</script>
+		<link rel="stylesheet" type="text/css" href="./public/vex/vex.css">
+		<link rel="stylesheet" type="text/css" href="./public/vex/vex-theme-plain.css">
+		<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="./public/css/styles.css">
+		<link rel="stylesheet" href="./public/css/main.css">
+	</head>
+	<body>
+		<section class="hero is-small is-primary is-bold">
+			<div class="hero-head">
+				<header class="nav">
+					<div class="container">
+						<div class="nav-left">
+							<a href="./" class="nav-item">
+								<img src="./public/img/logo-white.png" alt="Charter">
+							</a>
+						</div>
+						<a href="./me.html">
+							<span id="mobile-nav-button" class="nav-toggle">
+								<!--<span></span>
+								<span></span>
+								<span></span>-->
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/no-user.png">
+									</p>
+								</figure>
+							</span>
+						</a>
+						<div class="nav-right nav-menu">
+							<a href="./" class="nav-item">Home</a>
+							<a id="feedback" class="nav-item">Give Feedback</a>
+							<a href="./login.html?nologin=true" class="nav-item">
+								Switch Accounts
+							</a>
+							<a href="./me.html" class="nav-item fill-user-name">Me</a>
+							<a href="./me.html" class="nav-item level">
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/no-user.png">
+									</p>
+								</figure>
+							</a>
+						</div>
+					</div>
+				</header>
+			</div>
+			<div class="hero-body">
+				<div class="container charter-head">
+					<h2 id="header-subtitle" class="subtitle">Team Charter</h2>
+					<h1 id="team-name" class="title fill-team-name" contenteditable="false">Your Team Name</h1>
+				</div>
+			</div>
+			<div class="hero-foot">
+				<div class="tabs is-centered is-boxed">
+					<ul>
+						<li class="charter-tab"><a>Charter</a></li>
+						<li class="charter-tab is-active"><a>Promises</a></li>
+						<li class="charter-tab"><a>Health</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section class="section">
+
+	<div class="box">
+		<div class="content">
+			<h1 class="title is-2">Brainstorm <span class="tag is-warning">Small</span></h1>
+			<p class="subtitle is-neatly-spaced">
+				<div class="comment">
+					<span class="image is-16x16 is-rounded is-inline-image">
+						<img src="https://lh6.googleusercontent.com/-WGzKVkRdUDw/AAAAAAAAAAI/AAAAAAAAAAw/elbqQfjFAws/photo.jpg">
+					</span>
+					<span class="title is-6">Vinesh Kannan</span>
+					<span class="is-faded"> started 2 days ago</span>
+				</div>
+			</p>
+			<p class="subtitle is-normally-spaced">I promise to brainstorm 50 project ideas by 8/1/2017.</p>
+			<div class="is-grouped">
+				<button class="button is-primary">
+					<span class="icon">
+						<i class="fa fa-check"></i>
+					</span>
+					<span>Completed</span>
+				</button>
+				<button class="button is-primary is-outlined">
+					<span class="icon">
+						<i class="fa fa-edit"></i>
+					</span>
+					<span>Edit</span>
+				</button>
+			</div>
+		</div>
+		<div class="content is-bottom-section">
+			<h1 class="title is-4">Feedback</h1>
+			<div id="comments-field">
+				<div class="comment">
+					<span class="image is-16x16 is-rounded is-inline-image">
+						<img src="https://lh6.googleusercontent.com/-WGzKVkRdUDw/AAAAAAAAAAI/AAAAAAAAAAw/elbqQfjFAws/photo.jpg">
+					</span>
+					<span class="title is-6">Vinesh Kannan</span>
+					<span class="is-faded"> 2 days ago: </span>
+					<span>I think we need more horses to get the ROI out of this that our model depends on.</span>
+				</div>
+				<div class="comment">
+					<span class="image is-16x16 is-rounded is-inline-image">
+						<img src="https://lh6.googleusercontent.com/-WGzKVkRdUDw/AAAAAAAAAAI/AAAAAAAAAAw/elbqQfjFAws/photo.jpg">
+					</span>
+					<span class="title is-6">Vinesh Kannan</span>
+					<span class="is-faded"> 1 hour ago: </span>
+					<span>I stand corrected.</span>
+				</div>
+			</div>
+			<div class="is-hidden-to-mentor">
+				<div class="tile is-child">
+					<div class="tile-editable">
+						<textarea class="textarea" rows="2" placeholder="Write here..."></textarea>
+					</div>
+					<div class="is-grouped">
+						<button class="button is-primary">
+							<span class="icon">
+								<i class="fa fa-comment-o"></i>
+							</span>
+							<span>Comment</span>
+						</button>
+						<button class="button is-primary is-outlined">
+							<span class="icon">
+								<i class="fa fa-link"></i>
+							</span>
+							<span>Add Link</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+			<div class="box content">
+				<h1 class="title is-2">Promises</h1>
+				<div class="table-holder">
+					<table class="table is-narrow is-striped is-fullwidth">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Member</th>
+								<th>Last Active</th>
+								<th>View</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Brainstorm</td>
+								<td>Vinesh Kannan</td>
+								<td>2 days ago</td>
+								<td>
+									<button data-promiseid="promise-a" class="button is-primary is-outlined">View</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<button class="button is-primary">New Promise</button>
+			</div>
+		</section>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
+		<script type="text/javascript" src="./src/js/moment.min.js"></script>
+		<script type="text/javascript" src="./public/js/promises-page.js"></script>
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-105380462-1', 'auto');
+			ga('send', 'pageview');
+		</script>
+	</body>
+</html>

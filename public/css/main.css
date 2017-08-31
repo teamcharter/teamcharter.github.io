@@ -159,7 +159,11 @@ header figure img {
 }
 
 .is-grouped .button {
-	margin: 0.25rem !important;
+	margin-left: 0.25rem !important;
+}
+
+.is-grouped .button:nth-child(1) {
+	margin-left: 0 !important;
 }
 
 .is-rounded img {
@@ -184,6 +188,17 @@ header figure img {
 	list-style: none !important;
 }
 
+/* PROMISE */
+
+.box .content.is-bottom-section {
+	background: #f8f8f8;
+	padding: 1.25rem;
+	margin: -1.25rem;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	margin-top: 0;
+}
+
 /* LANDING PAGES */
 
 html#educators-splash {
@@ -202,7 +217,7 @@ html#educators-splash {
 	background: #ffffff !important;
 }
 
-.section.is-light.is-gray {
+.section.is-light.is-gra {
 	background: #f8f8f8 !important;
 }
 
