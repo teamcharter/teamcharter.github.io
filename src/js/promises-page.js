@@ -187,6 +187,10 @@ function mainPromiseTab(tid, team, members, user) {
 		//console.log(members)
 	//});
 
+	if (team.name) {
+		fillText('fill-team-name', team.name);
+	}
+
 	let renderedTable = false;
 
 	database.onTeamPromisesChange(tid, (allPromiseData) => {

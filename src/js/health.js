@@ -85,7 +85,11 @@ function checkUserPermission(tid, team, members, user) {
 		for (let n = 0; n < editableNodes.length; n++) {
 			editableNodes[n].setAttribute('contenteditable', false);
 		}
-	} 
+	}
+
+	if (team.name) {
+		fillText('fill-team-name', team.name);
+	}
 
 	let uid = database.getCurrentUser().uid;
 	if (uid in members || isMentor()) {
