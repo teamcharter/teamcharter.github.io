@@ -370,6 +370,87 @@ let Views = () => {
 			return table;
 		},
 
+		getClassTeamGrid: (model) => {
+			let html = ``;
+			model.teams.forEach((team) => {
+				let updates = 0;
+				for (let uid in team.updates) {
+					for (let upid in team.updates[uid]) {
+						updates++;
+					}
+				}
+				let link = `${origin}/charter.html?team=${team.tid}&code=${team.joinCode}`;
+				let members = team.members || {};
+				html += `
+					<div class="column is-6">
+						<div class="box content has-text-centered">
+							<h2 class="title is-4">${team.name}</h2 class="title is-4">
+							<p class="subtitle is-neatly-spaced">Last active ${moment(team.lastAccess).fromNow()}</p>
+							<p class="subtitle is-neatly-spaced">${Object.keys(team.edits).length} charter edits</p>
+				`;
+				for (let uid in team.members) {
+					let profile = model.profiles[uid];
+					let userModel = {
+						name: 'Unknown Student',
+						image: './public/img/no-user.png',
+						subtitle: '...'
+					}
+					if (profile.name) {
+						userModel.name = profile.name;
+					}
+					if (profile.image) {
+						userModel.image = profile.image;
+					}
+					if (team.members[uid].role) {
+						userModel.subtitle = team.members[uid].role;
+					}
+					let userDiv = views.getUserTile(userModel);
+					html += userDiv.innerHTML;
+				}
+				html += `
+							<div class="is-grouped has-text-centered">
+								<a href="${link}" class="button is-primary is-outlined">Join Team</a>
+							</div>
+						</div>
+					</div>
+				`;
+			});
+			html += `
+					<div class="column is-6">
+						<div class="box content has-text-centered">
+							<h2 class="title is-4">Start New Team</h2 class="title is-4">
+							<p class="subtitle is-neatly-spaced">Don't see your team?</p>
+			`;
+
+			let profile = model.profiles[model.uid];
+			let userModel = {
+				name: 'Unknown Student',
+				image: './public/img/no-user.png',
+				subtitle: 'Team Member'
+			}
+			if (profile.name) {
+				userModel.name = profile.name;
+			}
+			if (profile.image) {
+				userModel.image = profile.image;
+			}
+			let userDiv = views.getUserTile(userModel);
+			html += userDiv.innerHTML;
+
+			html += `				
+							<div class="is-grouped has-text-centered">
+								<a id="new-team" class="button is-primary is-outlined">Start New Team</a>
+							</div>
+						</div>
+					</div>
+			`;
+			let div = document.createElement('div');
+				div.classList.add('columns');
+				div.classList.add('is-multiline');
+				div.innerHTML = html;
+			return div;
+		},
+
 		getPromiseTable: (model) => {
 			let html = `
 				<thead>
