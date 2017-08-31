@@ -77,17 +77,15 @@
 			<div class="hero-foot">
 				<div class="tabs is-centered is-boxed">
 					<ul>
-						<li data-tab="container-charter" class="charter-tab is-active"><a>Charter</a></li>
-						<li data-tab="container-progress" class="charter-tab"><a>Progress</a></li>
+						<li id="charter-tab" class="charter-tab is-active"><a>Charter</a></li>
+						<li id="promises-tab" class="charter-tab"><a>Promises</a></li>
+						<li id="health-tab" class="charter-tab"><a>Health</a></li>
 					</ul>
 				</div>
 			</div>
 		</section>
 		<section class="section">
-			<div class="container tabbed-container content has-text-centered loading" style="display: block;">
-				<h3>Loading...</h3>
-			</div>
-			<div class="container tabbed-container" id="container-charter">
+			<div class="container" id="container-charter">
 				<div class="columns charter-body">
 					<div class="column is-5">
 
@@ -186,39 +184,6 @@
 
 					</div>
 				</div>
-			</div>
-			<div class="container tabbed-container" id="container-progress">
-
-				<div class="box is-hidden-to-mentor">
-					<div class="tile is-child">
-						<div class="content tile-editable">
-						<h2 class="title">Your Latest Update</h2>
-							<textarea id="my-update" class="textarea" rows="3" placeholder="Update your team on your progress!"></textarea>
-						</div>
-						<div class="level">
-						<button id="save-update" class="button is-primary">
-							<span class="icon">
-								<i class="fa fa-edit"></i>
-							</span>
-							<span>Submit Update</span>
-						</button>
-						<p>Submitting as <span class="fill-user-name">Anonymous</span></p>
-						</div>
-					</div>
-				</div>
-
-				<div class="box">
-					<div class="content">
-						<h2 class="title">Progress Updates</h2>
-					</div>
-					<div id="progress-updates"></div>
-				</div>
-				<!--<div class="box">
-					<div class="content">
-						<h2 class="title">Charter Edits</h2>
-					</div>
-					<div id="charter-updates"></div>
-				</div>-->
 			</div>
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>

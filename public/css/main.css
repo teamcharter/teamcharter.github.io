@@ -199,6 +199,21 @@ header figure img {
 	margin-top: 0;
 }
 
+.comment .generated-text {
+	/*color: #30AACB !important;*/
+}
+
+.nlp-editable {
+	color: #30AACB;
+    text-decoration: underline;
+    text-decoration-color: #30AACB;
+    text-decoration-style: dashed;
+}
+
+.is-danger-text {
+	color: #ff3860 !important;
+}
+
 /* LANDING PAGES */
 
 html#educators-splash {

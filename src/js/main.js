@@ -24,14 +24,10 @@ let saveQuest = document.getElementById('save-question');
 let teamExpect = document.getElementById('team-expectations');
 let saveExpect = document.getElementById('save-expectations');
 let myUpdate = document.getElementById('my-update');
-let saveUpdate = document.getElementById('save-update');
 let teamUpdates = document.getElementById('team-updates');
 let addLink = document.getElementById('add-link');
 let teamLinks = document.getElementById('team-links');
 let addMeeting = document.getElementById('add-meeting');
-
-let progressUpdates = document.getElementById('progress-updates');
-//let charterUpdates = document.getElementById('charter-updates');
 
 /*loginBtn.addEventListener('click', (e) => {
 	database.login(main);
@@ -51,14 +47,17 @@ function main(user) {
 		fillText('fill-user-name', user.displayName);
 		fillSrc('fill-user-image', user.photoURL);
 
-		for (let k = 0; k < tabList.length; k++) {
-			tabList[k].addEventListener('click', (e) => {
-				onTabClick(tabList, tabList[k]);
-			});
-		}
+		document.querySelector('#charter-tab').addEventListener('click', (e) => {
+			window.location = `${window.location.origin}/charter.html${document.location.search}`;
+		});
 
-		// Show the Charter tab when the page loads
-		onTabClick(tabList, document.querySelectorAll('.charter-tab[data-tab="container-charter"]')[0]);
+		document.querySelector('#promises-tab').addEventListener('click', (e) => {
+			window.location = `${window.location.origin}/promises.html${document.location.search}`;
+		});
+
+		document.querySelector('#health-tab').addEventListener('click', (e) => {
+			window.location = `${window.location.origin}/health.html${document.location.search}`;
+		});
 
 		let prometheus = database.getPrometheus();
 
@@ -91,7 +90,6 @@ function main(user) {
 		});
 
 		mainCharterTab(user, tid);
-		mainProgressTab(user, tid);
 
 	});
 
@@ -179,17 +177,7 @@ function mainCharterTab(user, tid) {
 			saveExpect.classList.remove('is-loading');
 		}).catch(reportErrorToUser);
 	});
-
-	saveUpdate.addEventListener('click', (e) => {
-		saveUpdate.classList.add('is-loading');
-		let uid = database.getCurrentUser().uid;
-		let update = myUpdate.value;
-		database.submitUpdate(tid, uid, update).then((done) => {
-			saveUpdate.classList.remove('is-loading');
-			myUpdate.value = '';
-		}).catch(reportErrorToUser);
-	});
-
+	
 	addLink.addEventListener('click', (e) => {
 		promptLinkData(e, tid, 'Paste the URL:');
 	});
@@ -230,74 +218,6 @@ function promptLinkData(e, tid, message) {
 			}
 		}
 	});
-}
-
-function mainProgressTab(user, tid) {
-
-	database.onTeamChange(tid, (team, members) => {
-
-		let isTeamTemplate = team.status === 'template';
-		if (!isTeamTemplate) {
-			renderProgressUpdates(tid, team, members);
-		}
-
-	}, reportErrorToUser);
-
-}
-
-function renderProgressUpdates(tid, team, members) {
-	let updateMap = team.updates || {};
-	
-	let updateList = [];
-
-	for (let uid in updateMap) {
-		let subMap = updateMap[uid];
-		for (let upid in subMap) {
-			let node = subMap[upid];
-			node.uid = uid;
-			node.key = upid;
-			updateList.push(node);
-		}
-	}
-
-	for (let uid in team.members) {
-		let member = team.members[uid];
-		let profile = members[uid];
-		updateList.push({
-			update: `${profile.name} joined the team.`,
-			timestamp: member.joined,
-			uid: uid,
-			key: `${uid}-joined`
-		});
-	}
-
-	updateList.sort((a, b) => {
-		return b.timestamp - a.timestamp;
-	});
-
-	progressUpdates.innerHTML = '';
-
-	if (updateList.length > 0) {
-		updateList.forEach((update) => {
-			let author = members[update.uid];
-			if (update.update.length > 0) {
-				let tile = views.getProgressUpdate({
-					name: author.name,
-					role: team.members[update.uid].role,
-					image: author.image,
-					update: update.update,
-					timestamp: update.timestamp
-				});
-				progressUpdates.appendChild(tile);
-			}
-		});
-	} else {
-		let noUpdatesWarning = document.createElement('div');
-		noUpdatesWarning.innerHTML = `<div class="content">
-			<h4>No updates to show :(</h4>
-		</div>`;
-		progressUpdates.appendChild(noUpdatesWarning);
-	}
 }
 
 function renderTeamCharter(tid, team, members) {
@@ -648,28 +568,6 @@ function fillSrc(className, text) {
 	for (let s = 0; s < spans.length; s++) {
 		spans[s].src = text;
 	}
-}
-
-function onTabClick(tabGroup, tab) {
-	let tabid = tab.dataset.tab;
-	let showTab = document.getElementById(tabid);
-	if (showTab) {
-		database.getPrometheus().save({
-			type: 'CHANGE_TAB',
-			tid: TEAM_ID,
-			tab: tabid
-		});
-		for (let j = 0; j < tabGroup.length; j++) {
-			tabGroup[j].classList.remove('is-active');
-		}
-		let otherTabs = document.getElementsByClassName('tabbed-container');
-		for (let i = 0; i < otherTabs.length; i++) {
-			otherTabs[i].style.display = 'none';
-		}
-		showTab.style.display = 'block';
-		tab.classList.add('is-active');
-	}
-
 }
 
 let cancels = 0;

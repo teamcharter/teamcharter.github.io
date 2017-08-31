@@ -368,6 +368,234 @@ let Views = () => {
 				table.classList.add('is-fullwidth');
 				table.innerHTML = html;
 			return table;
+		},
+
+		getPromiseTable: (model) => {
+			let html = `
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Member</th>
+						<th>Status</th>
+						<th>Last Active</th>
+						<th>View</th>
+					</tr>
+				</thead>
+				<tbody>
+			`;
+
+			Object.keys(model.promises).map((pdid) => {
+				let val = model.promises[pdid];
+					val.key = pdid;
+				return val;
+			}).sort((a, b) => {
+				return 0;
+			}).forEach((promise) => {
+				let authorName = 'Unknown';
+				let sinceStart = moment(promise.started).fromNow();
+				try {
+					authorName = model.profiles[promise.author].name;
+				} catch (e) {
+					console.error(e);
+				}
+				let dur = moment.duration(moment(promise.due).diff(moment(Date.now())));
+				let daysLeft = Math.floor(dur.asDays());
+				html += `
+					<tr>
+						<td>${promise.title}</td>
+						<td>${authorName}</td>
+						<td>${model.completed ? 'Completed' : daysLeft + ' days left'}</td>
+						<td>${sinceStart}</td>
+						<td>
+							<button data-promiseid="${promise.key}" class="button is-primary is-outlined">View</button>
+						</td>
+					</tr>
+				`;
+			});
+			html += `
+				</tbody>
+			`;
+			let table = document.createElement('table');
+				table.classList.add('table');
+				table.classList.add('is-narrow');
+				table.classList.add('is-fullwidth');
+				table.classList.add('is-striped');
+				table.innerHTML = html;
+			return table;
+		},
+
+		getPromiseBox: (model) => {
+			let promise = model.promise;
+			let profiles = model.profiles;
+			let levelText = 'Unknown';
+			switch (promise.level) {
+				case 1: levelText = 'Small'; break;
+				case 2: levelText = 'Medium'; break;
+				case 3: levelText = 'Large'; break;
+			}
+			let sinceStart = moment(promise.started).fromNow();
+			let dueDate = moment(promise.due).format('M/D');
+			let authorName = 'Unknown';
+			let authorImage = './public/img/no-user.png';
+			try {
+				authorName = profiles[promise.author].name;
+				authorImage = profiles[promise.author].image;
+			} catch (e) {
+				console.error(e)
+			}
+			//<h1 class="title is-2">${promise.title} <span class="tag is-warning">${levelText}</span></h1>
+			let html = `
+				<div class="column">
+				<div class="box content">
+					<h1 class="title is-2">${promise.title}</h1>
+					<p class="subtitle is-neatly-spaced">
+						<div class="comment">
+							<span class="image is-16x16 is-rounded is-inline-image">
+								<img src="${authorImage}">
+							</span>
+							<span class="title is-6">${authorName}</span>
+							<span class="is-faded"> started ${sinceStart}</span>
+						</div>
+					</p>
+					<p class="subtitle is-normally-spaced">I promise to ${promise.description} by ${dueDate}.</p>
+			`;
+			let linkList = Object.keys(promise.links).map((key) => {
+				let val = promise.links[key];
+				val.key = key;
+				return val;
+			});
+			if (linkList.length > 0) {
+				html += `<div>`;
+				linkList.forEach((link) => {
+					html += `<div class="team-link">${views.getLinkItem(link).innerHTML}</div>`;
+					//html += `<li><a href="${link.url}" target="_blank">${link.name}</a></li>`;
+				});
+				html += `</div>`;
+			}
+			html += `
+					<div class="is-grouped">
+						<button data-fpb="edit" class="button is-primary is-outlined is-hidden-to-mentor">
+							<span class="icon">
+								<i class="fa fa-edit"></i>
+							</span>
+							<span>Edit</span>
+						</button>
+						<button data-fpb="link" class="button is-primary is-outlined is-hidden-to-mentor">
+							<span class="icon">
+								<i class="fa fa-link"></i>
+							</span>
+							<span>Add Link</span>
+						</button>
+						<button data-fpb="back" class="button is-danger is-outlined">
+							<span class="icon">
+								<i class="fa fa-arrow-left"></i>
+							</span>
+							<span>Back to Promises</span>
+						</button>
+					</div>
+				</div>
+				</div>
+				<div class="column">
+				<div class="box content">
+					<h1 class="title is-4">Progress</h1>
+					<div id="comments-field">
+					`;
+
+			Object.keys(promise.comments).map((key) => {
+				return promise.comments[key];
+			}).sort((a, b) => {
+				return a.timestamp - b.timestamp;
+			}).forEach((comment) => {
+				let commentAuthor = {
+					name: 'Unknown',
+					image: './public/img/no-user.png'
+				}
+				try {
+					commentAuthor.name = profiles[comment.author].name;
+					commentAuthor.image = profiles[comment.author].image;
+				} catch (e) {
+					console.error(e)
+				}
+				let sinceComment = moment(comment.timestamp).format('M/D h:mm A');//.fromNow();
+				if (comment.generated) {
+					html += `
+						<div class="comment">
+							<span class="image is-16x16 is-rounded is-inline-image">
+								<img src="${commentAuthor.image}">
+							</span>
+							<span class="title is-6">${commentAuthor.name}</span>
+							<span class="is-faded"> ${sinceComment}: </span>
+							<span class="generated-text">${comment.text}</span>
+						</div>
+					`;
+				} else {
+					html += `
+						<div class="comment">
+							<span class="image is-16x16 is-rounded is-inline-image">
+								<img src="${commentAuthor.image}">
+							</span>
+							<span class="title is-6">${commentAuthor.name}</span>
+							<span class="is-faded"> ${sinceComment}: </span>
+							<span>${comment.text}</span>
+						</div>
+					`;
+				}
+			});
+
+			html += `
+					</div>
+					<div class="is-hidden-to-mentor">
+						<div class="tile is-child">
+							<div class="tile-editable">
+								<textarea data-fpb="textarea" class="textarea" rows="2" placeholder="Write here..."></textarea>
+							</div>
+							<div class="is-grouped">
+								<button data-fpb="comment" class="button is-primary">
+									<span class="icon">
+										<i class="fa fa-comment-o"></i>
+									</span>
+									<span>Comment</span>
+								</button>
+								<button data-fpb="complete" class="button is-primary is-outlined">
+									<span class="icon">
+										<i class="fa ${promise.completed ? 'fa-times' : 'fa-check'}"></i>
+									</span>
+									<span>${promise.completed ? 'Mark as Incomplete' : 'Mark as Complete'}</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				</div>
+			`;
+			let box = document.createElement('div');
+				box.classList.add('columns');
+				box.innerHTML = html;
+			return box;
+		},
+
+		getPromiseEditor: (model) => {
+			if (model.description === '...') {
+				model.description = false;
+			}
+			let html = `
+				<h1 data-pef="title" class="title is-2 nlp-editable" contenteditable="true">${model.title ? model.title : 'Title of Promise'}</h1>
+				<p class="subtitle is-neatly-spaced">
+					I promise to <span data-pef="description" class="nlp-editable" contenteditable="true">${model.description ? model.description : '(do something for my team)'}</span> by <span data-pef="due" class="nlp-editable" contenteditable="true">${model.due ? moment(model.due).format('M/D/YYYY') :'MM/DD/YYYY'}</span>.
+				</p>
+				<p data-pef="warning" class="is-danger-text"></p>
+				<button data-pef="submit" class="button is-primary">Save Promise</button>
+			`;
+			if (model.deletable) {
+				html += `<button data-pef="remove" class="button is-danger is-outlined">Cancel</button>`;
+			} else {
+				html += `<button data-pef="cancel" class="button is-danger is-outlined">Cancel</button>`;
+			}
+			let div = document.createElement('div');
+				div.classList.add('box');
+				div.classList.add('content');
+				div.innerHTML = html;
+			return div;
 		}
 
 	}

@@ -597,6 +597,168 @@ let Database = (firebase, config) => {
 
 		getInstructorsByClass: (classCode) => {
 
+		},
+
+		getTeamPromises: (tid) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			return new Promise((resolve, reject) => {
+				db.ref(`promises/${tid}`).once('value', (snap) => {
+					let val = snap.val();
+					resolve(val);
+				}).catch(reject);
+			});
+		},
+
+		onTeamPromisesChange: (tid, callback, fallback) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			try {
+				db.ref(`promises/${tid}`).on('value', (snap) => {
+					let val = snap.val();
+					callback(val);
+				});
+			} catch (err) {
+				console.error(err);
+				if (fallback) {
+					fallback(err);
+				}
+			}
+		},
+
+		onPromiseChange: (tid, promiseid, callback, fallback) => {
+			if (!tid) {
+				throw Error('No team id given.');
+			}
+			if (!promiseid) {
+				throw Error('No promise id given');
+			}
+			try {
+				db.ref(`promises/${tid}`).on('value', (snap) => {
+					let val = snap.val();
+					callback(val);
+				});
+			} catch (err) {
+				if (fallback) {
+					fallback(err);
+				} else {
+					console.error(err);
+				}
+			};
+		},
+
+		commentOnPromise: (params) => {
+			if (!params.tid) {
+				throw Error('No team id given.');
+			}
+			if (!params.promiseid) {
+				throw Error('No promise id given');
+			}
+			if (!params.author) {
+				throw Error('No author id given');
+			}
+			if (!params.text) {
+				throw Error('No text given');
+			}
+			return new Promise((resolve, reject) => {
+				db.ref(`promises/${params.tid}`).push({
+					type: 'comment',
+					promiseid: params.promiseid,
+					author: params.author,
+					timestamp: Date.now(),
+					text: params.text
+				}).then(resolve).catch(reject);
+			});
+		},
+
+		addPromise: (params) => {
+			if (!params.tid) {
+				throw Error('No team id given.');
+			}
+			if (!params.author) {
+				throw Error('No author id given');
+			}
+			let payload = {
+				type: 'edit',
+				author: params.author,
+				timestamp: Date.now()
+			};
+			return new Promise((resolve, reject) => {
+				db.ref(`promises/${params.tid}`).push(payload).then((done) => {
+					let promiseid = done.path.ct[2];
+					db.ref(`promises/${params.tid}/${promiseid}/promiseid`).set(promiseid).then((finished) => {
+						payload.promiseid = promiseid;
+						resolve({
+							promiseid: promiseid,
+							data: payload
+						});
+					}).catch(reject);
+				}).catch(reject);
+			});
+		},
+
+		unsetPromise: (params) => {
+			if (!params.tid) {
+				throw Error('No team id given.');
+			}
+			if (!params.promiseid) {
+				throw Error('No promise id given');
+			}
+			return new Promise((resolve, reject) => {
+				db.ref(`promises/${params.tid}/${params.promiseid}`).remove().then(resolve).catch(reject);
+			});
+		},
+
+		updatePromise: (params) => {
+			if (!params.tid) {
+				throw Error('No team id given.');
+			}
+			if (!params.promiseid) {
+				throw Error('No promise id given');
+			}
+			if (!params.author) {
+				throw Error('No author id given');
+			}
+			let tid = params.tid + '';
+			let editData = params;
+			delete editData.tid;
+			editData.timestamp = Date.now();
+			return new Promise((resolve, reject) => {
+				db.ref(`promises/${tid}`).push(editData).then(resolve).catch(reject);
+			});
+		},
+
+		addLinkToPromise: (params) => {
+			if (!params.tid) {
+				throw Error('No team id given.');
+			}
+			if (!params.promiseid) {
+				throw Error('No promise id given');
+			}
+			if (!params.author) {
+				throw Error('No author id given');
+			}
+			return new Promise((resolve, reject) => {
+				let hasLinkId = params.linkid ? true : false;
+				db.ref(`promises/${params.tid}`).push({
+					type: 'link',
+					promiseid: params.promiseid,
+					linkid: params.linkid || false,
+					author: params.author,
+					timestamp: Date.now(),
+					name: params.name || false,
+					url: params.url || false,
+				}).then((done) => {
+					if (hasLinkId) {
+						resolve(done);
+					} else {
+						let linkid = done.path.ct[2];
+						db.ref(`promises/${params.tid}/${linkid}/linkid`).set(linkid).then(resolve).catch(reject);
+					}
+				}).catch(reject);
+			});
 		}
 
 	}
