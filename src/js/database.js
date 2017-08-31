@@ -534,6 +534,48 @@ let Database = (firebase, config) => {
 			});
 		},
 
+		getClassTeams: (classCode) => {
+			return new Promise((resolve, reject) => {
+				let ref = db.ref(`classes/${classCode}`);
+				ref.once('value', (snap) => {
+					let val = snap.val() || {};
+					let nodes = {};
+					nodes[classCode] = val;
+					let list = Object.keys(nodes).map((cid) => {
+						let classData = nodes[cid];
+						classData.cid = cid;
+						return classData;
+					});
+					if (list.length > 0) {
+						let promises = [];
+						list.forEach((classData) => {
+							let cid = classData.cid;
+							for (let tid in classData.teams) {
+								let p = new Promise((resolveTeam, rejectTeam) => {
+									database.getTeam(tid).then(resolveTeam).catch(rejectTeam);
+								});
+								p.cid = cid;
+								promises.push(p);
+							}
+						});
+						Promise.all(promises).then((teamList) => {
+							teamList.forEach((team, tidx) => {
+								let meta = promises[tidx];
+								if (nodes[meta.cid]){
+									if (nodes[meta.cid].teams[team.tid]) {
+										nodes[meta.cid].teams[team.tid] = team;
+									}
+								}
+							});
+							resolve(nodes)
+						}).catch(reject);
+					} else {
+						resolve({});
+					}
+				}).catch(reject);
+			});
+		},
+
 		addTeamToClass: (tid, uid, code) => {
 			return new Promise((resolve, reject) => {
 				db.ref(`classes/${code}`).once('value', (snap) => {

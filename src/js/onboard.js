@@ -45,7 +45,7 @@ function main(user) {
 
 	let uid = database.getCurrentUser().uid;
 
-	database.getInstructorClasses(uid).then((classMap) => {
+	database.getClassTeams(classCode).then((classMap) => {
 		let classData = classMap[classCode] || false;
 		if (classData) {
 
@@ -104,7 +104,16 @@ function main(user) {
 				});
 				let viewTeams = teamList.sort((a, b) => {
 					return b.lastAccess - a.lastAccess;
-				})
+				});
+
+				let currentUser =  database.getCurrentUser();
+				profileMap[currentUser.uid] = {
+					email: currentUser.email || false,
+					name: currentUser.displayName || false,
+					image: currentUser.photoURL || false,
+					uid: currentUser.uid
+				};
+
 				let table = views.getClassTeamGrid({
 					teams: viewTeams,
 					profiles: profileMap,

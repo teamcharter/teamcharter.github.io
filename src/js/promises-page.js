@@ -478,13 +478,15 @@ function parsePromiseData(data) {
 					started: false,
 					finished: false,
 					due: false,
-					lastActive: false,
+					lastActive: 0,
 					//
 					links: {},
 					comments: {}
 				};
 			}
-			output[promiseid].lastActive = node.timestamp;
+			if (output[promiseid].lastActive < node.timestamp) {
+				output[promiseid].lastActive = node.timestamp;
+			}
 			switch (node.type) {
 				case 'edit': 
 					if (!output[promiseid].started) {
@@ -528,6 +530,12 @@ function parsePromiseData(data) {
 					if (!(linkid in output[promiseid].links)) {
 						output[promiseid].links[linkid] = {
 							linkid: linkid
+						};
+						output[promiseid].comments[node.key] = {
+							author: node.author,
+							timestamp: node.timestamp,
+							text: `Added link: ${node.name || 'untitled link'}.`,
+							generated: true
 						};
 					}
 					if (node.url) {

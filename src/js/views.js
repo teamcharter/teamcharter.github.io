@@ -485,7 +485,7 @@ let Views = () => {
 					<tr>
 						<td>${promise.title}</td>
 						<td>${authorName}</td>
-						<td>${model.completed ? 'Completed' : daysLeft + ' days left'}</td>
+						<td>${promise.completed ? 'Complete' : daysLeft + ' days left'}</td>
 						<td>${sinceStart}</td>
 						<td>
 							<button data-promiseid="${promise.key}" class="button is-primary is-outlined">View</button>

@@ -32,7 +32,9 @@ function main(user) {
 
 	// Redirect
 	if (params.team) {
-		window.location = `${window.location.origin}/charter.html${document.location.search}`;	
+		window.location = `${window.location.origin}/charter.html${document.location.search}`;
+	} else if (params.class) {
+		window.location = `${window.location.origin}/onboard.html${document.location.search}`;
 	} else {
 		window.location = `${window.location.origin}/me.html${document.location.search}`;
 	}
