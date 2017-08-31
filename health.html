@@ -77,119 +77,27 @@
 			<div class="hero-foot">
 				<div class="tabs is-centered is-boxed">
 					<ul>
-						<li id="charter-tab" class="charter-tab is-active"><a>Charter</a></li>
+						<li id="charter-tab" class="charter-tab"><a>Charter</a></li>
 						<li id="promises-tab" class="charter-tab"><a>Promises</a></li>
-						<li id="health-tab" class="charter-tab"><a>Health</a></li>
+						<li id="health-tab" class="charter-tab is-active"><a>Health</a></li>
 					</ul>
 				</div>
 			</div>
 		</section>
 		<section class="section">
-			<div class="container" id="container-charter">
-				<div class="columns charter-body">
-					<div class="column is-5">
 
-							<div class="box">
-								<div class="content">
-									<h2 class="title">Objective</h2>
-									<div id="focusing-question" class="tile is-child content tile-editable">
-										<p id="team-question" class="fill-team-question" contenteditable="true">What does your team aim to solve or accomplish?</p>
-									</div>
-									<div class="control is-hidden-to-mentor">
-										<button id="save-question" class="button is-primary is-outlined">
-											<span class="icon">
-												<i class="fa fa-edit"></i>
-											</span>
-											<span>Save Objective</span>
-										</button>
-									</div>
-								</div>
-							</div>
 
-							<div class="box">
-								<div class="content">
-									<h2 class="title">Expectations</h2>
-									<div class="tile is-child content tile-editable">
-										<ul id="team-expectations" contenteditable="true">
-											<li>Norms and expectations for all team members.</li>
-											<li>Include behaviors members should avoid.</li>
-										</ul>
-									</div>
-									<div class="control is-hidden-to-mentor">
-										<button id="save-expectations" class="button is-primary is-outlined">
-											<span class="icon">
-												<i class="fa fa-edit"></i>
-											</span>
-											<span>Save Expectations</span>
-										</button>
-									</div>
-								</div>
-							</div>
-
-							<div class="box">
-								<div class="content">
-									<h2 class="title">Links</h2>
-									<div class="tile is-child content tile-editable">
-										<div id="team-links"></div>
-									</div>
-									<div class="control is-hidden-to-mentor">
-										<button id="add-link" class="button is-primary is-outlined">
-											<span class="icon">
-												<i class="fa fa-link"></i>
-											</span>
-											<span>Add Link</span>
-										</button>
-										<a target="_blank" href="https://www.omnipointment.com/meeting/create">
-											<button id="add-meeting" class="button is-primary is-outlined">
-												<span class="icon">
-													<i class="fa fa-calendar"></i>
-												</span>
-												<span>Schedule Team Meeting</span>
-											</button>
-										</a>
-									</div>
-								</div>
-							</div>
-
-					</div>
-					<div class="column is-7">
-
-						<div class="box">
-							<div class="content">
-								<h2 class="title">Roles</h2>
-							</div>
-							<div id="team-updates"></div>
-						</div>
-
-						<div class="box is-hidden-to-mentor">
-							<button id="invite" class="button is-primary is-outlined">
-								<span class="icon">
-									<i class="fa fa-envelope"></i>
-								</span>
-								<span>Invite Teammates</span>
-							</button>
-							<button id="class-code" class="button is-primary is-outlined">
-								<span class="icon">
-									<i class="fa fa-graduation-cap"></i>
-								</span>
-								<span>Enter Class Code</span>
-							</button>
-							<button id="mentor-link" class="button is-primary is-outlined">
-								<span class="icon">
-									<i class="fa fa-eye"></i>
-								</span>
-								<span>Get Mentor Link</span>
-							</button>
-						</div>
-
-					</div>
-				</div>
+			<div class="box content">
+				<h1 class="title is-2">Health Checks</h1>
+				<p class="subtitle is-neatly-spaced">Health Checks allow you to track how your teammates feel about the project over time. You'll learn what roadblocks are in your team's way and receive constructive feedback.</p>
+				<p class="subtitle">Health Checks are not currently available for your team. Check back in a week!</p>
 			</div>
+
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
 		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
 		<script type="text/javascript" src="./src/js/moment.min.js"></script>
-		<script type="text/javascript" src="./public/js/main.js"></script>
+		<script type="text/javascript" src="./public/js/health.js"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
