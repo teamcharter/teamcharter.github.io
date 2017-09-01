@@ -475,7 +475,7 @@ let Views = () => {
 				return 0;
 			}).forEach((promise) => {
 				let authorName = 'Unknown';
-				let sinceStart = moment(promise.started).fromNow();
+				let lastActive = moment(promise.lastActive).fromNow();
 				try {
 					authorName = model.profiles[promise.author].name;
 				} catch (e) {
@@ -487,8 +487,8 @@ let Views = () => {
 					<tr>
 						<td>${promise.title}</td>
 						<td>${authorName}</td>
-						<td>${promise.completed ? 'Complete' : daysLeft + ' days left'}</td>
-						<td>${sinceStart}</td>
+						<td>${promise.completed ? 'Complete' : (daysLeft < 0 ? Math.abs(daysLeft) + ' days overdue' : daysLeft + ' days left')}</td>
+						<td>${lastActive}</td>
 						<td>
 							<button data-promiseid="${promise.key}" class="button is-primary is-outlined">View</button>
 						</td>
