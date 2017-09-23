@@ -679,6 +679,42 @@ let Views = () => {
 				div.classList.add('content');
 				div.innerHTML = html;
 			return div;
+		},
+
+		getRoleStepCard: (model) => {
+			let html = `
+				<div class="message is-collapsed is-primary" collapsible>
+					<div class="message-header is-contrast">
+						<h2 class="title">${model.title}</h2>
+						<button>
+							<span class="icon is-small">
+								<i class="fa show-collapsed fa-chevron-up"></i>
+								<i class="fa show-unfurled fa-chevron-down"></i>
+							</span>
+						</button>
+					</div>
+					<div class="message-body">
+						${model.ps.reduce((agg, val) => {
+							return agg + `<p>${val}</p>`;
+						}, '')}
+						${model.links.reduce((agg, val) => {
+							let linkHtml = `
+								<div class="tags has-addons">
+									<span class="tag is-medium is-primary">${val.type}</span>
+									<span class="tag is-medium is-warning">
+										<a class="link" target="_blank" href="${val.url}">${val.title}</a>
+									</span>
+								</div>
+							`;
+							return agg + linkHtml
+						}, '')}
+						<button class="button is-primary is-outlined">Mark Complete</button>
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+			return div.children[0];
 		}
 
 	}

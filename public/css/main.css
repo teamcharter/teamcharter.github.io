@@ -294,3 +294,32 @@ html#educators-splash {
 a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.is-active {
 	background: #30AACB !important;
 }
+
+/* ROLES */
+
+.message-header.is-contrast .title, .message-header.is-contrast .icon {
+	color: white !important;
+	margin-bottom: 0;
+}
+
+.message-header button {
+	background: none;
+	border: none;
+	outline: none;
+}
+
+.message-header:hover {
+	cursor: pointer;
+}
+
+.message.is-collapsed .message-body {
+	display: none;
+}
+
+.message .show-collapsed, .message.is-collapsed .show-unfurled {
+	display: none;
+}
+
+.message .show-unfurled, .message.is-collapsed .show-collapsed {
+	display: block;
+}
