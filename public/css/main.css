@@ -297,9 +297,17 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 
 /* ROLES */
 
+hr.is-primary {
+	background: #30AACB !important;
+}
+
+.message-header .title {
+	margin-bottom: 0 !important;
+	margin-top: 0 !important;
+}
+
 .message-header.is-contrast .title, .message-header.is-contrast .icon {
 	color: white !important;
-	margin-bottom: 0;
 }
 
 .message-header button {
@@ -323,3 +331,74 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 .message .show-unfurled, .message.is-collapsed .show-collapsed {
 	display: block;
 }
+
+.message.is-primary.is-outlined .message-header {
+	background: white;
+	border: 1px solid #30AACB;
+}
+
+.message .message-header .title {
+	margin-left: 1.75em;
+}
+
+.circle {
+	position: absolute;
+	border: 1px solid #30AACB;
+	border-radius: 100%;
+	width: 1.5em;
+	height: 1.5em;
+	margin-right: 0.75em;
+	text-align: center;
+}
+
+.is-contrast .circle {
+	background: white;
+	border: none;
+}
+
+.message.is-success .is-contrast .circle .icon {
+	color: #23d160 !important;
+}
+
+.message.is-success .message-body .button {
+	display: none !important;
+}
+
+.circle-holder {
+	float: left;
+}
+
+.circle-connector {
+	position: relative;
+	margin-top: 30px;
+}
+
+.circle-connector:first-child {
+	margin-top: 0;
+}
+
+.circle-connector:before {
+	position: absolute;
+	border: 1px solid #30AACB;
+	border-right: none;
+	width: 0;
+	height: 30px;
+	display: block;
+	content: '';
+	left: 1.5em;
+	z-index: 1;
+	top: -30px;
+	margin-left: -1px;
+}
+
+.circle-connector:first-child:before {
+	display: none;
+}
+
+.tag.is-code {
+	color: #ff3860;
+	font-family: monospace;
+	font-weight: bold;
+}
+
+

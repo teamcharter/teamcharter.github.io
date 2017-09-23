@@ -23,19 +23,10 @@
 		<link rel="stylesheet" type="text/css" href="./public/vex/vex.css">
 		<link rel="stylesheet" type="text/css" href="./public/vex/vex-theme-plain.css">
 		<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="./public/css/styles.css">
 		<link rel="stylesheet" href="./public/css/main.css">
-		<!-- Begin Inspectlet Embed Code -->
-		<script type="text/javascript" id="inspectletjs">
-		(function() {
-		window.__insp = window.__insp || [];
-		__insp.push(['wid', 265380435]);
-		var ldinsp = function(){ if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js?wid=265380435&r=' + Math.floor(new Date().getTime()/3600000); var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
-		setTimeout(ldinsp, 0);
-		})();
-		</script>
-		<!-- End Inspectlet Embed Code -->
 	</head>
 	<body>
 		<section class="hero is-small is-primary is-bold">
@@ -47,62 +38,72 @@
 								<img src="./public/img/logo-white.png" alt="Charter">
 							</a>
 						</div>
-						<span id="mobile-nav-button" class="nav-toggle">
-							<!--<span></span>
-							<span></span>
-							<span></span>-->
-							<figure class="media">
-								<p class="image is-32x32">
-									<img class="fill-user-image" src="./public/img/no-user.png">
-								</p>
-							</figure>
-						</span>
+						<a href="./me.html">
+							<span id="mobile-nav-button" class="nav-toggle">
+								<!--<span></span>
+								<span></span>
+								<span></span>-->
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/no-user.png">
+									</p>
+								</figure>
+							</span>
+						</a>
 						<div class="nav-right nav-menu">
 							<a href="./" class="nav-item">Home</a>
+							<a id="feedback" class="nav-item">Give Feedback</a>
+							<a href="./login.html?nologin=true" class="nav-item">
+								Switch Accounts
+							</a>
+							<a href="./me.html" class="nav-item fill-user-name">Me</a>
+							<a href="./me.html" class="nav-item level">
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/no-user.png">
+									</p>
+								</figure>
+							</a>
 						</div>
 					</div>
 				</header>
 			</div>
 			<div class="hero-body">
-				<div class="container charter-head has-text-centered">
+				<div class="container charter-head">
+					<h2 id="header-subtitle" class="subtitle">Team Charter</h2>
+					<h1 id="team-name" class="title fill-team-name" contenteditable="false">Your Team Name</h1>
+				</div>
+			</div>
+			<div class="hero-foot">
+				<div class="tabs is-centered is-boxed">
+					<ul>
+						<li id="charter-tab" class="charter-tab"><a>Charter</a></li>
+						<li id="promises-tab" class="charter-tab"><a>Promises</a></li>
+						<li id="role-tab" class="charter-tab is-active"><a>Role</a></li>
+						<li id="health-tab" class="charter-tab"><a>Health</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section class="section">
+			<div class="container">
+				<div class="has-text-centered">
 					<h1 class="title is-2">
 						<span class="icon is-large">
 							<i class="fa fa-desktop"></i>
 						</span>
 						<span>Frontend Engineer</span>
 					</h1>
-					<p class="subtitle">Design the interface for your team's web application and hook up to the application code.</p>
+					<p class="subtitle is-6 is-normally-spaced">Design the interface for your team's web application and hook up to the application code.</p>
+					<hr class="is-primary">
 				</div>
-			</div>
-		</section>
-		<section class="section">
-			<div class="container">
-				<div class="columns">
-					<div class="column is-6">
-						<div class="box">
-							<h2 class="title is-4">Importance to the Team</h2>
-							<ul>
-								<li>Takes ownership of interface and experience design.</li>
-								<li>Hooks up application engineer code to the site.</li>
-								<li>Helps QA engineer understand the webpage structure.</li>
-							</ul>
-						</div>
-					</div>
-					<div class="column is-6">
-						<div class="box">
-							<h2 class="title is-4">Role in Codebase</h2>
-							<ul>
-								<li>Create HTML pages in <span class="tag">/(root)</span></li>
-								<li>Create CSS styles in <span class="tag">/public/css</span></li>
-								<li>Contribute to JS in <span class="tag">/public/js</span></li>
-							</ul>
-						</div>
-					</div>
-				</div>
+				<div id="details-out" class="columns"></div>
 				<h2 class="title is-4">Learning Modules</h2>
 				<div id="card-out" class="content"></div>
 			</div>
 		</section>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
 		<script type="text/javascript" src="./public/js/role.js"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

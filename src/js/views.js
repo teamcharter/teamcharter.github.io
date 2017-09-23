@@ -683,9 +683,14 @@ let Views = () => {
 
 		getRoleStepCard: (model) => {
 			let html = `
-				<div class="message is-collapsed is-primary" collapsible>
+				<div class="message is-collapsed ${model.completed ? `is-success` : `is-primary`}" collapsible>
 					<div class="message-header is-contrast">
-						<h2 class="title">${model.title}</h2>
+						<div class="circle">
+							<span class="icon is-small">
+								<i class="fa fa-check"></i>
+							</span>
+						</div>
+						<h3 class="title is-5">${model.title}</h3>
 						<button>
 							<span class="icon is-small">
 								<i class="fa show-collapsed fa-chevron-up"></i>
@@ -702,7 +707,7 @@ let Views = () => {
 								<div class="tags has-addons">
 									<span class="tag is-medium is-primary">${val.type}</span>
 									<span class="tag is-medium is-warning">
-										<a class="link" target="_blank" href="${val.url}">${val.title}</a>
+										<a class="link" data-linkid="${val.id}" target="_blank" href="${val.url}">${val.title}</a>
 									</span>
 								</div>
 							`;
@@ -714,7 +719,49 @@ let Views = () => {
 			`;
 			let div = document.createElement('div');
 				div.innerHTML = html;
-			return div.children[0];
+				div.classList.add('circle-connector');
+			return div;
+		},
+
+		tagCode: (text) => {
+			let out = ``;
+			let open = false;
+			for (let c = 0; c < text.length; c++) {
+				if (text[c] === '`') {
+					if (!open) {
+						out += `<span class="tag is-code">`;
+					} else {
+						out += `</span>`;
+					}
+					open = !open;
+				} else {
+					out += text[c];
+				}
+			}
+			if (open) {
+				out += `</span>`;
+			}
+			return out;
+		},
+
+		getListCard: (model) => {
+			let html = `
+				<h2 class="title is-4">${model.title}</h2>
+				<ul>
+					${model.ps.reduce((agg, val) => {
+						let text = val;
+						if (model.hasCode) {
+							text = views.tagCode(val);
+						}
+						return agg + `<li>${text}</li>`
+					}, '')}
+				</ul>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				div.classList.add('column');
+				div.classList.add('is-6');
+			return div;
 		}
 
 	}
