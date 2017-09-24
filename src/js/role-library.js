@@ -15,7 +15,11 @@ let feedbackBtn = document.getElementById('feedback');
 
 database.init(main, () => {
 	// No user signed in
-	window.location = `${window.location.origin}/login.html${document.location.search}`;
+	if (ROLE) {
+		window.location = `${window.location.origin}/login.html?ref=rolelibrary&role=${ROLE}`;
+	} else {
+		window.location = `${window.location.origin}/login.html?ref=rolelibrary`;
+	}
 });
 
 function main(user) {

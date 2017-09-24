@@ -37,6 +37,8 @@ function main(user) {
 		window.location = `${window.location.origin}/onboard.html${document.location.search}`;
 	} else if (params.role) {
 		window.location = `${window.location.origin}/rolelibrary.html${document.location.search}`;
+	} else if (params.ref) {
+		window.location = `${window.location.origin}/${params.ref}.html${document.location.search}`;
 	} else {
 		window.location = `${window.location.origin}/me.html${document.location.search}`;
 	}

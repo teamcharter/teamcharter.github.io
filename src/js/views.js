@@ -857,7 +857,7 @@ let Views = () => {
 			let div = document.createElement('div');
 				div.innerHTML = html;
 				div.classList.add('column');
-				div.classList.add('is-6');
+				div.classList.add('is-3');
 			return div;
 		}
 
