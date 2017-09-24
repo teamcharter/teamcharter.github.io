@@ -13,10 +13,6 @@ let views = Views();
 let loginBtn = document.getElementById('login');
 let feedbackBtn = document.getElementById('feedback');
 
-let allPromisesDiv = document.getElementById('all-promises');
-let focusedPromiseDiv = document.getElementById('focused-promise-box');
-let editPromiseDiv = document.getElementById('edit-promise');
-
 database.init(main, () => {
 	// No user signed in
 	window.location = `${window.location.origin}/login.html${document.location.search}`;
@@ -56,7 +52,7 @@ function main(user) {
 		}, reportErrorToUser);
 
 		database.getPrometheus().save({
-			type: 'PROMISES_PAGE',
+			type: 'ROLE_PAGE',
 			tid: tid,
 			mentor: isMentor()
 		});

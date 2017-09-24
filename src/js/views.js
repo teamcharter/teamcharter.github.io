@@ -683,7 +683,7 @@ let Views = () => {
 
 		getRoleStepCard: (model) => {
 			let html = `
-				<div class="message is-collapsed ${model.completed ? `is-success` : `is-primary`}" collapsible>
+				<div class="message ${model.isOpen ? `` : `is-collapsed`} ${model.completed ? `is-success` : `is-primary`}" collapsible>
 					<div class="message-header is-contrast">
 						<div class="circle">
 							<span class="icon is-small">
@@ -699,21 +699,82 @@ let Views = () => {
 						</button>
 					</div>
 					<div class="message-body">
-						${model.ps.reduce((agg, val) => {
-							return agg + `<p>${val}</p>`;
-						}, '')}
-						${model.links.reduce((agg, val) => {
-							let linkHtml = `
-								<div class="tags has-addons">
-									<span class="tag is-medium is-primary">${val.type}</span>
-									<span class="tag is-medium is-warning">
-										<a class="link" data-linkid="${val.id}" target="_blank" href="${val.url}">${val.title}</a>
-									</span>
-								</div>
-							`;
-							return agg + linkHtml
-						}, '')}
-						<button class="button is-primary is-outlined">Mark Complete</button>
+						<div class="step-note" data-step="${model.id}" contenteditable="${model.editable}">
+							${model.ps.reduce((agg, val) => {
+								return agg + `<p>${val}</p>`;
+							}, '')}
+						</div>
+			`;
+			if (model.editable) {
+				html += `
+					<span data-action="save-note" data-step="${model.id}" class="button is-small is-dark is-outlined has-top-margin">
+						<span class="icon is-small">
+							<i class="fa fa-save"></i>
+						</span>
+						<span>Save Note</span>
+					</span>
+					<span data-action="edit-name" data-step="${model.id}" class="button is-small is-dark is-outlined has-top-margin">
+						<span class="icon is-small">
+							<i class="fa fa-edit"></i>
+						</span>
+						<span>Edit Name</span>
+					</span>
+					<span data-action="move-step-up" data-step="${model.id}" class="button is-small is-primary is-outlined has-top-margin">
+						<span class="icon is-small">
+							<i class="fa fa-arrow-up"></i>
+						</span>
+						<span>Move Up</span>
+					</span>
+					<span data-action="move-step-down" data-step="${model.id}" class="button is-small is-primary is-outlined has-top-margin">
+						<span class="icon is-small">
+							<i class="fa fa-arrow-down"></i>
+						</span>
+						<span>Move Down</span>
+					</span>
+					<hr>
+				`;
+			}
+			html += `
+						<div class="has-top-margin">
+							${model.links.reduce((agg, val) => {
+								let linkHtml = `
+									<div class="tags has-addons">
+								`;
+								if (model.editable) {
+									linkHtml += `
+										<span class="tag is-medium is-transparent-background">
+											<span data-action="edit-link" data-step="${model.id}" data-link="${val.id}" class="icon is-small">
+												<i class="fa fa-edit"></i>
+											</span>
+											<span data-action="remove-link" data-step="${model.id}" data-link="${val.id}" class="icon is-small">
+												<i class="fa fa-remove"></i>
+											</span>
+										</span>
+									`;
+								}	
+								linkHtml += `
+										<span class="tag is-medium is-primary">${val.type}</span>
+										<span class="tag is-medium is-warning">
+											<a class="link" data-linkid="${val.id}" target="_blank" href="${val.url}">${val.title}</a>
+										</span>
+									</div>
+								`;
+								return agg + linkHtml
+							}, '')}
+						</div>
+						<button class="button is-primary is-outlined has-top-margin ${model.editable ? 'is-hidden' : ''}">Mark Complete</button>
+			`;
+			if (model.editable) {
+				html += `
+					<span data-action="add-step-link" data-step="${model.id}" class="button is-small is-dark is-outlined has-top-margin">
+						<span class="icon is-small">
+							<i class="fa fa-plus"></i>
+						</span>
+						<span>Add Link</span>
+					</span>
+				`;
+			}
+			html += `
 					</div>
 				</div>
 			`;
@@ -747,15 +808,51 @@ let Views = () => {
 		getListCard: (model) => {
 			let html = `
 				<h2 class="title is-4">${model.title}</h2>
-				<ul>
+				<ul data-textarea="get-${model.field}" contenteditable="${model.editable}">
 					${model.ps.reduce((agg, val) => {
 						let text = val;
-						if (model.hasCode) {
+						if (model.hasCode && (!model.editable)) {
 							text = views.tagCode(val);
 						}
-						return agg + `<li>${text}</li>`
+						return agg + `<li>${text}</li>`;
 					}, '')}
 				</ul>
+			`;
+			if (model.editable) {
+				html += `
+					<button data-action="save-${model.field}" class="button is-small is-primary is-outlined has-top-margin">
+						<span class="icon is-small">
+							<i class="fa fa-save"></i>
+						</span>
+						<span>Save</span>
+					</button>
+				`;
+			}
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				div.classList.add('column');
+				div.classList.add('is-6');
+			return div;
+		},
+
+		getRoleMapCard: (model) => {
+			let origin = window.location.origin;
+			let link = `${origin}/rolelibrary.html?role=${model.id}`;
+			let html = `
+				<div class="box">
+					<h3 class="title is-4">
+						<span class="icon">
+							<i class="fa fa-${model.icon}"></i>
+						</span>
+						<span>${model.title}</span>
+					</h3>
+					<ul>
+						${model.importance.split('\n').reduce((agg, val) => {
+							return `${agg}<li>${val}</li>`;
+						})}
+					</ul>
+					<a href="${link}" class="button is-primary is-outlined has-top-margin">Preview Role</a>
+				</div>
 			`;
 			let div = document.createElement('div');
 				div.innerHTML = html;

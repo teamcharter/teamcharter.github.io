@@ -801,6 +801,45 @@ let Database = (firebase, config) => {
 					}
 				}).catch(reject);
 			});
+		},
+
+		getRoleMap: (params) => {
+			if (!params.role) {
+				throw Error('No role id given.');
+			}
+			return new Promise((resolve, reject) => {
+				db.ref(`role_library/${params.role}`).once('value', (snap) => {
+					let roleMap = snap.val();
+					if (roleMap) {
+						resolve(roleMap);
+					} else {
+						reject(`No role found for: ${params.role}`);
+					}
+				});
+			});
+		},
+
+		saveRoleMap: (params) => {
+			if (!params.role) {
+				throw Error('No role id given.');
+			}
+			if (!params.data) {
+				throw Error('No role map data given.');
+			}
+			return new Promise((resolve, reject) => {
+				db.ref(`role_library/${params.role}`).set(params.data).then((done) => {
+					resolve(true);
+				}).catch(reject);
+			});
+		},
+
+		getAllRoleMaps: () => {
+			return new Promise((resolve, reject) => {
+				db.ref(`role_library`).once('value', (snap) => {
+					let val = snap.val();
+					resolve(val);
+				}).catch(reject);
+			});
 		}
 
 	}

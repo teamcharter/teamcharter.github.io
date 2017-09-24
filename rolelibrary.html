@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Charter</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="omnipointment, charter, collaboration, teams">
+		<meta name="description" content="Get every member of your team to contribute with Charter.">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+
+		<meta property="og:title" content="Charter">
+		<meta property="og:description" content="Get every member of your team to contribute with Charter.">
+		<meta property="og:image" content="./public/img/icon-black.png">
+        <meta property="fb:app_id" content="1538554079792604">
+
+		<link rel="icon" sizes="192x192" href="./public/img/icon-black.png">
+		<link rel="image_src" href="./public/img/icon-white.png">
+        <link rel="manifest" href="/manifest.webapp">
+
+		<script type="text/javascript" src="./public/vex/vex.combined.min.js"></script>
+		<script type="text/javascript">vex.defaultOptions.className = 'vex-theme-plain';</script>
+		<link rel="stylesheet" type="text/css" href="./public/vex/vex.css">
+		<link rel="stylesheet" type="text/css" href="./public/vex/vex-theme-plain.css">
+		<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="./public/css/styles.css">
+		<link rel="stylesheet" href="./public/css/main.css">
+		<!-- Begin Inspectlet Embed Code -->
+		<script type="text/javascript" id="inspectletjs">
+			(function() {
+			window.__insp = window.__insp || [];
+			__insp.push(['wid', 265380435]);
+			var ldinsp = function(){ if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js?wid=265380435&r=' + Math.floor(new Date().getTime()/3600000); var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
+			setTimeout(ldinsp, 0);
+			})();
+		</script>
+		<!-- End Inspectlet Embed Code -->
+	</head>
+	<body>
+		<section class="hero is-small is-primary is-bold">
+			<div class="hero-head">
+				<header class="nav">
+					<div class="container">
+						<div class="nav-left">
+							<a href="./" class="nav-item">
+								<img src="./public/img/logo-white.png" alt="Charter">
+							</a>
+						</div>
+						<a href="./me.html">
+							<span id="mobile-nav-button" class="nav-toggle">
+								<!--<span></span>
+								<span></span>
+								<span></span>-->
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/no-user.png">
+									</p>
+								</figure>
+							</span>
+						</a>
+						<div class="nav-right nav-menu">
+							<a href="./" class="nav-item">Home</a>
+							<a id="feedback" class="nav-item">Give Feedback</a>
+							<a href="./login.html?nologin=true" class="nav-item">
+								Switch Accounts
+							</a>
+							<a href="./me.html" class="nav-item fill-user-name">Me</a>
+							<a href="./me.html" class="nav-item level">
+								<figure class="media">
+									<p class="image is-32x32">
+										<img class="fill-user-image" src="./public/img/no-user.png">
+									</p>
+								</figure>
+							</a>
+						</div>
+					</div>
+				</header>
+			</div>
+			<div class="hero-body">
+				<div class="container charter-head has-text-centered">
+					<h1 class="title is-2">Role Library</h1>
+					<p class="subtitle">Team roles make sure no one gets stuck doing all the work. Explore roles to find one you want to practice.</p>
+				</div>
+			</div>
+		</section>
+		<section id="section-role" class="section">
+			<button id="toggle-edit" class="button is-warning is-hidden">Edit Role</button>
+			<div class="container">
+				<div class="has-text-centered">
+					<h1 class="title is-2">
+						<span class="icon is-large">
+							<i id="role-icon" class="fa"></i>
+						</span>
+						<span id="role-name">Role Title</span>
+					</h1>
+					<p id="role-desc" class="subtitle is-6 is-normally-spaced is-hidden">...</p>
+					<hr class="is-primary">
+				</div>
+				<div id="details-out" class="columns"></div>
+				<h2 class="title is-4">Learning Modules</h2>
+				<div id="card-out" class="content"></div>
+				<button id="add-module" class="button is-primary is-hidden">Add Module</button>
+			</div>
+		</section>
+		<section id="section-all" class="section">
+			<div class="container">
+				<div id="role-out" class="columns is-multiline"></div>
+			</div>
+		</section>
+		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
+		<script type="text/javascript" src="./public/js/role-library.js"></script>
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-105380462-1', 'auto');
+			ga('send', 'pageview');
+		</script>
+	</body>
+</html>
