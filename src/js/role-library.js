@@ -12,6 +12,9 @@ let views = Views();
 
 let loginBtn = document.getElementById('login');
 let feedbackBtn = document.getElementById('feedback');
+let sectionLoader = document.getElementById('section-loader');
+let sectionRole = document.getElementById('section-role');
+let sectionAll = document.getElementById('section-all');
 
 database.init(main, () => {
 	// No user signed in
@@ -27,8 +30,8 @@ function main(user) {
 	if (!ROLE) {
 		//window.location = `${window.location.origin}/me.html`;
 		database.getAllRoleMaps().then((map) => {
-			document.getElementById('section-role').classList.add('is-hidden');
-			document.getElementById('section-all').classList.remove('is-hidden');
+			sectionLoader.classList.add('is-hidden');
+			sectionAll.classList.remove('is-hidden');
 			let roleOut = document.getElementById('role-out');
 			roleOut.innerHTML = ``;
 			for (let rid in map) {
@@ -160,6 +163,9 @@ function main(user) {
 		database.getRoleMap({
 			role: ROLE
 		}).then((dataMap) => {
+
+			sectionLoader.classList.add('is-hidden');
+			sectionRole.classList.remove('is-hidden');
 
 			let roleMap = getDefaultRoleMap(dataMap);
 
