@@ -683,7 +683,7 @@ let Views = () => {
 
 		getRoleStepCard: (model) => {
 			let html = `
-				<div class="message ${model.isOpen ? `` : `is-collapsed`} ${model.completed ? `is-success` : `is-primary`}" collapsible>
+				<div data-step="${model.id}" class="message ${model.isOpen ? `` : `is-collapsed`} ${model.completed ? `is-success` : `is-primary`}" collapsible>
 					<div class="message-header is-contrast">
 						<div class="circle">
 							<span class="icon is-small">
@@ -755,7 +755,7 @@ let Views = () => {
 								linkHtml += `
 										<span class="tag is-medium is-primary">${val.type}</span>
 										<span class="tag is-medium is-warning">
-											<a class="link" data-linkid="${val.id}" target="_blank" href="${val.url}">${val.title}</a>
+											<a class="link" data-linkid="${val.id}" data-step="${model.id}" target="_blank" href="${val.url}">${val.title}</a>
 										</span>
 									</div>
 								`;

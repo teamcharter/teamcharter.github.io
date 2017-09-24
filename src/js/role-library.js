@@ -338,7 +338,16 @@ function mainTab(user, roleMap, editable) {
 				message: 'What did you learn?',
 				callback: (data) => {
 					if (data) {
+						let step = div.dataset.step;
 						console.log(`${user.uid} learned: ${data}`);
+						database.getDB().ref(`role_browsing`).push({
+							uid: user.uid,
+							role: ROLE,
+							step: step,
+							type: 'learning',
+							learned: data,
+							timestamp: Date.now()
+						});
 					}
 					if (data && div.classList.contains('is-primary')) {
 						div.classList.remove('is-primary');
@@ -353,7 +362,16 @@ function mainTab(user, roleMap, editable) {
 		Array.from(document.querySelectorAll('[data-linkid]')).forEach((link) => {
 			link.addEventListener('click', (e) => {
 				let linkid = link.dataset.linkid;
+				let step = link.dataset.step;
 				console.log(`${user.uid} clicked: ${linkid}`);
+				database.getDB().ref(`role_browsing`).push({
+					uid: user.uid,
+					role: ROLE,
+					step: step,
+					type: 'link',
+					linkid: linkid,
+					timestamp: Date.now()
+				});
 			});
 		});
 	}
@@ -423,8 +441,9 @@ function mainTab(user, roleMap, editable) {
 							idx = i;
 						}
 					});
-					if (order > 0) {
-						let switchWith = roleData.steps[idx - 1].id;
+					let swap = roleData.steps[idx - 1];
+					if (swap) {
+						let switchWith = swap.id;
 						roleMap.steps[switchWith].order = order;
 						roleMap.steps[step].order = order - 1;
 						mainTab(user, roleMap, editable);

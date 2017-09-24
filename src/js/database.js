@@ -86,6 +86,10 @@ let Database = (firebase, config) => {
 			});*/
 		},
 
+		getDB: () => {
+			return db;
+		},
+
 		getPrometheus: () => {
 			return prometheus;
 		},
