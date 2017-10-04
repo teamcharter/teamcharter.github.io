@@ -19,8 +19,8 @@ gulp.task('build', function(){
 		{file: 'promises-page', src: 'src/js', dest: 'public/js'},
 		{file: 'health', src: 'src/js', dest: 'public/js'},
 		{file: 'onboard', src: 'src/js', dest: 'public/js'},*/
-		{file: 'role', src: 'src/js', dest: 'public/js'},
-		{file: 'role-library', src: 'src/js', dest: 'public/js'}
+		{file: 'role', src: 'src/js', dest: 'public/js'}/*,
+		{file: 'role-library', src: 'src/js', dest: 'public/js'}*/
 	];
 	return merge(files.map(function(fileData){
 		let file = fileData.file;

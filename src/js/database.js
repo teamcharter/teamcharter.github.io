@@ -596,7 +596,13 @@ let Database = (firebase, config) => {
 							access: true,
 							joined: Date.now()
 						}).then((done) => {
-							resolve(classData);
+							if (classData.special_type) {
+								db.ref(`teams/${tid}/special_type`).set(classData.special_type).then((confirmed) => {
+									resolve(classData);
+								}).catch(reject);
+							} else {
+								resolve(classData);
+							}
 						}).catch(reject);
 					} else {
 						reject(`Could not find a class with code: ${code}.`);

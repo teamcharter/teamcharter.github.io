@@ -183,6 +183,14 @@ function mainPromiseTab(tid, team, members, user) {
 
 	console.log('main promise tab')
 
+	if (team.special_type) {
+		if (team.special_type === 'swe_roles') {
+			let roleTab = document.querySelector('#role-tab');
+			roleTab.classList.remove('is-hidden');
+			console.log('Show the role tab!', roleTab);
+		}
+	}
+
 	//database.getTeam(tid).then((team) => {
 		//console.log(members)
 	//});
@@ -222,6 +230,10 @@ function mainPromiseTab(tid, team, members, user) {
 	document.querySelector('#promises-tab').addEventListener('click', (e) => {
 		window.location = `${window.location.origin}/promises.html${document.location.search}`;
 	});
+
+	document.querySelector('#role-tab').addEventListener('click', (e) => {
+			window.location = `${window.location.origin}/role.html${document.location.search}`;
+		});
 
 	document.querySelector('#health-tab').addEventListener('click', (e) => {
 		window.location = `${window.location.origin}/health.html${document.location.search}`;

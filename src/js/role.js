@@ -7,11 +7,16 @@ let database = Database(firebase, config);
 let params = getQueryParams(document.location.search);
 let TEAM_ID = params.team;
 let MENTOR_MODE = params.mentor ? true : false;
+let EDIT = false;
 
 let views = Views();
 
 let loginBtn = document.getElementById('login');
 let feedbackBtn = document.getElementById('feedback');
+let sectionLoader = document.getElementById('section-loader');
+let sectionChoose = document.getElementById('section-choose-role');
+let sectionRole = document.getElementById('section-role');
+let sectionAll = document.getElementById('section-all');
 
 database.init(main, () => {
 	// No user signed in
@@ -79,171 +84,60 @@ function mainRoleTab(tid, team, members, user) {
 		window.location = `${window.location.origin}/health.html${document.location.search}`;
 	});
 
-	let cards = [
-		{
-			title: 'Introduction to HTML',
-			ps: [
-				`As a frontend engineer, you will use HTML to design layouts and pages for your team's web application. You don't have to memorize HTML tags: specifics can always be found online! The rest of your team is just getting started, so focus on learning HTML tags that are used for structure and content. Later, elements like forms will come into play.`,
-				`<p>To learn how to give your pages structure, check out these 10 basic HTML tags.`
-			],
-			links: [
-				{
-					title: `99Lime: You Only Need 10 HTML Tags`,
-					url: `http://www.99lime.com/_bak/topics/you-only-need-10-tags/`,
-					type: `Tutorial`,
-					id: 'link0'
-				}
-			]
-		},
-		{
-			title: 'Introduction to CSS',
-			ps: [
-				`To style your web application, you will use CSS. Don't worry about making the web application look beautiful right away. There will be plenty of time over the course of this project to experiment with styles. Again, no need to memorize: the W3Schools CSS reference is a place you can always look to for help.`,
-				`To learn how to give your pages style, explore the W3Schools CSS reference. At least read up to and including the section about the Box Model.`
-			],
-			links: [
-				{
-					title: `W3Schools: CSS Reference`,
-					url: `https://www.w3schools.com/css/css_intro.asp`,
-					type: `Reference`,
-					id: 'link1'
-				}
-			]
-		},
-		{
-			title: 'DOM: The Document Object Model',
-			ps: [
-				`With HTML, you can create layouts, with CSS you can style them. JavaScript will allow you to interact with your pages. To help out your team's application engineer, you will need to get information from page forms and display new content that the application code gives you. The Document Object Model (DOM) makes this easy.`,
-				`To make your pages more than just fixed content, learn about the DOM.`
-			],
-			links: [
-				{
-					title: `Mozilla: Introduction to the DOM`,
-					url: `https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction`,
-					type: `Tutorial`,
-					id: 'link2'
-				}
-			]
-		},
-		{
-			title: `JavaScript: Event Listeners`,
-			ps: [
-				`The application engineer on your team will want user actions like clicks and hovers to trigger certain parts of their code. Event listeners are the way your frontend work hooks up with the application layer! If you do no other JavaScript in this project, make sure you master event listeners.`,
-				`To integrate better with your application code, learn the basics of event listeners.`
-			],
-			links: [
-				{
-					title: `W3Schools: Event Listeners`,
-					url: `https://www.w3schools.com/js/js_htmldom_eventlistener.asp`,
-					type: `Tutorial`,
-					id: 'link3'
-				},
-				{
-					title: `Mozilla: Events Reference`,
-					url: `https://developer.mozilla.org/en-US/docs/Web/Events`,
-					type: `Reference`,
-					id: 'link4'
-				}
-			]
-		},
-		{
-			title: `CSS Framework: W3.CSS`,
-			ps: [
-				`As a frontend engineer, you are not expected to write all of the styling for your web app from scratch. Many professional teams use a CSS framework, which provides reusable classes for formatting the layout of a page.`,
-				`To save development time, learn W3.CSS: a simple CSS framework for responsive websites. If you are curious, you can check out other CSS frameworks like Bootstrap, Bulma, or Semantic UI.`
-			],
-			links: [
-				{
-					title: `W3Schools: Introduction to the W3.CSS framework`,
-					url: `https://www.w3schools.com/w3css/default.asp`,
-					type: `Tutorial`,
-					id: 'link5'
-				}
-			]
-		},
-		{
-			title: `Debugging HTML`,
-			ps: [
-				`Sometimes your pages will display content in an unexpected way, or you'll be stuck trying to get an element styled just right. These situations happen to even the best frontend engineers. Every engineer on this team must learn how to overcome tricky bugs: frontend engineer is no different!`,
-				`To deal with pages that don't seem to be working correctly, learn how to debug HTML.`
-			],
-			links: [
-				{
-					title: `Mozilla: How to debug HTML`,
-					url: `https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Debugging_HTML`,
-					type: `Tutorial`,
-					id: 'link6'
-				}
-			]
-		}
-	];
+	console.log('special type:', team.special_type);
 
-
-	let importance = [
-		`Takes ownership of interface and experience design.`,
-		`Hooks up application code to the site.`,
-		`Helps QA engineer understand the webpage structure.`
-	];
-
-	let codebase = [
-		'Create HTML pages in `/(root)`',
-		'Create CSS styles in `/public/css`',
-		'Contribute to JS in `/public/js`'
-	];
-
-	let cardOut = document.getElementById('card-out');
-	cardOut.innerHTML = ``;
-	cards.map((model) => views.getRoleStepCard(model)).forEach((div) => {
-		cardOut.appendChild(div);
-	});
-
-	let detailsOut = document.getElementById('details-out');
-	detailsOut.innerHTML = ``;
-
-	let importanceView = views.getListCard({
-		title: 'Importance to Team',
-		ps: importance
-	});
-	detailsOut.appendChild(importanceView);
-
-	let codebaseView = views.getListCard({
-		title: 'Role in Codebase',
-		ps: codebase,
-		hasCode: true
-	});
-	detailsOut.appendChild(codebaseView);
-
-	Array.from(document.querySelectorAll('[collapsible]')).forEach((div) => {
-		div.querySelector('.message-header').addEventListener('click', (e) => {
-			if (div.classList.contains('is-collapsed')) {
-				div.classList.remove('is-collapsed');
-			} else {
-				div.classList.add('is-collapsed');
-			}
-		});
-		div.querySelector('.message-body button').addEventListener('click', (e) => {
-			vex.dialog.prompt({
-				message: 'What did you learn?',
-				callback: (data) => {
-					if (data) {
-						console.log(`${user.uid} learned: ${data}`);
-					}
-					if (data && div.classList.contains('is-primary')) {
-						div.classList.remove('is-primary');
-						div.classList.add('is-success');
-					}
-				}
+	if (isMentor()) {
+		window.location = `${window.location.origin}/charter.html${document.location.search}`;
+	} else {
+		Array.from(document.querySelector('#section-choose-role').querySelectorAll('[data-roleid]')).forEach((btn) => {
+			btn.addEventListener('click', (e) => {
+				let roleid = btn.dataset.roleid;
+				console.log(roleid);
+				database.getDB().ref(`teams/${tid}/swe_roles/${user.uid}`).set(roleid).then((done) => {
+					sectionChoose.classList.add('is-hidden');
+					showRoleWithNotes(TEAM_ID, role_id, user.uid);
+				}).catch(reportErrorToUser);
 			});
 		});
-	});
 
-	Array.from(document.querySelectorAll('[data-linkid]')).forEach((link) => {
-		link.addEventListener('click', (e) => {
-			let linkid = link.dataset.linkid;
-			console.log(`${user.uid} clicked: ${linkid}`);
+		let initRole = false;
+		if (team.special_type) {
+			if (team.special_type === 'swe_roles') {
+				let roleMap = team.swe_roles;
+				if (team.swe_roles) {
+					let role_id = team.swe_roles[user.uid];
+					if (role_id) {
+						initRole = true;
+						showRoleWithNotes(TEAM_ID, role_id, user.uid);
+					}
+				}
+			}
+		}
+		if (!initRole) {
+			console.log(`Sorry, you don't have a role on the team!`);
+			sectionLoader.classList.add('is-hidden');
+			sectionChoose.classList.remove('is-hidden');
+		}
+	}
+
+}
+
+function showRoleWithNotes(tid, roleid, user_id) {
+	database.getDB().ref(`role_learning/${tid}`).orderByChild(`uid`).equalTo(user_id).on('value', (snap) => {
+		let stepMap = {};
+		let nodes = snap.val() || {};
+		console.log(nodes)
+		Object.keys(nodes).map(key => nodes[key]).filter(node => node.role === roleid).filter(node => node.type === 'learning').sort((a, b) => {
+			return a.timestamp - b.timestamp;
+		}).forEach((node) => {
+			if (!(node.step in stepMap)) {
+				stepMap[node.step] = [];
+			}
+			stepMap[node.step].push(node);
 		});
+		console.log(stepMap)
+		initRoleViewer(roleid, user_id, stepMap);
 	});
-
 }
 
 function checkUserPermission(tid, team, members, user) {
@@ -350,3 +244,239 @@ function initWithTeamCode(callback) {
 		});
 	}
 }
+
+function initRoleViewer(roleid, user_id, stepMap) {
+
+	database.getRoleMap({
+		role: roleid
+	}).then((dataMap) => {
+
+		sectionLoader.classList.add('is-hidden');
+		sectionRole.classList.remove('is-hidden');
+
+		let roleMap = getDefaultRoleMap(dataMap);
+		let changeBtn = document.getElementById('toggle-change');
+
+		changeBtn.addEventListener('click', (e) => {
+			sectionRole.classList.add('is-hidden');
+			sectionChoose.classList.remove('is-hidden');
+		});
+		mainTab(roleid, user_id, roleMap, stepMap, EDIT);
+
+	}).catch(reportErrorToUser);
+	
+}
+
+function mainTab(roleid, user_id, roleMap, stepMap, editable) {
+
+	let roleData = transformRoleData(roleMap);
+
+	document.getElementById('role-name').innerText = roleData.title;
+	document.getElementById('role-icon').classList.add(`fa-${roleData.icon}`);
+	document.getElementById('role-desc').innerText = roleData.description;
+
+	let cardOut = document.getElementById('card-out');
+	cardOut.innerHTML = ``;
+	roleData.steps.map((model) => {
+		model.editable = editable;
+		model.isOpen = editable;
+		let learned_data = stepMap[model.id] || [];
+		model.learned = learned_data;
+		return model;
+	}).map((model) => views.getRoleStepCard(model)).forEach((div) => {
+		cardOut.appendChild(div);
+	});
+
+	let detailsOut = document.getElementById('details-out');
+	detailsOut.innerHTML = ``;
+
+	let importanceView = views.getListCard({
+		title: 'Importance to Team',
+		field: 'importance',
+		ps: roleData.importance,
+		editable: editable
+	});
+	detailsOut.appendChild(importanceView);
+
+	let codebaseView = views.getListCard({
+		title: 'Role in Codebase',
+		field: 'codebase',
+		ps: roleData.codebase,
+		hasCode: true,
+		editable: editable
+	});
+	detailsOut.appendChild(codebaseView);
+
+	Array.from(document.querySelectorAll('[collapsible]')).forEach((div) => {
+		div.querySelector('.message-header').addEventListener('click', (e) => {
+			if (div.classList.contains('is-collapsed')) {
+				div.classList.remove('is-collapsed');
+			} else {
+				div.classList.add('is-collapsed');
+			}
+		});
+		div.querySelector('.message-body button').addEventListener('click', (e) => {
+			vex.dialog.prompt({
+				message: 'What did you learn?',
+				callback: (data) => {
+					if (data) {
+						let step = div.dataset.step;
+						console.log(`${user_id} learned: ${data}`);
+						database.getDB().ref(`role_learning/${TEAM_ID}`).push({
+							uid: user_id,
+							role: roleid,
+							step: step,
+							type: 'learning',
+							learned: data,
+							timestamp: Date.now()
+						});
+					}
+					if (data && div.classList.contains('is-primary')) {
+						div.classList.remove('is-primary');
+						div.classList.add('is-success');
+					}
+				}
+			});
+		});
+	});
+
+	if (!editable) {
+		Array.from(document.querySelectorAll('[data-linkid]')).forEach((link) => {
+			link.addEventListener('click', (e) => {
+				let linkid = link.dataset.linkid;
+				let step = link.dataset.step;
+				console.log(`${user_id} clicked: ${linkid}`);
+				database.getDB().ref(`role_learning/${TEAM_ID}`).push({
+					uid: user_id,
+					role: roleid,
+					step: step,
+					type: 'link',
+					linkid: linkid,
+					timestamp: Date.now()
+				});
+			});
+		});
+	}
+
+}
+
+function reportErrorToUser(err) {
+	console.error(err);
+	vex.dialog.alert(err + '');
+}
+
+function getQueryParams(qs) {
+	qs = qs.split('+').join(' ');
+	var params = {},
+		tokens,
+		re = /[?&]?([^=]+)=([^&]*)/g;
+	while (tokens = re.exec(qs)) {
+		params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+	}
+	return params;
+}
+
+function fillText(className, text) {
+	let spans = document.getElementsByClassName(className);
+	for (let s = 0; s < spans.length; s++) {
+		spans[s].innerText = text;
+	}
+}
+
+function fillSrc(className, text) {
+	let spans = document.getElementsByClassName(className);
+	for (let s = 0; s < spans.length; s++) {
+		spans[s].src = text;
+	}
+}
+
+function getDefaultRoleMap(roleMap) {
+	// Set defaults
+	roleMap.links = roleMap.links || {};
+	roleMap.steps = roleMap.steps || {};
+	roleMap.title = roleMap.title || 'Untitled Role';
+	roleMap.description = roleMap.description || 'Edit...';
+	roleMap.icon = roleMap.icon || 'user';
+	roleMap.importance = roleMap.importance || 'Edit...';
+	roleMap.codebase = roleMap.codebase || 'Edit...';
+	return roleMap;
+}
+
+function transformRoleData(thisMap) {
+	let inMap = getDefaultRoleMap(thisMap);
+	let roleMap = JSON.parse(JSON.stringify(inMap));
+	// Start transformation
+	let roleData = {};
+	roleData.importance = roleMap.importance.split('\n');
+	roleData.codebase = roleMap.codebase.split('\n');
+	roleData.steps = {};
+	for (let stepid in roleMap.steps) {
+		roleData.steps[stepid] = roleMap.steps[stepid];
+	}
+	for (let linkid in roleMap.links) {
+		let data = roleMap.links[linkid];
+		data.id = linkid;
+		if (!roleData.steps[data.step].links) {
+			roleData.steps[data.step].links = {};
+		}
+		roleData.steps[data.step].links[linkid] = data;
+	}
+	let list = Object.keys(roleData.steps).map((key) => {
+		let stepData = roleData.steps[key];
+		stepData.id = key;
+		if (!stepData.links) {
+			stepData.links = {};
+		}
+		let linkList = Object.keys(stepData.links).map((linkKey) => {
+			return stepData.links[linkKey];
+		}).sort((a, b) => {
+			return a.order - b.order;
+		}).filter((l) => {
+			return !l.removed;
+		});
+		stepData.ps = stepData.note.split('\n');
+		stepData.links = linkList;
+		return stepData;
+	}).sort((a, b) => {
+		return a.order - b.order;
+	});
+	roleData.steps = list;
+	roleData.title = roleMap.title;
+	roleData.description = roleMap.description;
+	roleData.icon = roleMap.icon;
+	return roleData;
+}
+
+function getStepLinkDetails(data, callback) {
+	vex.dialog.prompt({
+		message: 'Link URL',
+		value: data.url,
+		callback: (url) => {
+			if (url) {
+				vex.dialog.prompt({
+					message: 'Link Title',
+					value: data.title,
+					callback: (title) => {
+						if (title) {
+							vex.dialog.prompt({
+								message: 'Link Type',
+								value: data.type,
+								callback: (type) => {
+									if (type) {
+										callback({
+											step: data.step,
+											url: url,
+											title: title,
+											type: type
+										});
+									}
+								}
+							});
+						}
+					}
+				});
+			}
+		}
+	});
+}
+

@@ -49,6 +49,15 @@ function main(user) {
 				checkUserPermission(tid, team, members, user);
 				checkedPermissions = true;
 			}
+
+			if (team.special_type) {
+				if (team.special_type === 'swe_roles') {
+					let roleTab = document.querySelector('#role-tab');
+					roleTab.classList.remove('is-hidden');
+					console.log('Show the role tab!', roleTab);
+				}
+			}
+
 		}, reportErrorToUser);
 
 		document.querySelector('#charter-tab').addEventListener('click', (e) => {
@@ -57,6 +66,10 @@ function main(user) {
 
 		document.querySelector('#promises-tab').addEventListener('click', (e) => {
 			window.location = `${window.location.origin}/promises.html${document.location.search}`;
+		});
+
+		document.querySelector('#role-tab').addEventListener('click', (e) => {
+			window.location = `${window.location.origin}/role.html${document.location.search}`;
 		});
 
 		document.querySelector('#health-tab').addEventListener('click', (e) => {

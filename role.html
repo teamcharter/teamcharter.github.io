@@ -27,6 +27,7 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="./public/css/styles.css">
 		<link rel="stylesheet" href="./public/css/main.css">
+		<link rel="stylesheet" href="./public/css/loader.css">
 	</head>
 	<body>
 		<section class="hero is-small is-primary is-bold">
@@ -85,7 +86,7 @@
 				</div>
 			</div>
 		</section>
-		<section class="section">
+		<!--<section class="section">
 			<div class="container">
 				<div class="has-text-centered">
 					<h1 class="title is-2">
@@ -101,9 +102,62 @@
 				<h2 class="title is-4">Learning Modules</h2>
 				<div id="card-out" class="content"></div>
 			</div>
+		</section>-->
+		<section id="section-loader" class="section contrast-color has-text-centered">
+			<div class="container bars-loader-holder">
+				<div class="bars-loader"></div>
+			</div>
+			<p class="subtitle">Loading...</p>
+		</section>
+		<section id="section-role" class="section is-hidden">
+			<button id="toggle-change" class="button">Change Role</button>
+			<div class="container">
+				<div class="has-text-centered">
+					<h1 class="title is-2">
+						<span class="icon is-large">
+							<i id="role-icon" class="fa"></i>
+						</span>
+						<span id="role-name">Role Title</span>
+					</h1>
+					<p id="role-desc" class="subtitle is-6 is-normally-spaced is-hidden">...</p>
+					<hr class="is-primary">
+				</div>
+				<div id="details-out" class="columns"></div>
+				<h2 class="title is-4">Learning Modules</h2>
+				<div id="card-out" class="content"></div>
+				<button id="add-module" class="button is-primary is-hidden">Add Module</button>
+			</div>
+		</section>
+		<section id="section-choose-role" class="section contrast-color has-text-centered is-hidden">
+			<h1 class="title is-3">Choose Your Role</h1>
+			<button class="button is-primary is-outlined" data-roleid="frontend">
+				<span class="icon">
+					<i class="fa fa-desktop"></i>
+				</span>
+				<span>Frontend Designer</span>
+			</button>
+			<button class="button is-primary is-outlined" data-roleid="application">
+				<span class="icon">
+					<i class="fa fa-code-fork"></i>
+				</span>
+				<span>Application Developer</span>
+			</button>
+			<button class="button is-primary is-outlined" data-roleid="backend">
+				<span class="icon">
+					<i class="fa fa-server"></i>
+				</span>
+				<span>Backend Engineer</span>
+			</button>
+			<button class="button is-primary is-outlined" data-roleid="testing">
+				<span class="icon">
+					<i class="fa fa-shield"></i>
+				</span>
+				<span>Software Testing Analyst</span>
+			</button>
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
 		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
+		<script type="text/javascript" src="./src/js/moment.min.js"></script>
 		<script type="text/javascript" src="./public/js/role.js"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

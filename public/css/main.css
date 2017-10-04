@@ -364,10 +364,6 @@ hr.is-primary {
 	color: #23d160 !important;
 }
 
-.message.is-success .message-body .button {
-	display: none !important;
-}
-
 .circle-holder {
 	float: left;
 }

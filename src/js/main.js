@@ -55,6 +55,10 @@ function main(user) {
 			window.location = `${window.location.origin}/promises.html${document.location.search}`;
 		});
 
+		document.querySelector('#role-tab').addEventListener('click', (e) => {
+			window.location = `${window.location.origin}/role.html${document.location.search}`;
+		});
+
 		document.querySelector('#health-tab').addEventListener('click', (e) => {
 			window.location = `${window.location.origin}/health.html${document.location.search}`;
 		});
@@ -221,6 +225,16 @@ function promptLinkData(e, tid, message) {
 }
 
 function renderTeamCharter(tid, team, members) {
+
+	console.log('special type:', team.special_type);
+
+	if (team.special_type) {
+		if (team.special_type === 'swe_roles') {
+			let roleTab = document.querySelector('#role-tab');
+			roleTab.classList.remove('is-hidden');
+			console.log('Show the role tab!', roleTab);
+		}
+	}
 
 	let teamMembers = team.members || {};
 

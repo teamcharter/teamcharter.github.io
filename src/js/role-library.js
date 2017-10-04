@@ -160,130 +160,7 @@ function main(user) {
 	};*/
 
 	if (ROLE) {
-		database.getRoleMap({
-			role: ROLE
-		}).then((dataMap) => {
-
-			sectionLoader.classList.add('is-hidden');
-			sectionRole.classList.remove('is-hidden');
-
-			let roleMap = getDefaultRoleMap(dataMap);
-
-			let editBtn = document.getElementById('toggle-edit');
-			let addModBtn = document.getElementById('add-module');
-
-			database.getPrometheus().can('contributor', (data) => {
-				editBtn.classList.remove('is-hidden');
-			});
-
-			let divName = document.getElementById('role-name');
-			let editName = (e) => {
-				if (EDIT) {
-					vex.dialog.prompt({
-						message: 'Edit Title',
-						value: roleMap.title,
-						callback: (res) => {
-							divName.removeEventListener('click', editName);
-							if (res) {
-								roleMap.title = res;
-								mainTab(user, roleMap, EDIT);
-							}
-						}
-					});
-				}
-			}
-			divName.addEventListener('click', editName);
-
-			let divIcon = document.getElementById('role-icon');
-			let editIcon = (e) => {
-				if (EDIT) {
-					vex.dialog.prompt({
-						message: 'Edit Icon',
-						value: roleMap.icon,
-						callback: (res) => {
-							divIcon.removeEventListener('click', editIcon);
-							if (res) {
-								roleMap.icon = res;
-								mainTab(user, roleMap, EDIT);
-							}
-						}
-					});
-				}
-			}
-			divIcon.addEventListener('click', editIcon);
-
-			let divDesc = document.getElementById('role-desc');
-			let editDesc = (e) => {
-				if (EDIT) {
-					vex.dialog.prompt({
-						message: 'Edit Description',
-						value: roleMap.description,
-						callback: (res) => {
-							divDesc.removeEventListener('click', editDesc);
-							if (res) {
-								roleMap.description = res;
-								mainTab(user, roleMap, EDIT);
-							}
-						}
-					});
-				}
-			}
-			divDesc.addEventListener('click', editDesc);
-
-			let addModFn = (e) => {
-				if (EDIT) {
-					//addModBtn.removeEventListener('click', addModFn);
-					let size = Object.keys(roleMap.steps).length - 1;
-					let newstepid = `step-${size}`;
-					roleMap.steps[newstepid] = {
-						title: 'Untitled Module',
-						order: size,
-						note: `...`
-					}
-					mainTab(user, roleMap, EDIT);
-				}
-			}
-			addModBtn.addEventListener('click', addModFn);
-
-			editBtn.addEventListener('click', (e) => {
-				EDIT = !EDIT;
-				if (EDIT) {
-					editBtn.innerText = 'Publish Role';
-					editBtn.classList.add('is-success');
-					editBtn.classList.remove('is-warning');
-					addModBtn.classList.remove('is-hidden');
-					mainTab(user, roleMap, EDIT);
-				} else {
-					editBtn.innerText = 'Edit Role';
-					editBtn.classList.remove('is-success');
-					editBtn.classList.add('is-warning');
-					editBtn.classList.add('is-loading');
-					addModBtn.classList.add('is-hidden');
-					database.saveRoleMap({
-						role: ROLE,
-						data: roleMap
-					}).then((done) => {
-						vex.dialog.alert(`Saved Role: ${roleMap.title}`);
-						mainTab(user, roleMap, EDIT);
-						editBtn.classList.remove('is-loading');
-					}).catch(reportErrorToUser);
-				}
-			});
-
-			if (EDIT) {
-				editBtn.innerText = 'Publish Role';
-				editBtn.classList.add('is-success');
-				editBtn.classList.remove('is-warning');
-				addModBtn.classList.remove('is-hidden');
-			} else {
-				editBtn.innerText = 'Edit Role';
-				editBtn.classList.remove('is-success');
-				editBtn.classList.add('is-warning');
-				addModBtn.classList.add('is-hidden');
-			}
-			mainTab(user, roleMap, EDIT);
-
-		}).catch(reportErrorToUser);
+		initRoleViewer(ROLE, user);
 	}
 
 	database.getPrometheus().save({
@@ -291,6 +168,135 @@ function main(user) {
 		role: ROLE
 	});
 
+}
+
+function initRoleViewer(ROLE, user) {
+
+	database.getRoleMap({
+		role: ROLE
+	}).then((dataMap) => {
+
+		sectionLoader.classList.add('is-hidden');
+		sectionRole.classList.remove('is-hidden');
+
+		let roleMap = getDefaultRoleMap(dataMap);
+
+		let editBtn = document.getElementById('toggle-edit');
+		let addModBtn = document.getElementById('add-module');
+
+		database.getPrometheus().can('contributor', (data) => {
+			editBtn.classList.remove('is-hidden');
+		});
+
+		let divName = document.getElementById('role-name');
+		let editName = (e) => {
+			if (EDIT) {
+				vex.dialog.prompt({
+					message: 'Edit Title',
+					value: roleMap.title,
+					callback: (res) => {
+						divName.removeEventListener('click', editName);
+						if (res) {
+							roleMap.title = res;
+							mainTab(user, roleMap, EDIT);
+						}
+					}
+				});
+			}
+		}
+		divName.addEventListener('click', editName);
+
+		let divIcon = document.getElementById('role-icon');
+		let editIcon = (e) => {
+			if (EDIT) {
+				vex.dialog.prompt({
+					message: 'Edit Icon',
+					value: roleMap.icon,
+					callback: (res) => {
+						divIcon.removeEventListener('click', editIcon);
+						if (res) {
+							roleMap.icon = res;
+							mainTab(user, roleMap, EDIT);
+						}
+					}
+				});
+			}
+		}
+		divIcon.addEventListener('click', editIcon);
+
+		let divDesc = document.getElementById('role-desc');
+		let editDesc = (e) => {
+			if (EDIT) {
+				vex.dialog.prompt({
+					message: 'Edit Description',
+					value: roleMap.description,
+					callback: (res) => {
+						divDesc.removeEventListener('click', editDesc);
+						if (res) {
+							roleMap.description = res;
+							mainTab(user, roleMap, EDIT);
+						}
+					}
+				});
+			}
+		}
+		divDesc.addEventListener('click', editDesc);
+
+		let addModFn = (e) => {
+			if (EDIT) {
+				//addModBtn.removeEventListener('click', addModFn);
+				let size = Object.keys(roleMap.steps).length - 1;
+				let newstepid = `step-${size}`;
+				roleMap.steps[newstepid] = {
+					title: 'Untitled Module',
+					order: size,
+					note: `...`
+				}
+				mainTab(user, roleMap, EDIT);
+			}
+		}
+		addModBtn.addEventListener('click', addModFn);
+
+		editBtn.addEventListener('click', (e) => {
+			EDIT = !EDIT;
+			if (EDIT) {
+				editBtn.innerText = 'Publish Role';
+				editBtn.classList.add('is-success');
+				editBtn.classList.remove('is-warning');
+				addModBtn.classList.remove('is-hidden');
+				mainTab(user, roleMap, EDIT);
+			} else {
+				editBtn.innerText = 'Edit Role';
+				editBtn.classList.remove('is-success');
+				editBtn.classList.add('is-warning');
+				editBtn.classList.add('is-loading');
+				addModBtn.classList.add('is-hidden');
+				database.saveRoleMap({
+					role: ROLE,
+					data: roleMap
+				}).then((done) => {
+					vex.dialog.alert(`Saved Role: ${roleMap.title}`);
+					mainTab(user, roleMap, EDIT);
+					editBtn.classList.remove('is-loading');
+				}).catch(reportErrorToUser);
+			}
+		});
+
+		if (EDIT) {
+			editBtn.innerText = 'Publish Role';
+			editBtn.classList.add('is-success');
+			editBtn.classList.remove('is-warning');
+			addModBtn.classList.remove('is-hidden');
+		} else {
+			editBtn.innerText = 'Edit Role';
+			editBtn.classList.remove('is-success');
+			editBtn.classList.add('is-warning');
+			addModBtn.classList.add('is-hidden');
+		}
+		mainTab(user, roleMap, EDIT);
+
+	}).catch(reportErrorToUser);
+	
 }
 
 function mainTab(user, roleMap, editable) {

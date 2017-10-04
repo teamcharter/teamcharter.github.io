@@ -682,8 +682,12 @@ let Views = () => {
 		},
 
 		getRoleStepCard: (model) => {
+			let isCompleted = false;
+			if (model.learned.length > 0) {
+				isCompleted = true;
+			}
 			let html = `
-				<div data-step="${model.id}" class="message ${model.isOpen ? `` : `is-collapsed`} ${model.completed ? `is-success` : `is-primary`}" collapsible>
+				<div data-step="${model.id}" class="message ${model.isOpen ? `` : `is-collapsed`} ${isCompleted ? `is-success` : `is-primary`}" collapsible>
 					<div class="message-header is-contrast">
 						<div class="circle">
 							<span class="icon is-small">
@@ -762,8 +766,27 @@ let Views = () => {
 								return agg + linkHtml
 							}, '')}
 						</div>
-						<button class="button is-primary is-outlined has-top-margin ${model.editable ? 'is-hidden' : ''}">Mark Complete</button>
 			`;
+			if (isCompleted) {
+				html += `
+					<div class="has-top-margin">
+						<h5 class="title is-5">Lessons Learned</h5>
+						<ul>
+						${model.learned.reduce((agg, val) => {
+							let div = `
+								<li><span class="tag">${moment(val.timestamp).format(`M/D h:mm A`)}</span> ${val.learned}</li>
+							`;
+							return `${agg}${div}`;
+						}, ``)}
+						</ul>
+					</div>
+					<button class="button is-primary is-outlined has-top-margin ${model.editable ? 'is-hidden' : ''}">Add Another Note</button>
+				`;
+			} else {
+				html += `
+					<button class="button is-primary is-outlined has-top-margin ${model.editable ? 'is-hidden' : ''}">Mark Complete</button>
+				`;
+			}
 			if (model.editable) {
 				html += `
 					<span data-action="add-step-link" data-step="${model.id}" class="button is-small is-dark is-outlined has-top-margin">
