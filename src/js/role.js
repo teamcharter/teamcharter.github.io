@@ -95,7 +95,7 @@ function mainRoleTab(tid, team, members, user) {
 				console.log(roleid);
 				database.getDB().ref(`teams/${tid}/swe_roles/${user.uid}`).set(roleid).then((done) => {
 					sectionChoose.classList.add('is-hidden');
-					showRoleWithNotes(TEAM_ID, role_id, user.uid);
+					showRoleWithNotes(TEAM_ID, roleid, user.uid);
 				}).catch(reportErrorToUser);
 			});
 		});
