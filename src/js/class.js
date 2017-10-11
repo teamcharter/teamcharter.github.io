@@ -79,7 +79,7 @@ function main(user) {
 					let p = database.getUser(uid);
 					p.uid = uid;
 					userPromises.push(p);
-					studentMap[uid] = team.name;
+					studentMap[uid] = tid;//team.name;
 				}
 			}
 
@@ -115,17 +115,18 @@ function main(user) {
 				for (let uid in studentMap) {
 					let profile = profileMap[uid];
 					if (profile) {
-						let teamName = studentMap[uid];
+						let teamData = teams[studentMap[uid]] || {};
 						let tile = views.getUserTile({
 							name: profile.name,
 							image: profile.image,
-							subtitle: teamName
+							subtitle: teamData.name || 'Untitled Team'
 						});
 						studentSpace.appendChild(tile);
 						sCount++;
 					}
 				}
 				fillText('fill-number-students', `(${sCount})`);
+				roleMain(classData, instructorMap, studentMap, profileMap);
 			});
 
 			let promises = [];
@@ -161,7 +162,7 @@ function main(user) {
 					});
 				}
 
-				onTabClick(tabList, document.querySelectorAll('.charter-tab[data-tab="container-teams"]')[0]);
+				//onTabClick(tabList, document.querySelectorAll('.charter-tab[data-tab="container-teams"]')[0]);
 
 			}).catch(console.error);
 
@@ -172,6 +173,79 @@ function main(user) {
 		type: 'CLASS_PAGE',
 		classCode: classCode
 	});
+
+}
+
+onTabClick(tabList, document.querySelector('[data-tab="container-roles"]'));
+
+function roleMain(classData, instructorMap, studentMap, profileMap) {
+
+	let teams = classData.teams;
+
+	let promises = [];
+	for (let tid in teams) {
+		let p = new Promise((resolve, reject) => {
+			database.getDB().ref(`role_learning/${tid}`).once('value', (snap) => {
+				let val = snap.val() || {};
+				resolve(val);
+			}).catch(reject);
+		});
+		p.tid = tid;
+		promises.push(p);
+	}
+	Promise.all(promises).then((res) => {
+		let dataMap = {};
+		res.forEach((data, idx) => {
+			let tid = promises[idx].tid;
+			dataMap[tid] = data;
+		});
+		showRoleAnalytics(classData, instructorMap, studentMap, profileMap, dataMap);
+	}).catch(reportErrorToUser);
+
+}
+
+function showRoleAnalytics(classData, instructorMap, studentMap, profileMap, roleData) {
+
+	let teams = classData.teams;
+	console.log(roleData)
+
+	let list = [];
+	for (let tid in roleData) {
+		let learnData = roleData[tid] || {};
+		for (let lid in learnData) {
+			let data = learnData[lid];
+			data.lid = lid;
+			data.tid = tid;
+			list.push(data);
+		}
+	}
+
+	console.log(list);
+
+	let ds = list.map((data) => {
+		return moment(data.timestamp).format('M/D h:mm A');
+	});
+
+	let topUsers = {};
+	list.forEach((data) => {
+		if (!(data.uid in topUsers)) {
+			topUsers[data.uid] = 0;
+		}
+		topUsers[data.uid]++;
+	});
+	let topUser = Object.keys(topUsers).map((uid) => {
+		return {
+			uid: uid,
+			count: topUsers[uid]
+		};
+	}).sort((a, b) => {
+		return b.count - a.count;
+	})[0];
+
+	console.log(profileMap[topUser.uid], topUser.count);
+
+	
+
 
 }
 
