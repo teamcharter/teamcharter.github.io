@@ -43,6 +43,8 @@ function main(user) {
 			});
 		});
 
+		let once = true;
+
 		let checkedPermissions = false;
 		database.onTeamChange(tid, (team, members) => {
 			if (!checkedPermissions) {
@@ -56,6 +58,11 @@ function main(user) {
 					roleTab.classList.remove('is-hidden');
 					console.log('Show the role tab!', roleTab);
 				}
+			}
+
+			if (once) {
+				mainHealthTab(tid, team, members, user);
+				once = false;
 			}
 
 		}, reportErrorToUser);
@@ -138,6 +145,184 @@ function checkUserPermission(tid, team, members, user) {
 	} else {
 		window.location = window.location.origin + '/me.html';
 	}
+}
+
+const RAW_EMOTIONS = `Joy
+Love
+Fear
+Anger
+Sadness
+Surprise
+Content
+Happy
+Cheerful
+Proud
+Optimistic
+Enthusiastic
+Elation
+Enthralled
+Affectionate
+Longing
+Desire
+Tenderness
+Peaceful
+Scared
+Terror
+Insecure
+Nervous
+Horror
+Rage
+Exasperated
+Irritable
+Envy
+Disgust
+Suffering
+Sadness
+Disappointed
+Shameful
+Neglected
+Despair
+Stunned
+Confused
+Amazed
+Overcome
+Moved
+Pleased
+Satisfied
+Amused
+Delighted
+Jovial
+Blissful
+Triumphant
+Illustrious
+Eager
+Hopeful
+Excited
+Zeal
+Euphoric
+Jubilation
+Enchanted
+Rapture
+Fondness
+Romantic
+Sentimental
+Attracted
+Passion
+Infatuation
+Caring
+Compassionate
+Relieved
+Satisfied
+Frightened
+Helpless
+Panic
+Hysterical
+Inferior
+Inadequate
+Worried
+Anxious
+Mortified
+Dread
+Hate
+Hostile
+Agitated
+Frustrated
+Annoyed
+Aggravated
+Resentful
+Jealous
+Contempt
+Revoluted
+Agony
+Hurt
+Depressed
+Sorrow
+Dismayed
+Displeased
+Regretful
+Guilty
+Isolated
+Lonely
+Grief
+Powerless
+Shocked
+Dismayed
+Disillusioned
+Perplexed
+Astonished
+Awe-struck
+Speechless
+Astounded
+Stimulated
+Touched`;
+
+const EMOTION_LIST = RAW_EMOTIONS.split('\n').map((e) => {
+	return e.trim();
+});
+const EMOTION_WHEEL = {};
+
+function mainHealthTab(tid, team, members, user) {
+	//console.log(team, members, user);
+	//console.log(EMOTION_LIST);
+	Array.from(document.querySelectorAll(`.emotion-selector`)).forEach((sel) => {
+		EMOTION_LIST.forEach((e) => {
+			let opt = document.createElement(`option`);
+				opt.value = e;
+				opt.innerText = e;
+			sel.appendChild(opt);
+		});
+	});
+	let teammateField = document.querySelector(`#field-team-feedback`);
+	teammateField.innerHTML = ``;
+	for (let uid in members) {
+		let mate = members[uid];
+		let card = views.getTeammateFeedbackCard({
+			uid: uid,
+			name: mate.name,
+			image: mate.image
+		});
+		teammateField.appendChild(card);
+	}
+	let submitBtn = document.querySelector(`#submit-update`);
+	submitBtn.addEventListener(`click`, (e) => {
+		let progress = document.querySelector(`#textarea-progress`).value;
+		let roadblocks = document.querySelector(`#textarea-roadblocks`).value;
+		let feelings = document.querySelector(`#textarea-feelings`).value;
+		let emotions = Array.from(document.querySelectorAll(`.emotion-selector`)).map((el) => {
+			let emotion = el.options[el.selectedIndex].value;
+			return emotion;
+		});
+		let teammates = Array.from(document.querySelectorAll(`.textarea-teammate`)).map((el) => {
+			let uid = el.dataset.uid;
+			let feedback = el.value;
+			return {
+				for: uid,
+				feedback: feedback || `None`
+			}
+		});
+		let update = {
+			timestamp: Date.now(),
+			uid: user.uid,
+			tid: tid,
+			progress: progress || `None`,
+			roadblocks: roadblocks || `None`,
+			feelings: feelings || `None`,
+			emotions: emotions || [`None`],
+			teammates: teammates || [`None`]
+		}
+		console.log(update);
+		submitBtn.classList.add(`is-loading`);
+		let p = database.getDB().ref(`progress_updates/${tid}`).push(update);
+		p.then((done) => {
+			submitBtn.classList.remove(`is-loading`);
+			vex.dialog.alert({
+				message: `Successfully submitted!`,
+				callback: (val) => {
+					window.location = `${window.location.origin}/charter.html${document.location.search}`;
+				}
+			});
+		}).catch(reportErrorToUser);
+	});
 }
 
 function isMentor() {

@@ -882,6 +882,25 @@ let Views = () => {
 				div.classList.add('column');
 				div.classList.add('is-3');
 			return div;
+		},
+
+		getTeammateFeedbackCard: (model) => {
+			let html = `
+				<div class="media-left">
+					<figure class="image is-64x64">
+						<img src="${model.image}" alt="${model.name}">
+					</figure>
+				</div>
+				<div class="media-content">
+					<div class="content">
+						<textarea class="textarea textarea-teammate" data-uid=${model.uid} placeholder="Feedback for ${model.name}..."></textarea>
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				div.classList.add('media');
+			return div;
 		}
 
 	}

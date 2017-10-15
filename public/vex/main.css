@@ -56,3 +56,9 @@ html, body {
 .bold {
 	font-weight: bold;
 }
+
+.select .emotion-selector {
+	margin-left: 20px !important;
+}
+
+

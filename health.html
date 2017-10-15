@@ -88,10 +88,67 @@
 		<section class="section">
 
 
-			<div class="box content">
-				<h1 class="title is-2">Health Checks</h1>
+			<div class="box content container">
+				<h1 class="title is-2">Health Check <span class="tag is-warning">Anonymous</span></h1>
 				<p class="subtitle is-neatly-spaced">Health Checks allow you to track how your teammates feel about the project over time. You'll learn what roadblocks are in your team's way and receive constructive feedback.</p>
-				<p class="subtitle">Health Checks are not currently available for your team. Check back in a week!</p>
+				<hr>
+				<div class="columns">
+					<div class="column is-6">
+						<h2 class="title is-3">1. How are you feeling?</h2>
+						<p class="subtitle is-neatly-spaced">Choose up to three emotions from the wheel that describe how you feel about the project so far.</p>
+						<hr>
+						<div class="field">
+							<p>
+								<span class="subtitle is-neatly-spaced is-5">I feel</span>
+								<span class="select">
+									<select class="emotion-selector" id="emotion-1">
+										<option value="None" selected>_____</option>
+									</select>
+								</span>
+							</p>
+							<p>
+								<span class="subtitle is-neatly-spaced is-5">I feel</span>
+								<span class="select">
+									<select class="emotion-selector" id="emotion-2">
+										<option value="None" selected>_____</option>
+									</select>
+								</span>
+							</p>
+							<p>
+								<span class="subtitle is-neatly-spaced is-5">I feel</span>
+								<span class="select">
+									<select class="emotion-selector" id="emotion-3">
+										<option value="None" selected>_____</option>
+									</select>
+								</span>
+							</p>
+						</div>
+						<p class="subtitle">Why did you choose these?</p>
+						<textarea id="textarea-feelings" class="textarea"></textarea>
+					</div>
+					<div class="column is-6">
+						<figure class="image is-square">
+							<img src="https://i.pinimg.com/736x/63/2a/c9/632ac94d6ee99be50ba2f0c9b46c3ecf--therapy-activities-emotion.jpg">
+						</figure>
+					</div>
+				</div>
+				<h2 class="title is-3">2. Progress Update</h2>
+				<p class="subtitle is-neatly-spaced">What's new? Any big wins to celebrate?</p>
+				<textarea id="textarea-progress" class="textarea"></textarea>
+				<h2 class="title is-3">3. Roadblocks</h2>
+				<p class="subtitle is-neatly-spaced">What is difficult or holding back your work?</p>
+				<textarea id="textarea-roadblocks" class="textarea"></textarea>
+				<h2 class="title is-3">4. Team Feedback</h2>
+				<p class="subtitle is-neatly-spaced">Let your classmates know what they're doing well and how they can improve.</p>
+				<div id="field-team-feedback">
+					<p>Loading...</p>
+				</div>
+				<br>
+				<div class="field is-grouped is-grouped-centered">
+					<div class="group">
+						<button id="submit-update" class="button is-primary is-large">Submit</button>
+					</div>
+				</div>
 			</div>
 
 		</section>
