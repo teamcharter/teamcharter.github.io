@@ -165,6 +165,8 @@ function main(user) {
 
 			}).catch(console.error);
 
+			mainProgressUpdates(classData);
+
 		}
 	}).catch(console.error);
 
@@ -173,6 +175,25 @@ function main(user) {
 		classCode: classCode
 	});
 
+}
+
+function mainProgressUpdates(classData) {
+	let teams = classData.teams;
+	console.log(teams);
+	let promises = [];
+	for (let tid in teams) {
+		let p = new Promise((resolve, reject) => {
+			database.getDB().ref(`progress_updates/${tid}`).once('value', (snap) => {
+				let val = snap.val() || {};
+				resolve(val);
+			}).catch(reject);
+		});
+		p.tid = tid;
+		promises.push(p);
+	}
+	Promise.all(promises).then((updates) => {
+		console.log(updates);
+	}).catch(console.error);
 }
 
 function getLastAccess(team) {
