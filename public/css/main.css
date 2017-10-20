@@ -52,6 +52,10 @@ body {
 	display: none;
 }
 
+.is-bold {
+	font-weight: bold !important;
+}
+
 .charter-head {
 	padding: 0 0.75rem !important;
 }

@@ -58,8 +58,11 @@ function main(user) {
 
 	let uid = database.getCurrentUser().uid;
 
+	console.log('A')
+
 	database.getInstructorClasses(uid).then((classMap) => {
 		//let classMap = {};
+		console.log('B')
 		let classData = classMap[classCode] || false;
 		if (classData) {
 
@@ -180,6 +183,7 @@ function main(user) {
 }
 
 function mainProgressUpdates(classData, profileMap) {
+	console.log('C')
 	let teams = classData.teams;
 	console.log(classData);
 	let promises = [];
@@ -194,13 +198,12 @@ function mainProgressUpdates(classData, profileMap) {
 		promises.push(p);
 	}
 	Promise.all(promises).then((updateList) => {
-		console.log(updateList);
 		teamSpace.innerHTML = ``;
-		updateList.forEach((update, idx) => {
+		updateList.forEach((updateObj, idx) => {
 			let tid = promises[idx].tid;
-			let data = Object.keys(update).map((key) => {
-				update.key = key;
-				return update;
+			let data = Object.keys(updateObj).map((key) => {
+				updateObj[key].key = key;
+				return updateObj[key];
 			});
 			let emotionMap = data.reduce((list, update) => {
 				update.emotions.filter((e) => e !== 'None').forEach((e) => {
@@ -215,13 +218,13 @@ function mainProgressUpdates(classData, profileMap) {
 				return map;
 			}, {});
 			let feedbackMap = data.reduce((list, update) => {
-				update.teammates.filter((f) => f !== 'None').forEach((f) => {
+				update.teammates.filter((f) => f.feedback !== 'None').forEach((f) => {
 					f.from = update.uid;
 					f.timestamp = update.timestamp;
 					list.push(f);
 				});
 				return list;
-			}).reduce((map, f) => {
+			}, []).reduce((map, f) => {
 				if (!(f.for in map)) {
 					map[f.for] = [];
 				}
@@ -249,13 +252,16 @@ function mainProgressUpdates(classData, profileMap) {
 					from: u.uid
 				}
 			});
+			let team = teams[tid] || {};
 			let ps = views.getTeamProgressSection({
-				name: 'This Team',
+				name: team.name || 'Untitled Team',
+				team: team,
 				emotions: emotionMap,
 				feedback: feedbackMap,
 				feelings: feelings,
 				progress: progress,
-				roadblocks: roadblocks
+				roadblocks: roadblocks,
+				profiles: profileMap
 			});
 			teamSpace.appendChild(ps);
 		});
