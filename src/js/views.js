@@ -901,6 +901,50 @@ let Views = () => {
 				div.innerHTML = html;
 				div.classList.add('media');
 			return div;
+		},
+
+		getTeammateFeedbackCardFilled: (model) => {
+			let html = `
+				<div class="media-left">
+					<figure class="image is-64x64">
+						<img src="${model.image}" alt="${model.name}">
+					</figure>
+				</div>
+				<div class="media-content">
+					<div class="content">
+						<p>Comments...</p>
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				div.classList.add('media');
+			return div;
+		},
+
+		getTeamProgressSection: (model) => {
+			let html = `
+				<div>
+					<h2 class="title">${model.name}</h2>
+					<p class="subtitle is-neatly-spaced">Latest Progress Update: ${moment(model.latest).format('M/D/YY h:mm A')}</p>
+					<h3 class="title">This Team is Feeling</h3>
+					<>
+					<h3 class="title">Progress Updates</h3>
+			`;
+					model.progress.forEach((p) => {
+						let h = `
+							<p>${moment(p.timestamp).format('M/D h:mm A')}: ${p.note}</p>
+						`;
+						html += h;
+					});
+			html += `
+					<h3 class="title">Peer Feedback</h3>
+
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+			return div;
 		}
 
 	}
