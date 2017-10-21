@@ -1,6 +1,7 @@
 import {config} from './config';
 import {Database} from './database';
 import {Views} from './views';
+import {EmotionWheel} from './emotion-wheel';
 
 let database = Database(firebase, config);
 
@@ -12,6 +13,9 @@ let views = Views();
 
 let loginBtn = document.getElementById('login');
 let feedbackBtn = document.getElementById('feedback');
+
+let teamSpace = document.getElementById('team-space');
+let formSpace = document.getElementById('form-space');
 
 database.init(main, () => {
 	// No user signed in
@@ -62,6 +66,7 @@ function main(user) {
 
 			if (once) {
 				mainHealthTab(tid, team, members, user);
+				mainProgressTab(tid, team, members, user);
 				once = false;
 			}
 
@@ -261,7 +266,18 @@ const EMOTION_LIST = RAW_EMOTIONS.split('\n').map((e) => {
 });
 const EMOTION_WHEEL = {};
 
+let formButton = document.getElementById('choose-form');
+	formButton.style.display = 'none';
+
 function mainHealthTab(tid, team, members, user) {
+
+	formButton.style.display = 'block';
+	formButton.addEventListener('click', (e) => {
+		formButton.style.display = 'none';
+		formSpace.style.display = 'block';
+		teamSpace.style.display = 'none';
+	});
+
 	//console.log(team, members, user);
 	//console.log(EMOTION_LIST);
 	Array.from(document.querySelectorAll(`.emotion-selector`)).forEach((sel) => {
@@ -323,6 +339,79 @@ function mainHealthTab(tid, team, members, user) {
 			});
 		}).catch(reportErrorToUser);
 	});
+}
+
+function mainProgressTab(tid, team, members, user) {
+	console.log(members);
+	database.getDB().ref(`progress_updates/${tid}`).once('value', (snap) => {
+		let updateObj = snap.val() || {};
+		let data = Object.keys(updateObj).map((key) => {
+			updateObj[key].key = key;
+			return updateObj[key];
+		});
+		let emotionMap = data.reduce((list, update) => {
+			update.emotions.filter((e) => e !== 'None').forEach((e) => {
+				list.push(e);
+			});
+			return list;
+		}, []).reduce((map, e) => {
+			if (!(e in map)) {
+				map[e] = {
+					count: 0,
+					data: EmotionWheel[e]
+				};
+			}
+			map[e].count++;
+			return map;
+		}, {});
+		let feedbackMap = data.reduce((list, update) => {
+			update.teammates.filter((f) => f.feedback !== 'None').forEach((f) => {
+				f.from = update.uid;
+				f.timestamp = update.timestamp;
+				list.push(f);
+			});
+			return list;
+		}, []).reduce((map, f) => {
+			if (!(f.for in map)) {
+				map[f.for] = [];
+			}
+			map[f.for].push(f);
+			return map;
+		}, {});
+		let progress = data.filter((u) => u.progress !== 'None').map((u) => {
+			return { 
+				note: u.progress,
+				timestamp: u.timestamp,
+				from: u.uid
+			}
+		});
+		let roadblocks = data.filter((u) => u.roadblocks !== 'None').map((u) => {
+			return { 
+				note: u.roadblocks,
+				timestamp: u.timestamp,
+				from: u.uid
+			}
+		});
+		let feelings = data.filter((u) => u.feelings !== 'None').map((u) => {
+			return { 
+				note: u.feelings,
+				timestamp: u.timestamp,
+				from: u.uid
+			}
+		});
+		let ps = views.getTeamProgressSection({
+			name: team.name || 'Untitled Team',
+			team: team,
+			emotions: emotionMap,
+			feedback: feedbackMap,
+			feelings: feelings,
+			progress: progress,
+			roadblocks: roadblocks,
+			profiles: members
+		});
+		teamSpace.innerHTML = ``;
+		teamSpace.appendChild(ps);
+	}).catch(reportErrorToUser);
 }
 
 function isMentor() {

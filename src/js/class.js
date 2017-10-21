@@ -267,6 +267,7 @@ function mainProgressUpdates(classData, profileMap) {
 				roadblocks: roadblocks,
 				profiles: profileMap
 			});
+			ps.classList.add('box');
 			teamSpace.appendChild(ps);
 		});
 	}).catch(console.error);

@@ -1031,7 +1031,6 @@ let Views = () => {
 			`;
 			let div = document.createElement('div');
 				div.innerHTML = html;
-				div.classList.add('box');
 			return div;
 		}
 
