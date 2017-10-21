@@ -945,13 +945,14 @@ let Views = () => {
 					Object.keys(model.emotions).map((e) => {
 						return {
 							emotion: e,
-							count: model.emotions[e]
+							count: model.emotions[e].count,
+							data: model.emotions[e].data
 						}
 					}).sort((a, b) => {
 						return b.count - a.count;
 					}).forEach((d) => {
 						html += `
-							<span class="tag">${d.emotion} (x${d.count})</span>
+							<span class="tag" style="background: ${d.data.color};">${d.emotion} (x${d.count})</span>
 						`;
 					});
 			html += `

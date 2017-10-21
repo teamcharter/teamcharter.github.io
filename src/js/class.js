@@ -1,6 +1,7 @@
 import {config} from './config';
 import {Database} from './database';
 import {Views} from './views';
+import {EmotionWheel} from './emotion-wheel';
 
 let database = Database(firebase, config);
 
@@ -212,9 +213,12 @@ function mainProgressUpdates(classData, profileMap) {
 				return list;
 			}, []).reduce((map, e) => {
 				if (!(e in map)) {
-					map[e] = 0;
+					map[e] = {
+						count: 0,
+						data: EmotionWheel[e]
+					};
 				}
-				map[e]++;
+				map[e].count++;
 				return map;
 			}, {});
 			let feedbackMap = data.reduce((list, update) => {

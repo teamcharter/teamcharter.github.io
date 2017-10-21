@@ -232,7 +232,7 @@ Aggravated
 Resentful
 Jealous
 Contempt
-Revoluted
+Revolted
 Agony
 Hurt
 Depressed
