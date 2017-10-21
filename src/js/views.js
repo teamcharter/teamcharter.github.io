@@ -901,6 +901,137 @@ let Views = () => {
 				div.innerHTML = html;
 				div.classList.add('media');
 			return div;
+		},
+
+		getTeammateFeedbackCardFilled: (model) => {
+			let tsFormat = 'dddd M/D h:mm A';
+			let html = `
+				<div class="media-left">
+					<figure class="image is-64x64">
+						<img src="${model.image}" alt="${model.name}">
+					</figure>
+				</div>
+				<div class="media-content">
+					<div class="content">
+					<h4 class="title">${model.name}</h4>
+					<p class="subtitle is-6"><span class="is-bold">Role:</span> ${model.member.role}, ${model.member.responsibility}</p>
+			`;
+				model.feedback.sort((a, b) => {
+						return b.timestamp - a.timestamp;
+					}).forEach((p) => {
+					html += `
+						<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span> ${p.feedback}</p>
+					`;
+				});
+			html += `
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				div.classList.add('media');
+			return div;
+		},
+
+		getTeamProgressSection: (model) => {
+			console.log(model.team)
+			let tsFormat = 'dddd M/D h:mm A';
+			let html = `
+				<div class="content">
+					<h2 class="title">${model.name}</h2>
+					<h3 class="title">This Team is Feeling</h3>
+					<div>
+			`;
+					Object.keys(model.emotions).map((e) => {
+						return {
+							emotion: e,
+							count: model.emotions[e].count,
+							data: model.emotions[e].data
+						}
+					}).sort((a, b) => {
+						return b.count - a.count;
+					}).forEach((d) => {
+						html += `
+							<span class="tag" style="background: ${d.data.color};">${d.emotion} (x${d.count})</span>
+						`;
+					});
+			html += `
+					</div>
+					<hr>
+			`;
+					model.feelings.sort((a, b) => {
+						return b.timestamp - a.timestamp;
+					}).forEach((p) => {
+						let h = `
+							<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span> ${p.note}</p>
+						`;
+						html += h;
+					});
+			html += `
+					<h3 class="title">Progress Updates</h3>
+			`;
+					if (model.progress.length > 0) {
+						model.progress.sort((a, b) => {
+							return b.timestamp - a.timestamp;
+						}).forEach((p) => {
+							let h = `
+								<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span> ${p.note}</p>
+							`;
+							html += h;
+						});
+					} else {
+						html += `<p>No roadblocks yet.</p>`
+					}
+			html += `
+					<h3 class="title">Roadblocks</h3>
+			`;
+					if (model.roadblocks.length > 0) {
+						model.roadblocks.sort((a, b) => {
+							return b.timestamp - a.timestamp;
+						}).forEach((p) => {
+							let h = `
+								<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span> ${p.note}</p>
+							`;
+							html += h;
+						});
+					} else {
+						html += `<p>No roadblocks yet.</p>`
+					}
+			html += `
+					<h3 class="title">Peer Feedback</h3>
+			`;
+					let list = Object.keys(model.feedback).map((key) => {
+						return {
+							uid: key,
+							feedback: model.feedback[key]
+						}
+					});
+					if (list.length > 0) {
+						list.forEach((d) => {
+							let profile = model.profiles[d.uid] || {};
+							let ts = views.getTeammateFeedbackCardFilled({
+								name: profile.name || 'No Name',
+								image: profile.image || './public/img/no-user.png',
+								member: model.team.members[d.uid] || {},
+								feedback: d.feedback
+							});
+							html += `
+								<div class="media">
+									${ts.innerHTML}
+								</div>
+							`;
+						});
+					} else {
+						html += `
+							<div class="media">No peer feedback yet.</div>
+						`;
+					}
+			html += `
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+			return div;
 		}
 
 	}
