@@ -1,6 +1,7 @@
 import {config} from './config';
 import {Database} from './database';
 import {Views} from './views';
+import {EmotionWheel} from './emotion-wheel';
 
 let database = Database(firebase, config);
 
@@ -12,6 +13,7 @@ let CLASS_CODE = params.class || false;
 
 let feedbackBtn = document.getElementById('feedback');
 let teamSpace = document.getElementById('team-space');
+let charterSpace = document.getElementById('charter-space');
 let instructorSpace = document.getElementById('instructor-space');
 let studentSpace = document.getElementById('student-space');
 let tabList = document.getElementsByClassName('charter-tab');
@@ -57,7 +59,11 @@ function main(user) {
 
 	let uid = database.getCurrentUser().uid;
 
+	console.log('A')
+
 	database.getInstructorClasses(uid).then((classMap) => {
+		//let classMap = {};
+		console.log('B')
 		let classData = classMap[classCode] || false;
 		if (classData) {
 
@@ -152,8 +158,8 @@ function main(user) {
 				let table = views.getClassTeamTable({
 					teams: viewTeams
 				});
-				teamSpace.innerHTML = '';
-				teamSpace.appendChild(table);
+				charterSpace.innerHTML = '';
+				charterSpace.appendChild(table);
 
 				for (let k = 0; k < tabList.length; k++) {
 					tabList[k].addEventListener('click', (e) => {
@@ -165,6 +171,8 @@ function main(user) {
 
 			}).catch(console.error);
 
+			mainProgressUpdates(classData, profileMap);
+
 		}
 	}).catch(console.error);
 
@@ -173,6 +181,96 @@ function main(user) {
 		classCode: classCode
 	});
 
+}
+
+function mainProgressUpdates(classData, profileMap) {
+	console.log('C')
+	let teams = classData.teams;
+	console.log(classData);
+	let promises = [];
+	for (let tid in teams) {
+		let p = new Promise((resolve, reject) => {
+			database.getDB().ref(`progress_updates/${tid}`).once('value', (snap) => {
+				let val = snap.val() || {};
+				resolve(val);
+			}).catch(reject);
+		});
+		p.tid = tid;
+		promises.push(p);
+	}
+	Promise.all(promises).then((updateList) => {
+		teamSpace.innerHTML = ``;
+		updateList.forEach((updateObj, idx) => {
+			let tid = promises[idx].tid;
+			let data = Object.keys(updateObj).map((key) => {
+				updateObj[key].key = key;
+				return updateObj[key];
+			});
+			let emotionMap = data.reduce((list, update) => {
+				update.emotions.filter((e) => e !== 'None').forEach((e) => {
+					list.push(e);
+				});
+				return list;
+			}, []).reduce((map, e) => {
+				if (!(e in map)) {
+					map[e] = {
+						count: 0,
+						data: EmotionWheel[e]
+					};
+				}
+				map[e].count++;
+				return map;
+			}, {});
+			let feedbackMap = data.reduce((list, update) => {
+				update.teammates.filter((f) => f.feedback !== 'None').forEach((f) => {
+					f.from = update.uid;
+					f.timestamp = update.timestamp;
+					list.push(f);
+				});
+				return list;
+			}, []).reduce((map, f) => {
+				if (!(f.for in map)) {
+					map[f.for] = [];
+				}
+				map[f.for].push(f);
+				return map;
+			}, {});
+			let progress = data.filter((u) => u.progress !== 'None').map((u) => {
+				return { 
+					note: u.progress,
+					timestamp: u.timestamp,
+					from: u.uid
+				}
+			});
+			let roadblocks = data.filter((u) => u.roadblocks !== 'None').map((u) => {
+				return { 
+					note: u.roadblocks,
+					timestamp: u.timestamp,
+					from: u.uid
+				}
+			});
+			let feelings = data.filter((u) => u.feelings !== 'None').map((u) => {
+				return { 
+					note: u.feelings,
+					timestamp: u.timestamp,
+					from: u.uid
+				}
+			});
+			let team = teams[tid] || {};
+			let ps = views.getTeamProgressSection({
+				name: team.name || 'Untitled Team',
+				team: team,
+				emotions: emotionMap,
+				feedback: feedbackMap,
+				feelings: feelings,
+				progress: progress,
+				roadblocks: roadblocks,
+				profiles: profileMap
+			});
+			ps.classList.add('box');
+			teamSpace.appendChild(ps);
+		});
+	}).catch(console.error);
 }
 
 function getLastAccess(team) {
