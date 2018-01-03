@@ -1,3 +1,12 @@
+const EMOTION_HEADERS = {
+	'Joy': {type: 'Joy', color: '#BEFC8C', level: 1},
+	'Love': {type: 'Love', color: '#EEF982', level: 1},
+	'Fear': {type: 'Fear', color: '#ECA09D', level: 1},
+	'Anger': {type: 'Anger', color: '#E078EF', level: 1},
+	'Sadness': {type: 'Sadness', color: '#A9C1FA', level: 1},
+	'Surprise': {type: 'Surprise', color: '#BCFCDE', level: 1}
+};
+
 let Views = () => {
 
 	let views = {
@@ -450,6 +459,237 @@ let Views = () => {
 				div.classList.add('columns');
 				div.classList.add('is-multiline');
 				div.innerHTML = html;
+			return div;
+		},
+
+		getClassTeamMetricsGrid: (model) => {
+			let html = ``;
+			model.teams.forEach((team) => {
+				let updates = 0;
+				for (let uid in team.updates) {
+					for (let upid in team.updates[uid]) {
+						updates++;
+					}
+				}
+				let origin = window.location.origin;
+				let link = `${origin}/charter.html?team=${team.tid}&mentor=true`;
+				let members = team.members || {};
+				html += `
+					<div class="column is-12">
+						<div class="box content has-text-centered">
+							<h2 class="title is-3">${team.name}</h2>
+							<p class="subtitle is-neatly-spaced">Last active ${moment(team.lastAccess).fromNow()} | ${Object.keys(team.edits).length} charter edits</p>
+							<a href="${link}" class="button is-primary is-outlined">View Team Charter</a>
+							<hr>
+							<div class="columns">
+								<div class="column is-4">
+				`;
+				/*let teamOverviewDiv = views.getUserTile({
+					name: 'Team Overview',
+					image: './public/img/no-user.png',
+					subtitle: '...'
+				});
+				html += teamOverviewDiv.innerHTML;*/
+				for (let uid in team.members) {
+					let profile = model.profiles[uid] || {};
+					let userModel = {
+						name: 'Unknown Student',
+						image: './public/img/no-user.png',
+						subtitle: '...'
+					}
+					if (profile.name) {
+						userModel.name = profile.name;
+					}
+					if (profile.image) {
+						userModel.image = profile.image;
+					}
+					if (team.members[uid].role) {
+						userModel.subtitle = team.members[uid].role;
+					}
+					let userDiv = views.getUserTile(userModel);
+					userDiv.children[0].dataset.studentid = uid;
+					userDiv.children[0].dataset.teamid = team.tid;
+					html += userDiv.innerHTML;
+				}
+				let metrics = model.metrics[team.tid] || {};
+				//console.log(metrics);
+				html += `
+								</div>
+								<div data-teamlink="${team.tid}" class="column is-8">
+									<p class="has-text-centered">Click on a student to view their updates.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				`;
+			});
+			let div = document.createElement('div');
+				div.classList.add('columns');
+				div.classList.add('is-multiline');
+				div.innerHTML = html;
+				Array.from(div.querySelectorAll('[data-studentid]')).forEach((stdiv) => {
+					stdiv.addEventListener('click', (e) => {
+						let uid = stdiv.dataset.studentid;
+						let tid = stdiv.dataset.teamid;
+						//console.log(uid, model.profiles[uid]);
+						let emotionList = model.metrics[tid].emotions.filter((ed) => {
+							return ed.uid === uid;
+						});
+						let mdiv = views.getStudentMetricsView({
+							profiles: model.profiles,
+							uid: uid,
+							tid: tid,
+							emotions: emotionList,
+							feedback: model.metrics[tid].feedback
+						});
+						let tdiv = document.querySelector(`[data-teamlink="${tid}"]`);
+						tdiv.innerHTML = '';
+						tdiv.appendChild(mdiv);
+					});
+				});
+			return div;
+		},
+
+		getStudentMetricsView: (model) => {
+			let html = `
+				<div class="columns">
+					<div class="column is-6">
+						<h4 class="title">${model.profiles[model.uid].name}</h4>
+						<canvas width="400" height="200"></canvas>
+						<p>Hover over a data point to read the student's update.</p>
+						<button class="button is-primary is-outlined">View Peer Feedback</button>
+					</div>
+					<div class="column is-6">
+						<div class="has-text-left" data-feeling></div>
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				let alertHTML = ``;
+				//console.log(model.uid, model.feedback);
+				//
+				let feedbackList = model.feedback[model.uid];
+				let profile = model.profiles[model.uid] || {};
+				let ts = views.getTeammateJustFeedbackCardFilled({
+					name: profile.name || 'No Name',
+					feedback: feedbackList
+				});
+				alertHTML = ts.innerHTML;
+				//
+				div.querySelector('button').addEventListener('click', (e) => {
+					vex.dialog.alert({
+						unsafeMessage: alertHTML
+					});
+				});
+				let ctx = div.querySelector('canvas').getContext('2d');
+				let emotionTable = {};
+				let feelingMap = {};
+				model.emotions.forEach((ed) => {
+					if (!(ed.timestamp in emotionTable)) {
+						emotionTable[ed.timestamp] = {};
+					}
+					if (!(ed.data.type in emotionTable[ed.timestamp])) {
+						emotionTable[ed.timestamp][ed.data.type] = 0;
+					}
+					emotionTable[ed.timestamp][ed.data.type] += ed.data.level;
+					if (!(ed.timestamp in feelingMap)) {
+						feelingMap[ed.timestamp] = {
+							feelings: 'No student note.',
+							emotions: []
+						};
+					}
+					feelingMap[ed.timestamp].feelings = ed.feelings;
+					feelingMap[ed.timestamp].progress = ed.progress;
+					feelingMap[ed.timestamp].roadblocks = ed.roadblocks;
+					feelingMap[ed.timestamp].emotions.push(ed);
+				});
+				let emotionTableList = Object.keys(emotionTable).map((ts) => {
+					let entry = emotionTable[ts];
+					entry.timestamp = ts;
+					return entry;
+				}).sort((a, b) => {
+					return a.timestamp - b.timestamp;
+				});
+				let datasets = [];
+				for (let etype in EMOTION_HEADERS) {
+					let data = EMOTION_HEADERS[etype];
+					datasets.push({
+						label: etype,
+						borderColor: data.color,
+						fill: false,
+						data: emotionTableList.map((entry) => {
+							return entry[etype] || 0;
+						})
+					});
+				}
+				let timestampList = emotionTableList.map(entry => {
+					let ts = parseInt(entry.timestamp);
+					return ts;
+				});
+				function getNoteFromIndex(index) {
+					let noteHTML = ``;
+					try {
+						let ts = timestampList[index];
+						let f = feelingMap[ts];
+						noteHTML += `
+							<h5 class="title has-text-centered">Update for ${moment(ts).format('dddd M/D')}</h5>
+							<h6 class="title">How are you feeling?</h6>
+							<p>`;
+						f.emotions.forEach((d) => {
+							noteHTML += `<span class="tag" style="background: ${d.data.color};">${d.emotion}</span> `;
+						});
+						noteHTML += `</p>
+							<p>${f.feelings}</p>
+							<h6 class="title">Progress</h6>
+							<p>${f.progress}</p>
+							<h6 class="title">Roadblocks</h6>
+							<p>${f.roadblocks}</p>
+						`;
+					} catch (err) {
+						noteHTML = `<p>No student updates found.</p>`;
+					}
+					return noteHTML;
+				}
+				let chart = new Chart(ctx, {
+					type: 'line',
+					data: {
+						labels: timestampList.map((ts) => {
+							let label = moment(ts).format('M/D');
+							return label;
+						}),
+						datasets: datasets
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								display: true,
+									scaleLabel: {
+									display: true,
+									labelString: 'Date'
+								}
+							}],
+							yAxes: [{
+								display: true,
+								scaleLabel: {
+									display: true,
+									labelString: 'Strength'
+								}
+							}]
+						},
+						tooltips: {
+							callbacks: {
+								label: function(tooltipItem, data) {
+									let index = tooltipItem.index;
+									let noteHTML = getNoteFromIndex(index);
+									div.querySelector('[data-feeling]').innerHTML = noteHTML;
+									return tooltipItem.yLabel;
+								}
+							}
+						}
+					}
+				});
+				div.querySelector('[data-feeling]').innerHTML = getNoteFromIndex(0);
 			return div;
 		},
 
@@ -921,6 +1161,29 @@ let Views = () => {
 					}).forEach((p) => {
 					html += `
 						<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span> ${p.feedback}</p>
+					`;
+				});
+			html += `
+					</div>
+				</div>
+			`;
+			let div = document.createElement('div');
+				div.innerHTML = html;
+				div.classList.add('media');
+			return div;
+		},
+
+		getTeammateJustFeedbackCardFilled: (model) => {
+			let tsFormat = 'dddd M/D h:mm A';
+			let html = `
+				<div class="content">
+					<h4 class="title">Feedback for ${model.name}</h4>
+			`;
+				model.feedback.sort((a, b) => {
+						return b.timestamp - a.timestamp;
+					}).forEach((p) => {
+					html += `
+						<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span></p><p>${p.feedback}</p>
 					`;
 				});
 			html += `
