@@ -118,6 +118,10 @@ header figure img {
 	background: #30AACB;
 }
 
+.vex .vex-dialog-message {
+	font-family: 'Lato', sans-serif !important;
+}
+
 .tabbed-container {
 	display: none;
 }

@@ -22,9 +22,9 @@
 		<script type="text/javascript">vex.defaultOptions.className = 'vex-theme-plain';</script>
 		<link rel="stylesheet" type="text/css" href="./public/vex/vex.css">
 		<link rel="stylesheet" type="text/css" href="./public/vex/vex-theme-plain.css">
-		<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+		<!--<link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
 		<link rel="stylesheet" href="./public/css/styles.css">
 		<link rel="stylesheet" href="./public/css/main.css">
 	</head>
@@ -68,25 +68,55 @@
 			</div>
 			<div class="hero-body">
 				<div class="container charter-head">
-					<h2 class="subtitle">Team Metrics</h2>
+					<h2 class="subtitle">Class Dashboard</h2>
 					<h1 class="title fill-class-name">Your Class</h1>
+				</div>
+			</div>
+			<div class="hero-foot">
+				<div class="tabs is-centered is-boxed">
+					<ul>
+						<li data-tab="container-teams" class="charter-tab is-active"><a>Teams</a></li>
+						<li data-tab="container-charter" class="charter-tab"><a>Charters</a></li>
+						<li data-tab="container-instructors" class="charter-tab"><a>Instructors</a></li>
+						<li data-tab="container-students" class="charter-tab"><a>Students</a></li>
+					</ul>
 				</div>
 			</div>
 		</section>
 		<section class="section">
-			<div class="container" id="container-teams">
-				<div id="team-space">
-					<div class="content">
-						<p class="subtitle is-neatly-spaced">Loading...</p>
-					</div>
+			<div class="container tabbed-container content has-text-centered loading" style="display: block;">
+				<h3>Loading...</h3>
+			</div>
+			<div class="container tabbed-container" id="container-teams">
+				<div class="content">
+					<h1 class="title is-1">Teams</h1>
 				</div>
+				<div id="team-space"></div>
+			</div>
+			<div class="container tabbed-container" id="container-charter">
+				<div class="content">
+					<h1 class="title is-1">Charters</h1>
+				</div>
+				<div id="charter-space" class="table-holder"></div>
+			</div>
+			<div class="container tabbed-container" id="container-instructors">
+				<div class="content">
+					<h1 class="title is-1">Instructors <span class="fill-number-instructors"></span></h1>
+				</div>
+				<div id="instructor-space" class="columns is-multiline"></div>
+				<button id="invite-instructor" class="button is-primary is-outlined">Invite Instructor</button>
+			</div>
+			<div class="container tabbed-container" id="container-students">
+				<div class="content">
+					<h1 class="title is-1">Students <span class="fill-number-students"></span></h1>
+				</div>
+				<div id="student-space" class="columns is-multiline"></div>
 			</div>
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
 		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
 		<script type="text/javascript" src="./src/js/moment.min.js"></script>
-		<script type="text/javascript" src="./src/js/chart.min.js"></script>
-		<script type="text/javascript" src="./public/js/class.js"></script>
+		<script type="text/javascript" src="./public/js/teammetrics.js"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

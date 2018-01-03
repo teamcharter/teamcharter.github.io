@@ -13,11 +13,6 @@ let CLASS_CODE = params.class || false;
 
 let feedbackBtn = document.getElementById('feedback');
 let teamSpace = document.getElementById('team-space');
-let charterSpace = document.getElementById('charter-space');
-let instructorSpace = document.getElementById('instructor-space');
-let studentSpace = document.getElementById('student-space');
-let tabList = document.getElementsByClassName('charter-tab');
-let inviteInstructorBtn = document.getElementById('invite-instructor');
 
 database.init(main, () => {
 	// No user signed in
@@ -46,24 +41,12 @@ function main(user) {
 		});
 	});
 
-	inviteInstructorBtn.addEventListener('click', (e) => {
-		vex.dialog.prompt({
-			message: 'Send them this link:',
-			value: `${window.location.origin}/me.html?instructor=${classCode}`,
-			callback: (done) => {}
-		});
-	});
-
 	fillText('fill-user-name', user.displayName);
 	fillSrc('fill-user-image', user.photoURL);
 
 	let uid = database.getCurrentUser().uid;
 
-	console.log('A')
-
-	database.getInstructorClasses(uid).then((classMap) => {
-		//let classMap = {};
-		console.log('B')
+	database.getClassTeams(classCode).then((classMap) => {
 		let classData = classMap[classCode] || false;
 		if (classData) {
 
@@ -89,6 +72,14 @@ function main(user) {
 				}
 			}
 
+			let promises = [];
+			for (let tid in teams) {
+				let p = database.getTeamEdits(tid);
+				p.tid = tid;
+				promises.push(p);
+			}
+
+
 			let profileMap = {};
 
 			Promise.all(userPromises).then((userList) => {
@@ -99,79 +90,45 @@ function main(user) {
 						profileMap[uid] = user;
 					}
 				});
-				instructorSpace.innerHTML = '';
-				let iCount = 0;
-				for (let uid in instructorMap) {
-					let ins = instructorMap[uid];
-					if (!ins.hidden) {
-						let profile = profileMap[uid];
-						if (profile) {
-							let tile = views.getUserTile({
-								name: profile.name,
-								image: profile.image,
-								subtitle: 'Instructor'
-							});
-							instructorSpace.appendChild(tile);
-							iCount++;
-						}
-					}
-				}
-				fillText('fill-number-instructors', `(${iCount})`);
-				let sCount = 0;
-				for (let uid in studentMap) {
-					let profile = profileMap[uid];
-					if (profile) {
-						let teamName = studentMap[uid];
-						let tile = views.getUserTile({
-							name: profile.name,
-							image: profile.image,
-							subtitle: teamName
-						});
-						studentSpace.appendChild(tile);
-						sCount++;
-					}
-				}
-				fillText('fill-number-students', `(${sCount})`);
-			});
+				// Cut out instructor and student rendering here
 
-			let promises = [];
-			for (let tid in teams) {
-				let p = database.getTeamEdits(tid);
-				p.tid = tid;
-				promises.push(p);
-			}
+				Promise.all(promises).then((editList) => {
 
-			Promise.all(promises).then((editList) => {
-
-				let teamList = [];
-				editList.forEach((editMap, idx) => {
-					let tid = promises[idx].tid;
-					let team = teams[tid];
-					team.tid = tid;
-					team.edits = editMap;
-					team.lastAccess = getLastAccess(team);
-					teamList.push(team);
-				});
-				let viewTeams = teamList.sort((a, b) => {
-					return b.lastAccess - a.lastAccess;
-				})
-				let table = views.getClassTeamTable({
-					teams: viewTeams
-				});
-				charterSpace.innerHTML = '';
-				charterSpace.appendChild(table);
-
-				for (let k = 0; k < tabList.length; k++) {
-					tabList[k].addEventListener('click', (e) => {
-						onTabClick(tabList, tabList[k]);
+					let teamList = [];
+					editList.forEach((editMap, idx) => {
+						let tid = promises[idx].tid;
+						let team = teams[tid];
+						team.tid = tid;
+						team.edits = editMap;
+						team.lastAccess = getLastAccess(team);
+						teamList.push(team);
 					});
-				}
+					let viewTeams = teamList.sort((a, b) => {
+						return b.lastAccess - a.lastAccess;
+					});
 
-				onTabClick(tabList, document.querySelectorAll('.charter-tab[data-tab="container-teams"]')[0]);
+					let currentUser =  database.getCurrentUser();
+					profileMap[currentUser.uid] = {
+						email: currentUser.email || false,
+						name: currentUser.displayName || false,
+						image: currentUser.photoURL || false,
+						uid: currentUser.uid
+					};
 
-			}).catch(console.error);
+					fetchProgressUpdates(classData, profileMap).then((modelMap) => {
+						let table = views.getClassTeamMetricsGrid({
+							teams: viewTeams,
+							profiles: profileMap,
+							metrics: modelMap,
+							uid: database.getCurrentUser().uid
+						});
+						teamSpace.innerHTML = '';
+						teamSpace.appendChild(table);
+					});
 
-			mainProgressUpdates(classData, profileMap);
+				}).catch(console.error);
+
+			});
 
 		}
 	}).catch(console.error);
@@ -183,94 +140,121 @@ function main(user) {
 
 }
 
-function mainProgressUpdates(classData, profileMap) {
-	console.log('C')
-	let teams = classData.teams;
-	console.log(classData);
-	let promises = [];
-	for (let tid in teams) {
-		let p = new Promise((resolve, reject) => {
-			database.getDB().ref(`progress_updates/${tid}`).once('value', (snap) => {
-				let val = snap.val() || {};
-				resolve(val);
-			}).catch(reject);
-		});
-		p.tid = tid;
-		promises.push(p);
-	}
-	Promise.all(promises).then((updateList) => {
-		teamSpace.innerHTML = ``;
-		updateList.forEach((updateObj, idx) => {
-			let tid = promises[idx].tid;
-			let data = Object.keys(updateObj).map((key) => {
-				updateObj[key].key = key;
-				return updateObj[key];
+function fetchProgressUpdates(classData, profileMap) {
+	console.log('fetchProgressUpdates');
+	return new Promise((resolve, reject) => {
+		let teams = classData.teams;
+		//console.log(classData);
+		let promises = [];
+		for (let tid in teams) {
+			let p = new Promise((resolve, reject) => {
+				database.getDB().ref(`progress_updates/${tid}`).once('value', (snap) => {
+					let val = snap.val() || {};
+					resolve(val);
+				}).catch(reject);
 			});
-			let emotionMap = data.reduce((list, update) => {
-				update.emotions.filter((e) => e !== 'None').forEach((e) => {
-					list.push(e);
+			p.tid = tid;
+			promises.push(p);
+		}
+		Promise.all(promises).then((updateList) => {
+			let modelMap = {};
+			teamSpace.innerHTML = ``;
+			updateList.forEach((updateObj, idx) => {
+				let tid = promises[idx].tid;
+				let data = Object.keys(updateObj).map((key) => {
+					updateObj[key].key = key;
+					return updateObj[key];
 				});
-				return list;
-			}, []).reduce((map, e) => {
-				if (!(e in map)) {
-					map[e] = {
-						count: 0,
-						data: EmotionWheel[e]
-					};
-				}
-				map[e].count++;
-				return map;
-			}, {});
-			let feedbackMap = data.reduce((list, update) => {
-				update.teammates.filter((f) => f.feedback !== 'None').forEach((f) => {
-					f.from = update.uid;
-					f.timestamp = update.timestamp;
-					list.push(f);
+				let emotionList = [];
+				let emotionMap = data.reduce((list, update) => {
+					update.emotions.filter((e) => e !== 'None').forEach((e) => {
+						list.push(e);
+						//console.log(update);
+						emotionList.push({
+							uid: update.uid,
+							emotion: e,
+							feelings: update.feelings,
+							data: EmotionWheel[e],
+							timestamp: update.timestamp,
+							progress: update.progress,
+							roadblocks: update.roadblocks
+						});
+					});
+					return list;
+				}, []).reduce((map, e) => {
+					if (!(e in map)) {
+						map[e] = {
+							count: 0,
+							data: EmotionWheel[e]
+						};
+					}
+					map[e].count++;
+					return map;
+				}, {});
+				let feedbackMap = data.reduce((list, update) => {
+					update.teammates.filter((f) => f.feedback !== 'None').forEach((f) => {
+						f.from = update.uid;
+						f.timestamp = update.timestamp;
+						list.push(f);
+					});
+					return list;
+				}, []).reduce((map, f) => {
+					if (!(f.for in map)) {
+						map[f.for] = [];
+					}
+					map[f.for].push(f);
+					return map;
+				}, {});
+				let progress = data.filter((u) => u.progress !== 'None').map((u) => {
+					return { 
+						note: u.progress,
+						timestamp: u.timestamp,
+						from: u.uid
+					}
 				});
-				return list;
-			}, []).reduce((map, f) => {
-				if (!(f.for in map)) {
-					map[f.for] = [];
-				}
-				map[f.for].push(f);
-				return map;
-			}, {});
-			let progress = data.filter((u) => u.progress !== 'None').map((u) => {
-				return { 
-					note: u.progress,
-					timestamp: u.timestamp,
-					from: u.uid
-				}
+				let roadblocks = data.filter((u) => u.roadblocks !== 'None').map((u) => {
+					return { 
+						note: u.roadblocks,
+						timestamp: u.timestamp,
+						from: u.uid
+					}
+				});
+				let feelings = data.filter((u) => u.feelings !== 'None').map((u) => {
+					return { 
+						note: u.feelings,
+						timestamp: u.timestamp,
+						from: u.uid
+					}
+				});
+				let team = teams[tid] || {};
+				/*let ps = views.getTeamProgressSection({
+					name: team.name || 'Untitled Team',
+					team: team,
+					emotions: emotionMap,
+					feedback: feedbackMap,
+					feelings: feelings,
+					progress: progress,
+					roadblocks: roadblocks,
+					profiles: profileMap
+				});
+				ps.classList.add('box');
+				teamSpace.appendChild(ps);*/
+				let metricsModel = {
+					name: team.name || 'Untitled Team',
+					team: team,
+					emotions: emotionList,
+					feedback: feedbackMap,
+					feelings: feelings,
+					progress: progress,
+					roadblocks: roadblocks,
+					profiles: profileMap
+				};
+				//resolve(metricsModel);
+				modelMap[tid] = metricsModel;
 			});
-			let roadblocks = data.filter((u) => u.roadblocks !== 'None').map((u) => {
-				return { 
-					note: u.roadblocks,
-					timestamp: u.timestamp,
-					from: u.uid
-				}
-			});
-			let feelings = data.filter((u) => u.feelings !== 'None').map((u) => {
-				return { 
-					note: u.feelings,
-					timestamp: u.timestamp,
-					from: u.uid
-				}
-			});
-			let team = teams[tid] || {};
-			let ps = views.getTeamProgressSection({
-				name: team.name || 'Untitled Team',
-				team: team,
-				emotions: emotionMap,
-				feedback: feedbackMap,
-				feelings: feelings,
-				progress: progress,
-				roadblocks: roadblocks,
-				profiles: profileMap
-			});
-			ps.classList.add('box');
-			teamSpace.appendChild(ps);
-		});
-	}).catch(console.error);
+			resolve(modelMap);
+		}).catch(console.error);
+	});
 }
 
 function getLastAccess(team) {
@@ -296,28 +280,6 @@ function getLastAccess(team) {
 		}
 	}
 	return lastAccess;
-}
-
-function onTabClick(tabGroup, tab) {
-	let tabid = tab.dataset.tab;
-	let showTab = document.getElementById(tabid);
-	if (showTab) {
-		database.getPrometheus().save({
-			type: 'CHANGE_CLASS_TAB',
-			classCode: CLASS_CODE,
-			tab: tabid
-		});
-		for (let j = 0; j < tabGroup.length; j++) {
-			tabGroup[j].classList.remove('is-active');
-		}
-		let otherTabs = document.getElementsByClassName('tabbed-container');
-		for (let i = 0; i < otherTabs.length; i++) {
-			otherTabs[i].style.display = 'none';
-		}
-		showTab.style.display = 'block';
-		tab.classList.add('is-active');
-	}
-
 }
 
 function reportErrorToUser(err) {
@@ -347,4 +309,18 @@ function fillSrc(className, text) {
 	for (let s = 0; s < spans.length; s++) {
 		spans[s].src = text;
 	}
+}
+
+function convertTidToJoinCode(tid) {
+	let jc = '';
+	let ts = tid.split('').reverse();
+	let limit = 5;
+	let half = Math.round(ts.length / 2);
+	if (half > limit) {
+		limit = half;
+	}
+	for (let t = 0; t < limit; t++) {
+		jc += ts[t];
+	}
+	return jc;
 }
