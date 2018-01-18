@@ -67,34 +67,28 @@
 				</header>
 			</div>
 			<div class="hero-body">
-				<div class="container charter-head">
-					<h2 class="subtitle">Team Metrics</h2>
-					<h1 class="title fill-class-name">Your Class</h1>
+				<div class="container charter-head has-text-centered">
+					<h2 class="subtitle">Team Quick Link</h2>
+					<h1 class="title is-2 fill-class-name is-neatly-spaced">Your Class</h1>
+
 				</div>
 			</div>
 		</section>
 		<section class="section">
-			<div class="container content" id="container-teams">
-				<div class="notification is-primary">
-					<p>Put this link in your LMS. It will take your students directly to their team's health check screen so they can easily submit updates.</p>
-					<a id="lms-link" class="button is-primary is-inverted is-outlined">Student Direct Link</a>
-				</div>
-				<div id="team-space">
-					<p class="subtitle">Loading...</p>
-				</div>
-				<div id="zero-space" class="is-hidden">
+			<div class="container" id="container-teams">
+				<div class="content has-text-centered">
+					<h1 class="title is-3 fill-team-name">Finding your team...</h1>
+					<a id="team-link" class="button is-primary is-outlined is-medium is-loading">Go to Team</a>
 					<br>
-					<h1 class="title is-3">No Teams Yet!</h1>
-					<p>Send your students to your class onboarding page to join their teams:</p>
-					<a id="onboard-link" class="button is-primary is-outlined">Class Onboarding Page</a>
+					<br>
+					<div id="ins-note" class="notification is-warning is-hidden">Note: You are an instructor for this course. When your students visit this link, it will send them to their team.</div>
 				</div>
 			</div>
 		</section>
 		<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
 		<script type="text/javascript" src="./src/js/prometheus.mod.js"></script>
 		<script type="text/javascript" src="./src/js/moment.min.js"></script>
-		<script type="text/javascript" src="./src/js/chart.min.js"></script>
-		<script type="text/javascript" src="./public/js/class.js"></script>
+		<script type="text/javascript" src="./public/js/lms.js"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

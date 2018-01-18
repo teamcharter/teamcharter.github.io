@@ -1156,6 +1156,7 @@ let Views = () => {
 					<h4 class="title">${model.name}</h4>
 					<p class="subtitle is-6"><span class="is-bold">Role:</span> ${model.member.role}, ${model.member.responsibility}</p>
 			`;
+			if (model.feedback) {
 				model.feedback.sort((a, b) => {
 						return b.timestamp - a.timestamp;
 					}).forEach((p) => {
@@ -1163,6 +1164,7 @@ let Views = () => {
 						<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span> ${p.feedback}</p>
 					`;
 				});
+			}
 			html += `
 					</div>
 				</div>
@@ -1179,6 +1181,7 @@ let Views = () => {
 				<div class="content">
 					<h4 class="title">Feedback for ${model.name}</h4>
 			`;
+			if (model.feedback) {
 				model.feedback.sort((a, b) => {
 						return b.timestamp - a.timestamp;
 					}).forEach((p) => {
@@ -1186,6 +1189,7 @@ let Views = () => {
 						<p><span class="tag">${moment(p.timestamp).format(tsFormat)}</span></p><p>${p.feedback}</p>
 					`;
 				});
+			}
 			html += `
 					</div>
 				</div>

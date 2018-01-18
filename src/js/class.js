@@ -13,6 +13,9 @@ let CLASS_CODE = params.class || false;
 
 let feedbackBtn = document.getElementById('feedback');
 let teamSpace = document.getElementById('team-space');
+let zeroSpace = document.getElementById('zero-space');
+let onboardLink = document.getElementById('onboard-link');
+let teamDirectLink = document.getElementById('lms-link');
 
 database.init(main, () => {
 	// No user signed in
@@ -26,6 +29,9 @@ function main(user) {
 	if (!classCode) {
 		window.location = `${window.location.origin}/me.html${document.location.search}`;
 	}
+
+	let teamDirectURL = `${window.location.origin}/lms.html?class=${classCode}`;
+	teamDirectLink.setAttribute('href', teamDirectURL);
 
 	feedbackBtn.addEventListener('click', (e) => {
 		vex.dialog.prompt({
@@ -124,6 +130,11 @@ function main(user) {
 						});
 						teamSpace.innerHTML = '';
 						teamSpace.appendChild(table);
+						if (teamList.length === 0) {
+							let onboardURL = `${window.location.origin}/onboard.html?class=${classCode}`;
+							onboardLink.setAttribute('href', onboardURL);
+							zeroSpace.classList.remove('is-hidden');
+						}
 					});
 
 				}).catch(console.error);
